@@ -1,17 +1,12 @@
-name: Node
+name: Check
 
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
     branches:
       - main
-      - develop
 
 jobs:
-  lint_and_test:
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,3 +30,11 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Lint
         run: yarn lint
+      - name: Check git tag
+        uses: bana118/action-autotag@2d64822393af6f3f9db06ad3d1a51c6d756ac2f5
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          strategy: package
+          tag_prefix: "v"
+          dry_run: true
