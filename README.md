@@ -1,6 +1,6 @@
 # hack-us-client
 
-Hack U アプリ 「Hack Us」クライアント
+チーム開発マッチングアプリ「Hack Us」のクライアント
 
 # How to get started
 
