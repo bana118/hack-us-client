@@ -1,5 +1,5 @@
 {
-  "name": "project-name",
+  "name": "hack-us-client",
   "dockerFile": "Dockerfile",
   "extensions": [
     "ms-azuretools.vscode-docker",
