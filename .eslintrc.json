@@ -4,6 +4,7 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
+    "plugin:react/recommended",
     "prettier"
   ],
   "plugins": ["@typescript-eslint"],
@@ -16,5 +17,10 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "rules": {}
+  "rules": { "react/react-in-jsx-scope": "off" },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }

@@ -1,6 +1,7 @@
 {
-  "name": "project-name",
+  "name": "hack-us-client",
   "dockerFile": "Dockerfile",
+  "appPort": [3000],
   "extensions": [
     "ms-azuretools.vscode-docker",
     "dbaeumer.vscode-eslint",

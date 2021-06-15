@@ -1,9 +1,10 @@
-# node-container-template
+# hack-us-client
 
-Template of vscode remote development container with Node.js
+チーム開発マッチングアプリ「Hack Us」のクライアント
 
-# Install dependencies
+# How to get started
 
 ```
 yarn install --frozen-lockfile
+yarn dev
 ```
