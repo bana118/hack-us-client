@@ -8,25 +8,31 @@ import {
   Typography,
   Grid,
 } from "@material-ui/core";
+import { Global } from "@emotion/react";
 
-type Props = {
+type LayoutProps = {
   children?: ReactNode;
 };
 
-const Layout = ({ children }: Props): JSX.Element => (
+const Layout = ({ children }: LayoutProps): JSX.Element => (
   <div>
-    <Container>
-      <AppBar>
-        <Toolbar>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-            Hack Us
-          </Typography>
-          {/* TODO ログイン or ログアウト 切り替え */}
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-      {children}
-    </Container>
+    <Global
+      styles={{
+        body: {
+          margin: 0,
+        },
+      }}
+    />
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+          Hack Us
+        </Typography>
+        {/* TODO ログイン or ログアウト 切り替え */}
+        <Button color="inherit">Login</Button>
+      </Toolbar>
+    </AppBar>
+    <Container>{children}</Container>
     <Container>
       <footer>
         <hr />
