@@ -54,6 +54,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // } catch (err) {
   //   return { props: { errors: err.message } };
   // }
+  console.log(params);
   const item: User = {
     id: "testId",
     name: "test",
