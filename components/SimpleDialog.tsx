@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { GithubLoginButton } from "react-social-login-buttons";
+import { loginWithGithub } from "../utils/auth-provider";
 
 type LoginDialogProps = {
   open: boolean;
@@ -38,7 +39,7 @@ export const LoginDialog = ({
         <DialogContentText>
           Githubアカウントでログインできます
         </DialogContentText>
-        <GithubLoginButton />
+        <GithubLoginButton onClick={loginWithGithub} />
       </DialogContent>
     </Dialog>
   );

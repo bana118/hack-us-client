@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -10,13 +10,28 @@ import {
 } from "@material-ui/core";
 import { Global } from "@emotion/react";
 import { LoginDialog } from "../components/SimpleDialog";
+import { storeUserfromLoginResult } from "../utils/auth-provider";
+import Router from "next/router";
+import { AuthContext } from "../context/AuthContext";
 
 type LayoutProps = {
   children?: ReactNode;
 };
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
+  const { authUser } = useContext(AuthContext);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const getLoginResult = async () => {
+      await storeUserfromLoginResult();
+      Router.push("/");
+    };
+
+    if (authUser != null) {
+      getLoginResult();
+    }
+  }, [authUser]);
 
   return (
     <div>
