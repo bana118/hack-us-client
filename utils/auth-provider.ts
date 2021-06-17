@@ -1,6 +1,9 @@
 import "firebase/auth";
 import firebase from "firebase/app";
 import { auth } from "./firebase";
+import { apolloClient } from "./apollo-client";
+import { CREATE_USER } from "../interfaces/User";
+import { CreateUserMutationVariables, User } from "../types/graphql";
 
 export const getProviderUserData = (
   u: firebase.User,
@@ -34,7 +37,7 @@ export const linkWithGoogle = async (
   }
 };
 
-export const storeUserfromLoginResult = async (): Promise<void> => {
+export const createUserfromLoginResult = async (): Promise<void> => {
   try {
     const result = await auth.getRedirectResult();
     if (
@@ -44,8 +47,16 @@ export const storeUserfromLoginResult = async (): Promise<void> => {
     ) {
       const authUser = result.user;
       // TODO サーバーにユーザーデータを送信
-      console.log(authUser);
+      const { data } = await apolloClient.mutate<
+        User,
+        CreateUserMutationVariables
+      >({
+        mutation: CREATE_USER,
+        variables: { name: authUser.displayName, uid: authUser.uid },
+      });
+      console.log(data);
     }
+    console.log("hoge");
   } catch (error) {
     console.error(error);
   }

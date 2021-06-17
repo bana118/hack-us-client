@@ -23,7 +23,7 @@ import {
 } from "@material-ui/core";
 import { Global } from "@emotion/react";
 import { LoginDialog } from "../components/SimpleDialog";
-import { storeUserfromLoginResult } from "../utils/auth-provider";
+import { createUserfromLoginResult } from "../utils/auth-provider";
 import Router from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
@@ -40,7 +40,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
 
   useEffect(() => {
     const getLoginResult = async () => {
-      await storeUserfromLoginResult();
+      await createUserfromLoginResult();
       Router.push("/");
     };
 

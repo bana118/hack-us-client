@@ -8,3 +8,15 @@ export const GET_USERS = gql`
     }
   }
 `;
+
+export const CREATE_USER = gql`
+  mutation CreateUser($name: String!, $uid: String!) {
+    createUser(input: { name: $name, uid: $uid }) {
+      user {
+        id
+        name
+        uid
+      }
+    }
+  }
+`;
