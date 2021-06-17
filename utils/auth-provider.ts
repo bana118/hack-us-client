@@ -46,7 +46,8 @@ export const createUserfromLoginResult = async (): Promise<void> => {
       result.additionalUserInfo?.isNewUser
     ) {
       const authUser = result.user;
-      // TODO サーバーにユーザーデータを送信
+      // TODO Fix CORS Error
+      // TODO ref: https://www.apollographql.com/docs/react/networking/authentication/
       const { data } = await apolloClient.mutate<
         User,
         CreateUserMutationVariables
