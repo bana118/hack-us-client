@@ -23,6 +23,9 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       <Global
         styles={{
           body: {
+            fontFamily: ["Roboto", "Noto Sans JP", "Meiryo", "sans-serif"].join(
+              ","
+            ),
             margin: 0,
           },
         }}
