@@ -1,4 +1,10 @@
-import { ReactNode, useContext, useEffect, useState } from "react";
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -7,12 +13,20 @@ import {
   Toolbar,
   Typography,
   Grid,
+  Avatar,
+  IconButton,
+  Popover,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import { Global } from "@emotion/react";
 import { LoginDialog } from "../components/SimpleDialog";
 import { storeUserfromLoginResult } from "../utils/auth-provider";
 import Router from "next/router";
 import { AuthContext } from "../context/AuthContext";
+import { auth } from "../utils/firebase";
 
 type LayoutProps = {
   children?: ReactNode;
@@ -20,7 +34,9 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
   const { authUser } = useContext(AuthContext);
+  const userButtonRef = useRef(null);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
   useEffect(() => {
     const getLoginResult = async () => {
@@ -50,10 +66,48 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
             Hack Us
           </Typography>
-          {/* TODO ログイン or ログアウト 切り替え */}
-          <Button color="inherit" onClick={() => setLoginDialogOpen(true)}>
-            Login
-          </Button>
+          {authUser === null && (
+            <Button color="inherit" onClick={() => setLoginDialogOpen(true)}>
+              Login
+            </Button>
+          )}
+          {authUser != null && (
+            <React.Fragment>
+              <IconButton
+                ref={userButtonRef}
+                onClick={() => setUserPopoverOpen(true)}
+              >
+                <Avatar />
+              </IconButton>
+              <Popover
+                open={userPopoverOpen}
+                anchorEl={userButtonRef.current}
+                onClose={() => setUserPopoverOpen(false)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+              >
+                <List>
+                  <ListItem button>
+                    <ListItemText primary="プロフィールの編集" />
+                  </ListItem>
+                  <Divider />
+                  <ListItem button>
+                    <ListItemText primary="プロジェクトの作成" />
+                  </ListItem>
+                  <Divider />
+                  <ListItem button onClick={() => auth.signOut()}>
+                    <ListItemText primary="ログアウト" />
+                  </ListItem>
+                </List>
+              </Popover>
+            </React.Fragment>
+          )}
         </Toolbar>
       </AppBar>
       <Container>{children}</Container>
