@@ -93,11 +93,16 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                 }}
               >
                 <List>
-                  <ListItem button>
+                  <ListItem
+                    button
+                    component="a"
+                    href={`/users/${authUser.uid}`}
+                  >
                     <ListItemText primary="プロフィールの編集" />
                   </ListItem>
                   <Divider />
                   <ListItem button>
+                    {/* TODO プロジェクト作成ページ */}
                     <ListItemText primary="プロジェクトの作成" />
                   </ListItem>
                   <Divider />
