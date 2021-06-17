@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { User } from "../../interfaces/User";
+import { User } from "../../types/graphql";
 import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 
@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   //   return { props: { errors: err.message } };
   // }
   console.log(params);
-  const item: User = {
+  const item = {
     id: "testId",
     name: "test",
   };
