@@ -1,42 +1,58 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import Link from "next/link";
-import Head from "next/head";
+import {
+  AppBar,
+  Button,
+  Container,
+  Toolbar,
+  Typography,
+  Grid,
+} from "@material-ui/core";
+import { Global } from "@emotion/react";
 
-type Props = {
+type LayoutProps = {
   children?: ReactNode;
-  title?: string;
 };
 
-const Layout = ({
-  children,
-  title = "This is the default title",
-}: Props): JSX.Element => (
+const Layout = ({ children }: LayoutProps): JSX.Element => (
   <div>
-    <Head>
-      <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-    <header>
-      <nav>
-        <Link href="/">
-          <a>Home</a>
-        </Link>{" "}
-        |{" "}
-        <Link href="/about">
-          <a>About</a>
-        </Link>{" "}
-        |{" "}
-        <Link href="/users">
-          <a>Users List</a>
-        </Link>
-      </nav>
-    </header>
-    {children}
-    <footer>
-      <hr />
-      <span>I&apos;m here to stay (Footer)</span>
-    </footer>
+    <Global
+      styles={{
+        body: {
+          margin: 0,
+        },
+      }}
+    />
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+          Hack Us
+        </Typography>
+        {/* TODO ログイン or ログアウト 切り替え */}
+        <Button color="inherit">Login</Button>
+      </Toolbar>
+    </AppBar>
+    <Container>{children}</Container>
+    <Container>
+      <footer>
+        <hr />
+        <Grid container justifyContent="center" textAlign="center" spacing={6}>
+          <Grid item xs={12} md="auto">
+            <Link href="/">
+              <a>トップページ</a>
+            </Link>
+          </Grid>
+          <Grid item xs={12} md="auto">
+            <Link href="/privacy">
+              <a>プライバシーポリシー</a>
+            </Link>
+          </Grid>
+          <Grid item xs={12} md="auto">
+            <a href="github.com/bana118/hack-us-client">Github</a>
+          </Grid>
+        </Grid>
+      </footer>
+    </Container>
   </div>
 );
 
