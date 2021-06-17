@@ -20,6 +20,9 @@ const Layout = ({ children }: LayoutProps): JSX.Element => (
       styles={{
         body: {
           margin: 0,
+          fontFamily: ["Roboto", "Noto Sans JP", "Meiryo", "sans-serif"].join(
+            ","
+          ),
         },
       }}
     />
