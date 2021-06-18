@@ -1,12 +1,12 @@
 {
   "name": "hack-us-client",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint": "next lint",
     "test": "yarn lint && yarn type-check",
     "generate": "DOTENV_CONFIG_PATH=./.env.development.local graphql-codegen -r dotenv/config"
   },
@@ -37,9 +37,11 @@
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.28.0",
+    "eslint-config-next": "^11.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
+    "graphql-tag": "^2.12.4",
     "prettier": "^2.3.1",
     "typescript": "^4.3.2"
   },
