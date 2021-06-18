@@ -56,6 +56,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
               ","
             ),
             margin: 0,
+            backgroundColor: "#F5F5F5",
           },
         }}
       />

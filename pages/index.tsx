@@ -9,7 +9,7 @@ import { GetStaticProps, GetStaticPaths } from "next";
 const IndexPage = ({ item }): JSX.Element => (
   <Layout>
     <MyHead title="Hack Us"></MyHead>
-    <div css>
+    <div>
       <h1>Top Page</h1>
       {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
       <ProjectComp
