@@ -1,21 +1,32 @@
-// You can include shared interfaces/types in a separate file
-// and then use them in any component by importing them. For
-// example, to import the interface below do:
-//
-// import { User } from 'path/to/interfaces';
 import { gql } from "@apollo/client";
-
-// TODO Graphqlの型はcodegenなどで自動生成
-export type User = {
-  id: string;
-  name: string;
-};
 
 export const GET_USERS = gql`
   query GetUsers {
     users {
       id
       name
+    }
+  }
+`;
+
+export const GET_USER = gql`
+  query GetUser($uid: String!) {
+    user(uid: $uid) {
+      id
+      name
+      uid
+    }
+  }
+`;
+
+export const CREATE_USER = gql`
+  mutation CreateUser($name: String!, $uid: String!) {
+    createUser(input: { name: $name, uid: $uid }) {
+      user {
+        id
+        name
+        uid
+      }
     }
   }
 `;
