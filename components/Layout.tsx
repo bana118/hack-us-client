@@ -24,7 +24,6 @@ import {
 import { Global } from "@emotion/react";
 import { LoginDialog } from "../components/SimpleDialog";
 import { createUserfromLoginResult } from "../utils/auth-provider";
-import Router from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
 
@@ -41,7 +40,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   useEffect(() => {
     const getLoginResult = async () => {
       await createUserfromLoginResult();
-      Router.push("/");
     };
 
     if (authUser != null) {
