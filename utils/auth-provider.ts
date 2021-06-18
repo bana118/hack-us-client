@@ -56,7 +56,6 @@ export const createUserfromLoginResult = async (): Promise<void> => {
       });
       console.log(data);
     }
-    console.log("hoge");
   } catch (error) {
     console.error(error);
   }
