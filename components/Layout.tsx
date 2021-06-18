@@ -23,6 +23,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => (
           fontFamily: ["Roboto", "Noto Sans JP", "Meiryo", "sans-serif"].join(
             ","
           ),
+          backgroundColor: "#F5F5F5",
         },
       }}
     />
@@ -35,7 +36,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => (
         <Button color="inherit">Login</Button>
       </Toolbar>
     </AppBar>
-    <Container>{children}</Container>
+    <Container maxWidth="xl">{children}</Container>
     <Container>
       <footer>
         <hr />
