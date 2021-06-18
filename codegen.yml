@@ -1,4 +1,4 @@
-schema: http://localhost:3001/graphql
+schema: ${NEXT_PUBLIC_BACKEND_URL}/graphql
 documents: ./interfaces/*.ts
 generates:
   ./types/graphql/index.d.ts:
