@@ -1,0 +1,8 @@
+schema: ${NEXT_PUBLIC_BACKEND_URL:http://127.0.0.1:3001}/graphql
+documents: ./interfaces/*.ts
+generates:
+  ./types/graphql/index.d.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
