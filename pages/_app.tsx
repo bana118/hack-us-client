@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import firebase from "firebase/app";
 import { analytics, auth } from "../utils/firebase";
 import { AuthContext } from "../context/AuthContext";
+import nookies from "nookies";
 
 const theme = createTheme({
   typography: {
@@ -17,13 +18,31 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   );
 
   useEffect(() => {
-    auth.onAuthStateChanged((u) => {
-      setAuthUser(u);
+    auth.onIdTokenChanged(async (u) => {
+      if (!u) {
+        setAuthUser(null);
+        nookies.set(undefined, "token", "", { path: "/" });
+      } else {
+        const token = await u.getIdToken();
+        setAuthUser(u);
+        nookies.set(undefined, "token", token, { path: "/" });
+      }
     });
 
     if (process.env.NODE_ENV === "production") {
       analytics();
     }
+  }, []);
+
+  // force refresh the token every 10 minutes
+  useEffect(() => {
+    const handle = setInterval(async () => {
+      const user = auth.currentUser;
+      if (user) await user.getIdToken(true);
+    }, 10 * 60 * 1000);
+
+    // clean up setInterval
+    return () => clearInterval(handle);
   }, []);
 
   return (

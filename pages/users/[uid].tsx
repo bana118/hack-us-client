@@ -4,6 +4,7 @@ import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 import { apolloClient } from "../../utils/apollo-client";
 import { GET_USER } from "../../interfaces/User";
+import nookies from "nookies";
 
 type UserPageProps = {
   user?: User;
@@ -42,6 +43,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: { errors: "Invalid URL" } };
   } else {
     try {
+      const cookies = nookies.get(context);
+      console.log(cookies);
       const { data } = await apolloClient.query<
         GetUserQuery,
         GetUserQueryVariables
