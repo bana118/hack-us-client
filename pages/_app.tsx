@@ -5,6 +5,9 @@ import firebase from "firebase/app";
 import { analytics, auth } from "../utils/firebase";
 import { AuthContext } from "../context/AuthContext";
 import nookies from "nookies";
+import { apolloClient } from "../utils/apollo-client";
+import { ApolloProvider } from "@apollo/client";
+import { tokenKeyName } from "../utils/token-key-name";
 
 const theme = createTheme({
   typography: {
@@ -21,11 +24,11 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
     auth.onIdTokenChanged(async (u) => {
       if (!u) {
         setAuthUser(null);
-        nookies.set(undefined, "token", "", { path: "/" });
+        nookies.set(undefined, tokenKeyName, "", { path: "/" });
       } else {
         const token = await u.getIdToken();
         setAuthUser(u);
-        nookies.set(undefined, "token", token, { path: "/" });
+        nookies.set(undefined, tokenKeyName, token, { path: "/" });
       }
     });
 
@@ -47,9 +50,11 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 
   return (
     <AuthContext.Provider value={{ authUser }}>
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <ApolloProvider client={apolloClient}>
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </ApolloProvider>
     </AuthContext.Provider>
   );
 };

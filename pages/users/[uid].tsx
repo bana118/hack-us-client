@@ -5,6 +5,7 @@ import { MyHead } from "../../components/MyHead";
 import { apolloClient } from "../../utils/apollo-client";
 import { GET_USER } from "../../interfaces/User";
 import nookies from "nookies";
+import { tokenKeyName } from "../../utils/token-key-name";
 
 type UserPageProps = {
   user?: User;
@@ -51,6 +52,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       >({
         query: GET_USER,
         variables: { uid: uid },
+        context: {
+          headers: {
+            [tokenKeyName]: cookies[tokenKeyName],
+          },
+        },
       });
       return { props: { user: data.user } };
     } catch (err) {
