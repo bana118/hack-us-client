@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } else {
     try {
       const cookies = nookies.get(context);
-      console.log(cookies);
+      const token = cookies[tokenKeyName];
       const { data } = await apolloClient.query<
         GetUserQuery,
         GetUserQueryVariables
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         variables: { uid: uid },
         context: {
           headers: {
-            [tokenKeyName]: cookies[tokenKeyName],
+            authorization: token ? `Bearer ${token}` : "",
           },
         },
       });
