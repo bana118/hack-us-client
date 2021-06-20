@@ -28,6 +28,7 @@ import { LoginDialog } from "../components/SimpleDialog";
 import { createUserfromLoginResult } from "../utils/auth-provider";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
+import MyTabs from "./MyTabs";
 
 type LayoutProps = {
   children?: ReactNode;
@@ -118,25 +119,13 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             </React.Fragment>
           )}
         </Toolbar>
-        <Tabs
-          aria-label="simple tabs"
-          value={value}
-          onChange={handleChange}
-          TabIndicatorProps={{
-            style: { background: "white", height: "2px" },
-          }}
-          textColor="inherit"
-          centered
-        >
-          <Tab
-            label="New Projects"
-            href="https://github.com/bana118/hack-us-client"
-          />
-          <Tab label="Likes" href="/" />
-          <Tab label="My Projects" href="/" />
-        </Tabs>
       </AppBar>
-      <Container>{children}</Container>
+      <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
+        <Container>{children}</Container>
+        <Container>{children}</Container>
+        <Container>{children}</Container>
+      </MyTabs>
+      {/* <Container>{children}</Container> */}
       <Container>
         <footer>
           <hr />
