@@ -123,7 +123,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           value={value}
           onChange={handleChange}
           TabIndicatorProps={{
-            style: { background: "white", height: "3px" },
+            style: { background: "white", height: "2px" },
           }}
           textColor="inherit"
           centered
