@@ -4,6 +4,7 @@ import { auth } from "./firebase";
 import { apolloClient } from "./apollo-client";
 import { CREATE_USER } from "../interfaces/User";
 import { CreateUserMutationVariables, User } from "../types/graphql";
+import { ApolloError } from "@apollo/client";
 
 export const getProviderUserData = (
   u: firebase.User,
@@ -38,6 +39,7 @@ export const linkWithGoogle = async (
 };
 
 export const createUserfromLoginResult = async (): Promise<void> => {
+  let authUser: firebase.User = null;
   try {
     const result = await auth.getRedirectResult();
     if (
@@ -45,18 +47,22 @@ export const createUserfromLoginResult = async (): Promise<void> => {
       result.user &&
       result.additionalUserInfo?.isNewUser
     ) {
-      const authUser = result.user;
-      // TODO Mutaionに失敗したときにログインをキャンセルする
-      const { data } = await apolloClient.mutate<
-        User,
-        CreateUserMutationVariables
-      >({
+      authUser = result.user;
+      await apolloClient.mutate<User, CreateUserMutationVariables>({
         mutation: CREATE_USER,
-        variables: { name: authUser.displayName, uid: authUser.uid },
+        variables: { name: authUser?.displayName, uid: authUser?.uid },
       });
-      console.log(data);
     }
   } catch (error) {
-    console.error(error);
+    if (error instanceof ApolloError) {
+      try {
+        // mutationが失敗したらfirebaseのユーザーを削除
+        await authUser?.delete();
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.error(error);
+    }
   }
 };
