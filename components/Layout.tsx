@@ -91,11 +91,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                 }}
               >
                 <List>
-                  <ListItem
-                    button
-                    component="a"
-                    href={`/users/${authUser.uid}`}
-                  >
+                  <ListItem button component="a" href={"/profile"}>
                     <ListItemText primary="プロフィールの編集" />
                   </ListItem>
                   <Divider />
