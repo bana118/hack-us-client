@@ -18,7 +18,7 @@ const authLink = setContext((_, { headers }) => {
             .map((x) => x.split(/=(.*)$/, 2).map(decodeURIComponent))
         )[tokenKeyName]
       : "";
-  const authorizationHeader = headers["authorization"];
+  const authorizationHeader = headers != null ? headers["authorization"] : null;
   return {
     headers: {
       ...headers,
