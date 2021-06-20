@@ -6,6 +6,7 @@ import { apolloClient } from "../utils/apollo-client";
 import { GET_USER } from "../interfaces/User";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
+import { ProfileForm } from "../components/ProfileForm";
 
 type ProfilePageProps = {
   user?: User;
@@ -22,15 +23,16 @@ const ProfilePage = ({ user, errors }: ProfilePageProps): JSX.Element => {
       </Layout>
     );
   }
+  const profileValues = {
+    name: user.name,
+    description: "",
+  };
 
   return (
     <Layout>
       <MyHead title="ユーザーページ" />
       <h1>ユーザーページ</h1>
-      <p>ユーザー情報を表示</p>
-      <p>id: {user.id}</p>
-      <p>name: {user.name}</p>
-      <p>uid: {user.uid}</p>
+      <ProfileForm defaultValues={profileValues} />
     </Layout>
   );
 };
