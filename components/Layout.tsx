@@ -11,6 +11,8 @@ import {
   Button,
   Container,
   Toolbar,
+  Tabs,
+  Tab,
   Typography,
   Grid,
   Avatar,
@@ -112,6 +114,14 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             </React.Fragment>
           )}
         </Toolbar>
+        <Tabs aria-label="simple tabs">
+          <Tab
+            label="New Projects"
+            href="https://github.com/bana118/hack-us-client"
+          />
+          <Tab label="Likes" href="/" />
+          <Tab label="My Projects" href="/" />
+        </Tabs>
       </AppBar>
       <Container>{children}</Container>
       <Container>
