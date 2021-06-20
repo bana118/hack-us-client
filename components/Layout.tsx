@@ -38,6 +38,10 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   const userButtonRef = useRef(null);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
+  const [value, setValue] = useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   useEffect(() => {
     const getLoginResult = async () => {
@@ -114,7 +118,16 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             </React.Fragment>
           )}
         </Toolbar>
-        <Tabs aria-label="simple tabs">
+        <Tabs
+          aria-label="simple tabs"
+          value={value}
+          onChange={handleChange}
+          TabIndicatorProps={{
+            style: { background: "white", height: "3px" },
+          }}
+          textColor="inherit"
+          centered
+        >
           <Tab
             label="New Projects"
             href="https://github.com/bana118/hack-us-client"
