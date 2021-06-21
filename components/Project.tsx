@@ -1,12 +1,12 @@
-import React from "react";
 import { css } from "@emotion/react";
+import { Container, Box } from "@material-ui/core";
 import { Project } from "../interfaces/Project";
 
 const projectStyle = css`
   background-color: #ffffff;
   width: 400px;
   height: 150px;
-  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
 `;
 
@@ -43,11 +43,11 @@ export const ProjectComp = ({
   status = "default",
 }: Project): JSX.Element => {
   return (
-    <div css={projectStyle}>
+    <Container css={projectStyle}>
       <p css={projectNameStyle}>{name}</p>
       <p css={projectDetailStyle}>{detail}</p>
       <p css={projectLanguageStyle}>{language}</p>
       <p css={projectStatusStyle}>{status}</p>
-    </div>
+    </Container>
   );
 };

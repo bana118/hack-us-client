@@ -4,23 +4,31 @@ import Link from "next/link";
 import { ProjectComp } from "../components/Project";
 import { Project } from "../interfaces/Project";
 import { GetStaticProps, GetStaticPaths } from "next";
+import { Container, Box } from "@material-ui/core";
+import MyTabs from "../components/MyTabs";
 
 const IndexPage = ({ item }): JSX.Element => (
   <Layout>
     <MyHead title="Hack Us"></MyHead>
-    <div>
-      <h1>Top Page</h1>
+    <Box>
       {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
-      <ProjectComp
-        id={item.id}
-        name={item.name}
-        detail={item.detail}
-        status={item.status}
-      />
+      <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
+        <Container>
+          <ProjectComp
+            id={item.id}
+            name={item.name}
+            detail={item.detail}
+            status={item.status}
+          />
+        </Container>
+        <Container>aaa</Container>
+        <Container>bbb</Container>
+      </MyTabs>
+
       <Link href="/users/testId">
         <a>ユーザーページ(仮)</a>
       </Link>
-    </div>
+    </Box>
   </Layout>
 );
 
