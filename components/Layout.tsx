@@ -9,6 +9,7 @@ import Link from "next/link";
 import {
   AppBar,
   Button,
+  Box,
   Container,
   Toolbar,
   Typography,
@@ -56,6 +57,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
               ","
             ),
             margin: 0,
+            backgroundColor: "#F5F5F5",
           },
         }}
       />
@@ -109,7 +111,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           )}
         </Toolbar>
       </AppBar>
-      <Container>{children}</Container>
+      <Box m={0}>{children}</Box>
       <Container>
         <footer>
           <hr />
