@@ -9,6 +9,7 @@ import Link from "next/link";
 import {
   AppBar,
   Button,
+  Box,
   Container,
   Toolbar,
   Typography,
@@ -26,7 +27,6 @@ import { LoginDialog } from "../components/SimpleDialog";
 import { createUserfromLoginResult } from "../utils/auth-provider";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
-import MyTabs from "./MyTabs";
 
 type LayoutProps = {
   children?: ReactNode;
@@ -57,6 +57,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
               ","
             ),
             margin: 0,
+            backgroundColor: "#F5F5F5",
           },
         }}
       />
@@ -114,12 +115,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           )}
         </Toolbar>
       </AppBar>
-      <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
-        <Container>{children}</Container>
-        <Container>{children}</Container>
-        <Container>{children}</Container>
-      </MyTabs>
-      {/* <Container>{children}</Container> */}
+      <Box m={0}>{children}</Box>
       <Container>
         <footer>
           <hr />

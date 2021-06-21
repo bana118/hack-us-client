@@ -48,13 +48,14 @@ const MyTabs = (props): JSX.Element => {
         ))}
       </Tabs>
 
-      <div>
+      <Box mx={20}>
         {props.children.map((child, index) => (
           <TabPanel value={value} index={index} key={index}>
+            <h1>{props.labels[index]}</h1>
             {child}
           </TabPanel>
         ))}
-      </div>
+      </Box>
     </React.Fragment>
   );
 };
