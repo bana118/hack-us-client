@@ -1,10 +1,11 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { TextField, Button, Grid, Avatar } from "@material-ui/core";
-import { User } from "../types/graphql";
+import { TextField, Button, Grid, Avatar, Tooltip } from "@material-ui/core";
+import { User, useUpdateUserMutation } from "../types/graphql";
 import Image from "next/image";
 import { css } from "@emotion/react";
+import { useState } from "react";
 
 type ProfileFormProps = {
   user?: Pick<
@@ -28,10 +29,33 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<InputsType>({ resolver: yupResolver(schema) });
 
-  const updateProfile = (data: InputsType) => {
-    console.log(data);
+  const setUnexpectedError = () => {
+    setError("name", {
+      type: "manual",
+      message: "予期せぬエラーが発生しました！ もう一度お試しください",
+    });
+  };
+
+  const [updateUserMutation] = useUpdateUserMutation();
+
+  const [updatedTooltipOpen, setUpdatedTooltipOpen] = useState(false);
+
+  const updateProfile = async (data: InputsType) => {
+    try {
+      await updateUserMutation({
+        variables: {
+          uid: user.uid,
+          name: data["name"],
+          description: data["description"],
+        },
+      });
+      setUpdatedTooltipOpen(true);
+    } catch {
+      setUnexpectedError();
+    }
   };
 
   const avatarStyle = css({
@@ -39,6 +63,8 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
     height: 120,
   });
 
+  // TODO 連携Githubアカウント変更
+  // TODO アカウント削除処理
   return (
     <form onSubmit={handleSubmit(updateProfile)}>
       <Grid container direction="column" alignItems="center" spacing={3}>
@@ -74,13 +100,13 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
                 error={!!errors.description}
                 helperText={errors.description?.message}
                 multiline
+                minRows={5}
                 {...field}
               />
             )}
           />
         </Grid>
         <Grid item>
-          {/* TODO 連携Githubアカウントの変更 */}
           <TextField
             label="Github ID"
             name="githubId"
@@ -89,9 +115,17 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
           />
         </Grid>
         <Grid item>
-          <Button variant="contained" type="submit">
-            更新する
-          </Button>
+          <Tooltip
+            title="更新しました！"
+            open={updatedTooltipOpen}
+            onClose={() => {
+              setUpdatedTooltipOpen(false);
+            }}
+          >
+            <Button variant="contained" type="submit">
+              更新する
+            </Button>
+          </Tooltip>
         </Grid>
       </Grid>
     </form>

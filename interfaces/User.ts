@@ -33,3 +33,15 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($uid: String!, $name: String!, $description: String!) {
+    updateUser(input: { uid: $uid, name: $name, description: $description }) {
+      user {
+        id
+        name
+        uid
+      }
+    }
+  }
+`;
