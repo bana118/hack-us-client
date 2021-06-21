@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import nookies from "nookies";
 import { apolloClient } from "../utils/apollo-client";
 import { ApolloProvider } from "@apollo/client";
-import { tokenKeyName } from "../utils/token-key-name";
+import { tokenKeyName, uidKeyName } from "../utils/cookie-key-names";
 
 const theme = createTheme({
   typography: {
@@ -25,10 +25,12 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
       if (!u) {
         setAuthUser(null);
         nookies.set(undefined, tokenKeyName, "", { path: "/" });
+        nookies.set(undefined, uidKeyName, "", { path: "/" });
       } else {
         const token = await u.getIdToken();
         setAuthUser(u);
         nookies.set(undefined, tokenKeyName, token, { path: "/" });
+        nookies.set(undefined, uidKeyName, u.uid, { path: "/" });
       }
     });
 

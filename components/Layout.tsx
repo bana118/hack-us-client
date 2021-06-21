@@ -23,7 +23,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import { Global } from "@emotion/react";
-import { LoginDialog } from "../components/SimpleDialog";
+import { LoginDialog } from "./LoginDialog";
 import { createUserfromLoginResult } from "../utils/auth-provider";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
@@ -93,11 +93,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                 }}
               >
                 <List>
-                  <ListItem
-                    button
-                    component="a"
-                    href={`/users/${authUser.uid}`}
-                  >
+                  <ListItem button component="a" href={"/profile"}>
                     <ListItemText primary="プロフィールの編集" />
                   </ListItem>
                   <Divider />

@@ -5,6 +5,7 @@ export const GET_USERS = gql`
     users {
       id
       name
+      uid
     }
   }
 `;
@@ -12,16 +13,30 @@ export const GET_USERS = gql`
 export const GET_USER = gql`
   query GetUser($uid: String!) {
     user(uid: $uid) {
-      id
       name
       uid
+      description
+      githubId
+      githubIconUrl
     }
   }
 `;
 
 export const CREATE_USER = gql`
-  mutation CreateUser($name: String!, $uid: String!) {
-    createUser(input: { name: $name, uid: $uid }) {
+  mutation CreateUser($uid: String!, $githubId: String!) {
+    createUser(input: { uid: $uid, githubId: $githubId }) {
+      user {
+        id
+        name
+        uid
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($uid: String!, $name: String!, $description: String!) {
+    updateUser(input: { uid: $uid, name: $name, description: $description }) {
       user {
         id
         name

@@ -1,6 +1,6 @@
 {
   "name": "hack-us-client",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -16,6 +16,7 @@
     "@emotion/babel-plugin": "^11.3.0",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "@hookform/resolvers": "^2.6.0",
     "@material-ui/core": "^5.0.0-alpha.37",
     "@material-ui/icons": "^4.11.2",
     "firebase": "^8.6.7",
@@ -24,7 +25,9 @@
     "nookies": "^2.5.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-social-login-buttons": "^3.4.0"
+    "react-hook-form": "^7.9.0",
+    "react-social-login-buttons": "^3.4.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@emotion/eslint-plugin": "^11.2.0",
