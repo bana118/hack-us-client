@@ -65,6 +65,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
 
   // TODO 連携Githubアカウント変更
   // TODO アカウント削除処理
+  // TODO プロジェクト表示機能
   return (
     <form onSubmit={handleSubmit(updateProfile)}>
       <Grid container direction="column" alignItems="center" spacing={3}>
