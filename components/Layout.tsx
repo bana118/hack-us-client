@@ -11,8 +11,6 @@ import {
   Button,
   Container,
   Toolbar,
-  Tabs,
-  Tab,
   Typography,
   Grid,
   Avatar,
@@ -39,10 +37,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   const userButtonRef = useRef(null);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   useEffect(() => {
     const getLoginResult = async () => {
