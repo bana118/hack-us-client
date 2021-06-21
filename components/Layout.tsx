@@ -26,6 +26,7 @@ import { LoginDialog } from "../components/SimpleDialog";
 import { createUserfromLoginResult } from "../utils/auth-provider";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
+import MyTabs from "./MyTabs";
 
 type LayoutProps = {
   children?: ReactNode;
@@ -114,7 +115,12 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           )}
         </Toolbar>
       </AppBar>
-      <Container>{children}</Container>
+      <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
+        <Container>{children}</Container>
+        <Container>{children}</Container>
+        <Container>{children}</Container>
+      </MyTabs>
+      {/* <Container>{children}</Container> */}
       <Container>
         <footer>
           <hr />

@@ -27,5 +27,5 @@
       "version": "detect"
     }
   },
-  "ignorePatterns": ["types/graphql/index.d.ts"]
+  "ignorePatterns": ["types/graphql/index.ts"]
 }

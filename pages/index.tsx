@@ -3,7 +3,6 @@ import { MyHead } from "../components/MyHead";
 import Link from "next/link";
 import { ProjectComp } from "../components/Project";
 import { Project } from "../interfaces/Project";
-import { css } from "@emotion/react";
 import { GetStaticProps, GetStaticPaths } from "next";
 
 const IndexPage = ({ item }): JSX.Element => (

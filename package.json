@@ -1,6 +1,6 @@
 {
   "name": "hack-us-client",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -21,6 +21,7 @@
     "firebase": "^8.6.7",
     "graphql": "^15.5.0",
     "next": "latest",
+    "nookies": "^2.5.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-social-login-buttons": "^3.4.0"
