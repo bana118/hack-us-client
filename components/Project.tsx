@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Container, Box } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import { Project } from "../interfaces/Project";
 
 const projectStyle = css`
