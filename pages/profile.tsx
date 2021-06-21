@@ -42,12 +42,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const cookies = nookies.get(context);
     const uid = cookies[uidKeyName];
+    // TODO SSR時のclientとのcacheの共有が分からない
     const { data } = await apolloClient.query<
       GetUserQuery,
       GetUserQueryVariables
     >({
       query: GET_USER,
       variables: { uid: uid },
+      fetchPolicy: "no-cache",
     });
     return { props: { user: data.user } };
   } catch (err) {
