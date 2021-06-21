@@ -13,7 +13,7 @@ const IndexPage = ({ item }): JSX.Element => (
     <Box>
       {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
       <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
-        <Container>
+        <Container className="newProjects">
           <ProjectComp
             id={item.id}
             name={item.name}
@@ -21,8 +21,22 @@ const IndexPage = ({ item }): JSX.Element => (
             status={item.status}
           />
         </Container>
-        <Container>aaa</Container>
-        <Container>bbb</Container>
+        <Container className="Likes">
+          <ProjectComp
+            id={item.id}
+            name={item.name}
+            detail={item.detail}
+            status={item.status}
+          />
+        </Container>
+        <Container className="myProjects">
+          <ProjectComp
+            id={item.id}
+            name={item.name}
+            detail={item.detail}
+            status={item.status}
+          />
+        </Container>
       </MyTabs>
 
       <Link href="/users/testId">
