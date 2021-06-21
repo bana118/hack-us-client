@@ -1,5 +1,4 @@
-import React, { ReducerAction, useState } from "react";
-import Paper from "@material-ui/core/Paper";
+import React, { useState } from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
@@ -44,14 +43,14 @@ const MyTabs = (props): JSX.Element => {
         centered
         css={tabStyle}
       >
-        {props.labels.map((label) => (
-          <Tab label={label}></Tab>
+        {props.labels.map((label, index) => (
+          <Tab label={label} key={index}></Tab>
         ))}
       </Tabs>
 
       <div>
         {props.children.map((child, index) => (
-          <TabPanel value={value} index={index}>
+          <TabPanel value={value} index={index} key={index}>
             {child}
           </TabPanel>
         ))}
