@@ -170,7 +170,7 @@ export type GetUserQuery = (
   { __typename?: 'Query' }
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'uid'>
+    & Pick<User, 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
   ) }
 );
 
@@ -231,9 +231,11 @@ export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQuer
 export const GetUserDocument = gql`
     query GetUser($uid: String!) {
   user(uid: $uid) {
-    id
     name
     uid
+    description
+    githubId
+    githubIconUrl
   }
 }
     `;

@@ -9,7 +9,10 @@ import { uidKeyName } from "../utils/cookie-key-names";
 import { ProfileForm } from "../components/ProfileForm";
 
 type ProfilePageProps = {
-  user?: User;
+  user?: Pick<
+    User,
+    "name" | "uid" | "description" | "githubId" | "githubIconUrl"
+  >;
   errors?: string;
 };
 
@@ -23,16 +26,12 @@ const ProfilePage = ({ user, errors }: ProfilePageProps): JSX.Element => {
       </Layout>
     );
   }
-  const profileValues = {
-    name: user.name,
-    description: "",
-  };
 
   return (
     <Layout>
       <MyHead title="ユーザーページ" />
       <h1>ユーザーページ</h1>
-      <ProfileForm defaultValues={profileValues} />
+      <ProfileForm user={user} />
     </Layout>
   );
 };

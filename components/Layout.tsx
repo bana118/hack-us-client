@@ -22,7 +22,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import { Global } from "@emotion/react";
-import { LoginDialog } from "../components/SimpleDialog";
+import { LoginDialog } from "./LoginDialog";
 import { createUserfromLoginResult } from "../utils/auth-provider";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
