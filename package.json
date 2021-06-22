@@ -1,13 +1,14 @@
 {
   "name": "hack-us-client",
-  "version": "0.0.5",
+  "version": "0.0.11",
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "test": "yarn lint && yarn type-check"
+    "lint": "next lint",
+    "test": "yarn lint && yarn type-check",
+    "generate": "DOTENV_CONFIG_PATH=./.env.development.local graphql-codegen -r dotenv/config"
   },
   "dependencies": {
     "@apollo/client": "^3.3.20",
@@ -15,23 +16,36 @@
     "@emotion/babel-plugin": "^11.3.0",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "@hookform/resolvers": "^2.6.0",
     "@material-ui/core": "^5.0.0-alpha.37",
+    "@material-ui/icons": "^4.11.2",
+    "firebase": "^8.6.7",
     "graphql": "^15.5.0",
     "next": "latest",
+    "nookies": "^2.5.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^7.9.0",
+    "react-social-login-buttons": "^3.4.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@emotion/eslint-plugin": "^11.2.0",
+    "@graphql-codegen/cli": "^1.21.5",
+    "@graphql-codegen/typescript": "^1.22.1",
+    "@graphql-codegen/typescript-operations": "^1.18.0",
+    "@graphql-codegen/typescript-react-apollo": "^2.2.5",
     "@types/node": "^15.12.2",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.7",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.28.0",
+    "eslint-config-next": "^11.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
+    "graphql-tag": "^2.12.4",
     "prettier": "^2.3.1",
     "typescript": "^4.3.2"
   },

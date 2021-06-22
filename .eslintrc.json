@@ -5,7 +5,9 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
     "plugin:react/recommended",
-    "prettier"
+    "prettier",
+    "next",
+    "next/core-web-vitals"
   ],
   "plugins": ["@typescript-eslint", "@emotion"],
   "env": {
@@ -24,5 +26,6 @@
     "react": {
       "version": "detect"
     }
-  }
+  },
+  "ignorePatterns": ["types/graphql/index.ts", "next.config.js"]
 }
