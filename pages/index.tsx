@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ProjectComp } from "../components/Project";
 import { Project } from "../interfaces/Project";
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Container, Box } from "@material-ui/core";
+import { Container, Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
 
 const IndexPage = ({ item }): JSX.Element => (
@@ -13,19 +13,21 @@ const IndexPage = ({ item }): JSX.Element => (
     <Box>
       {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
       <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
-        <Container className="newProjects">
+        <Grid container>
           {item.map((x, idx) => {
             return (
-              <ProjectComp
-                key={idx}
-                id={x.id}
-                name={x.name}
-                detail={x.detail}
-                status={x.status}
-              />
+              <Grid item xs={12} md={6} lg={4}>
+                <ProjectComp
+                  key={idx}
+                  id={x.id}
+                  name={x.name}
+                  detail={x.detail}
+                  status={x.status}
+                />
+              </Grid>
             );
           })}
-        </Container>
+        </Grid>
         <Container className="Likes">
           <ProjectComp
             id={item[0].id}
@@ -65,6 +67,12 @@ export const getStaticProps: GetStaticProps = () => {
   // }
   console.log("log getStaticProps");
   const item: Array<Project> = [
+    {
+      id: "testId",
+      name: "testProject",
+      detail: "testDetail",
+      status: "testNow",
+    },
     {
       id: "testId",
       name: "testProject",
