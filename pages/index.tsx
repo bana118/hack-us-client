@@ -77,7 +77,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // } catch (err) {
   //   return { props: { errors: err.message } };
   // }
-  console.log("log getStaticProps");
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
   console.log(uid);
@@ -103,9 +102,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   ];
 
-  // if (authUser == null) {
-  //   return { props: { newProjectsItem } };
-  // }
+  if (uid.length == 0) {
+    // return { props: { newProjectsItem } };
+    console.log("null");
+  }
 
   // try {
   //   const { myProjectsItem } = await apolloClient.query({
