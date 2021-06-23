@@ -48,7 +48,7 @@ const MyTabs = (props): JSX.Element => {
         ))}
       </Tabs>
 
-      <Box mx={20}>
+      <Box mx={5}>
         {props.children.map((child, index) => (
           <TabPanel value={value} index={index} key={index}>
             <h1>{props.labels[index]}</h1>
