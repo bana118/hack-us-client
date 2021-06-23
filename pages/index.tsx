@@ -11,6 +11,19 @@ import MyTabs from "../components/MyTabs";
 import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
+import {
+  GetUserParticipantsQuery,
+  GetUserParticipantsQueryVariables,
+  Participant,
+} from "../types/graphql";
+
+// type indexPageProp = {
+//   user?: Pick<
+//     Participant,
+//     "name" | "uid" | "description" | "githubId" | "githubIconUrl"
+//   >;
+//   errors?: string;
+// };
 
 const IndexPage = ({ newProjectsItem }): JSX.Element => {
   return (
@@ -103,20 +116,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   ];
 
   if (uid.length == 0) {
-    // return { props: { newProjectsItem } };
-    console.log("null");
+    return { props: { newProjectsItem } };
   }
 
-  // try {
-  //   const { myProjectsItem } = await apolloClient.query({
-  //     query: GET_USER_PARTICIPANTS,
-  //     variables: { uid: authUser.uid },
-  //     fetchPolicy: "no-cache",
-  //   });
-  //   return { props: { newProjectsItem, myProjectsItem } };
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  try {
+    const { data } = await apolloClient.query<
+      GetUserParticipantsQuery,
+      GetUserParticipantsQueryVariables
+    >({
+      query: GET_USER_PARTICIPANTS,
+      variables: { uid: uid },
+      fetchPolicy: "no-cache",
+    });
+    console.log(data);
+    // return { props: { newProjectsItem, myProjectsItem.userParticipants } };
+  } catch (err) {
+    console.log(err);
+  }
 
   return { props: { newProjectsItem } };
 };

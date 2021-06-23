@@ -9,11 +9,13 @@ export type Project = {
 import { gql } from "@apollo/client";
 
 export const GET_USER_PARTICIPANTS = gql`
-  query GetUserParticipants($uid: string!) {
-    id
-    project {
+  query GetUserParticipants($uid: String!) {
+    userParticipants(uid: $uid) {
       id
-      name
+      project {
+        id
+        name
+      }
     }
   }
 `;
