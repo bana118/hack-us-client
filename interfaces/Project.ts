@@ -6,14 +6,14 @@ export type Project = {
   status?: string;
 };
 
-// import { gql } from "@apollo/client";
+import { gql } from "@apollo/client";
 
-// export const GET_PROJECTS = gql`
-//   query getProjects {
-//     projects {
-//       id
-//       project_name
-//       project_id
-//     }
-//   }
-// `;
+export const GET_USER_PARTICIPANTS = gql`
+  query GetUserParticipants($uid: string!) {
+    id
+    project {
+      id
+      name
+    }
+  }
+`;
