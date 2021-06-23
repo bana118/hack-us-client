@@ -16,9 +16,8 @@ const IndexPage = ({ item }): JSX.Element => (
         <Grid container>
           {item.map((x, idx) => {
             return (
-              <Grid item xs={12} md={6} lg={4}>
+              <Grid item xs={12} md={6} lg={4} key={idx}>
                 <ProjectComp
-                  key={idx}
                   id={x.id}
                   name={x.name}
                   detail={x.detail}
