@@ -58,6 +58,7 @@ export const createUserfromLoginResult = async (): Promise<void> => {
     if (error instanceof ApolloError) {
       try {
         // mutationが失敗したらfirebaseのユーザーを削除
+        console.error(error);
         await authUser?.delete();
       } catch (error) {
         console.error(error);
