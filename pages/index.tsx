@@ -14,27 +14,32 @@ const IndexPage = ({ item }): JSX.Element => (
       {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
       <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
         <Container className="newProjects">
-          <ProjectComp
-            id={item.id}
-            name={item.name}
-            detail={item.detail}
-            status={item.status}
-          />
+          {item.map((x, idx) => {
+            return (
+              <ProjectComp
+                key={idx}
+                id={x.id}
+                name={x.name}
+                detail={x.detail}
+                status={x.status}
+              />
+            );
+          })}
         </Container>
         <Container className="Likes">
           <ProjectComp
-            id={item.id}
-            name={item.name}
-            detail={item.detail}
-            status={item.status}
+            id={item[0].id}
+            name={item[0].name}
+            detail={item[0].detail}
+            status={item[0].status}
           />
         </Container>
         <Container className="myProjects">
           <ProjectComp
-            id={item.id}
-            name={item.name}
-            detail={item.detail}
-            status={item.status}
+            id={item[0].id}
+            name={item[0].name}
+            detail={item[0].detail}
+            status={item[0].status}
           />
         </Container>
       </MyTabs>
@@ -59,11 +64,19 @@ export const getStaticProps: GetStaticProps = () => {
   //   return { props: { errors: err.message } };
   // }
   console.log("log getStaticProps");
-  const item: Project = {
-    id: "testId",
-    name: "testProject",
-    detail: "testDetail",
-    status: "testNow",
-  };
+  const item: Array<Project> = [
+    {
+      id: "testId",
+      name: "testProject",
+      detail: "testDetail",
+      status: "testNow",
+    },
+    {
+      id: "testId",
+      name: "testProject",
+      detail: "testDetail",
+      status: "testNow",
+    },
+  ];
   return { props: { item } };
 };
