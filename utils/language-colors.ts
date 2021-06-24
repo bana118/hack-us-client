@@ -1,3 +1,5 @@
+// Pick up from language name and color https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
+
 export const languageColors = [
   { name: "C", color: "#555555" },
   { name: "C#", color: "#178600" },
