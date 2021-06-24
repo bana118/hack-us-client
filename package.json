@@ -1,6 +1,6 @@
 {
   "name": "hack-us-client",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "scripts": {
     "dev": "next",
     "build": "next build",
