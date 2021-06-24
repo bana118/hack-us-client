@@ -1,17 +1,17 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { TextField, Button, Grid, Avatar, Tooltip } from "@material-ui/core";
-import { User, useUpdateUserMutation } from "../types/graphql";
+import { TextField, Button, Grid, Avatar } from "@material-ui/core";
+import MuiTooltip from "@material-ui/core/Tooltip";
+import { GetUserQuery, useUpdateUserMutation } from "../types/graphql";
 import Image from "next/image";
 import { css } from "@emotion/react";
 import { useState } from "react";
+import Link from "next/link";
+import { ContributionPieChart } from "./ContributionPieChart";
 
 type ProfileFormProps = {
-  user?: Pick<
-    User,
-    "name" | "uid" | "description" | "githubId" | "githubIconUrl"
-  >;
+  user?: GetUserQuery["user"];
 };
 
 type InputsType = {
@@ -76,6 +76,18 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
           </Avatar>
         </Grid>
         <Grid item>
+          <p>
+            Githubアカウント:{" "}
+            <Link href={`https://github.com/${user.githubId}`}>
+              <a>{user.githubId}</a>
+            </Link>
+          </p>
+        </Grid>
+        <Grid item>
+          {/* TODO SSR時のChart表示に関するWarningがでる */}
+          <ContributionPieChart contributionInfo={user.contributionInfo} />
+        </Grid>
+        <Grid item>
           <Controller
             name="name"
             control={control}
@@ -108,15 +120,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
           />
         </Grid>
         <Grid item>
-          <TextField
-            label="Github ID"
-            name="githubId"
-            defaultValue={user.githubId}
-            disabled
-          />
-        </Grid>
-        <Grid item>
-          <Tooltip
+          <MuiTooltip
             title="更新しました！"
             open={updatedTooltipOpen}
             onClose={() => {
@@ -126,7 +130,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
             <Button variant="contained" type="submit">
               更新する
             </Button>
-          </Tooltip>
+          </MuiTooltip>
         </Grid>
       </Grid>
     </form>

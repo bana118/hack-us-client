@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { GetUserQuery, GetUserQueryVariables, User } from "../types/graphql";
+import { GetUserQuery, GetUserQueryVariables } from "../types/graphql";
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
 import { apolloClient } from "../utils/apollo-client";
@@ -9,10 +9,7 @@ import { uidKeyName } from "../utils/cookie-key-names";
 import { ProfileForm } from "../components/ProfileForm";
 
 type ProfilePageProps = {
-  user?: Pick<
-    User,
-    "name" | "uid" | "description" | "githubId" | "githubIconUrl"
-  >;
+  user?: GetUserQuery["user"];
   errors?: string;
 };
 
