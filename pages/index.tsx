@@ -18,7 +18,7 @@ import {
 
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
-  item: Project[];
+  newProjectsItem: Project[];
 };
 
 const IndexPage = ({ newProjectsItem }: IndexPageProps): JSX.Element => {
@@ -65,10 +65,6 @@ const IndexPage = ({ newProjectsItem }: IndexPageProps): JSX.Element => {
             })}
           </Grid>
         </MyTabs>
-
-        <Link href="/users/testId">
-          <a>ユーザーページ(仮)</a>
-        </Link>
       </Box>
     </Layout>
   );
