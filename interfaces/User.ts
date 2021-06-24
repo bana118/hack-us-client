@@ -18,6 +18,11 @@ export const GET_USER = gql`
       description
       githubId
       githubIconUrl
+      contributionInfo {
+        language
+        color
+        contributions
+      }
     }
   }
 `;

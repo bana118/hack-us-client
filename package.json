@@ -1,6 +1,6 @@
 {
   "name": "hack-us-client",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -23,10 +23,12 @@
     "graphql": "^15.5.0",
     "next": "latest",
     "nookies": "^2.5.2",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.9.0",
     "react-social-login-buttons": "^3.4.0",
+    "recharts": "^2.0.9",
     "yup": "^0.32.9"
   },
   "devDependencies": {
