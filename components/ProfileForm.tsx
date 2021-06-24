@@ -1,17 +1,17 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { TextField, Button, Grid, Avatar, Tooltip } from "@material-ui/core";
-import { User, useUpdateUserMutation } from "../types/graphql";
+import { TextField, Button, Grid, Avatar } from "@material-ui/core";
+import MuiTooltip from "@material-ui/core/Tooltip";
+import { GetUserQuery, useUpdateUserMutation } from "../types/graphql";
 import Image from "next/image";
 import { css } from "@emotion/react";
 import { useState } from "react";
+import Link from "next/link";
+import { ContributionPieChart } from "./ContributionPieChart";
 
 type ProfileFormProps = {
-  user?: Pick<
-    User,
-    "name" | "uid" | "description" | "githubId" | "githubIconUrl"
-  >;
+  user: GetUserQuery["user"];
 };
 
 type InputsType = {
@@ -68,12 +68,25 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
   // TODO プロジェクト表示機能
   return (
     <form onSubmit={handleSubmit(updateProfile)}>
-      <Grid container direction="column" alignItems="center" spacing={3}>
+      <Grid container direction="column" alignItems="center" spacing={2}>
         <Grid item>
           {/* TODO アイコンを常に右上に表示 */}
           <Avatar css={avatarStyle}>
             <Image src={user.githubIconUrl} alt="Github Icon" layout="fill" />
           </Avatar>
+        </Grid>
+        <Grid item>
+          <p>
+            Githubアカウント:{" "}
+            <Link href={`https://github.com/${user.githubId}`}>
+              <a>{user.githubId}</a>
+            </Link>
+          </p>
+        </Grid>
+        <Grid item textAlign="center">
+          <p>言語別コントリビューション</p>
+          {/* TODO SSR時のChart表示に関するWarningがでる */}
+          <ContributionPieChart contributionInfo={user.contributionInfo} />
         </Grid>
         <Grid item>
           <Controller
@@ -108,15 +121,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
           />
         </Grid>
         <Grid item>
-          <TextField
-            label="Github ID"
-            name="githubId"
-            defaultValue={user.githubId}
-            disabled
-          />
-        </Grid>
-        <Grid item>
-          <Tooltip
+          <MuiTooltip
             title="更新しました！"
             open={updatedTooltipOpen}
             onClose={() => {
@@ -126,7 +131,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
             <Button variant="contained" type="submit">
               更新する
             </Button>
-          </Tooltip>
+          </MuiTooltip>
         </Grid>
       </Grid>
     </form>

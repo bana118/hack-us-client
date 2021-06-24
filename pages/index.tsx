@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
-import Link from "next/link";
 import { ProjectComp } from "../components/Project";
 import { Project, GET_USER_PARTICIPANTS } from "../interfaces/Project";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
@@ -17,15 +16,12 @@ import {
   Participant,
 } from "../types/graphql";
 
-// type indexPageProp = {
-//   user?: Pick<
-//     Participant,
-//     "name" | "uid" | "description" | "githubId" | "githubIconUrl"
-//   >;
-//   errors?: string;
-// };
+// TODO サーバーからプロジェクトを取得できたらそこから型を指定する
+type IndexPageProps = {
+  item: Project[];
+};
 
-const IndexPage = ({ newProjectsItem }): JSX.Element => {
+const IndexPage = ({ newProjectsItem }: IndexPageProps): JSX.Element => {
   return (
     <Layout>
       <MyHead title="Hack Us"></MyHead>
