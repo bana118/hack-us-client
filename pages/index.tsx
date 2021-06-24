@@ -16,7 +16,6 @@ const IndexPage = ({ item }: IndexPageProps): JSX.Element => {
     <Layout>
       <MyHead title="Hack Us"></MyHead>
       <Box>
-        {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
         <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
           <Grid container>
             {item.map((x, idx) => {

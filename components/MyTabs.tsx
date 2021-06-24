@@ -64,10 +64,12 @@ const MyTabs = ({ labels, children }: MyTabsProps): JSX.Element => {
 
       <Box mx={5}>
         {Children.map(children, (child, index) => {
-          <TabPanel value={value} index={index} key={index}>
-            <h1>{labels[index]}</h1>
-            {child}
-          </TabPanel>;
+          return (
+            <TabPanel value={value} index={index} key={index}>
+              <h1>{labels[index]}</h1>
+              {child}
+            </TabPanel>
+          );
         })}
       </Box>
     </React.Fragment>
