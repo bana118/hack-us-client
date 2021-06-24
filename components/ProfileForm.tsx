@@ -68,7 +68,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
   // TODO プロジェクト表示機能
   return (
     <form onSubmit={handleSubmit(updateProfile)}>
-      <Grid container direction="column" alignItems="center" spacing={3}>
+      <Grid container direction="column" alignItems="center" spacing={2}>
         <Grid item>
           {/* TODO アイコンを常に右上に表示 */}
           <Avatar css={avatarStyle}>
@@ -83,7 +83,8 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
             </Link>
           </p>
         </Grid>
-        <Grid item>
+        <Grid item textAlign="center">
+          <p>言語別コントリビューション</p>
           {/* TODO SSR時のChart表示に関するWarningがでる */}
           <ContributionPieChart contributionInfo={user.contributionInfo} />
         </Grid>

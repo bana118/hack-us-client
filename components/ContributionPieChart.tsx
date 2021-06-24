@@ -1,4 +1,4 @@
-import { PieChart, Pie, Tooltip, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
 import { ContributionInfo } from "../types/graphql";
 
 export type ContributionPieChartProps = {
@@ -32,11 +32,14 @@ export const ContributionPieChart = ({
         dataKey="contributions"
         nameKey="language"
         fill="#8884d8"
+        startAngle={450}
+        endAngle={90}
       >
         {mainContributionInfo.map((v, i) => (
           <Cell key={i} fill={v.color} />
         ))}
       </Pie>
+      <Legend verticalAlign="top" />
       <Tooltip />
     </PieChart>
   );
