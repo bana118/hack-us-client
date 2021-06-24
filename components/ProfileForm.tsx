@@ -11,7 +11,7 @@ import Link from "next/link";
 import { ContributionPieChart } from "./ContributionPieChart";
 
 type ProfileFormProps = {
-  user?: GetUserQuery["user"];
+  user: GetUserQuery["user"];
 };
 
 type InputsType = {

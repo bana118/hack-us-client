@@ -14,7 +14,7 @@ type ProfilePageProps = {
 };
 
 const ProfilePage = ({ user, errors }: ProfilePageProps): JSX.Element => {
-  if (errors) {
+  if (user == null || errors) {
     return (
       <Layout>
         <p>

@@ -39,7 +39,7 @@ export const linkWithGoogle = async (
 };
 
 export const createUserfromLoginResult = async (): Promise<void> => {
-  let authUser: firebase.User = null;
+  let authUser: firebase.User | null = null;
   try {
     const result = await auth.getRedirectResult();
     if (
@@ -51,7 +51,7 @@ export const createUserfromLoginResult = async (): Promise<void> => {
       const githubId = result.additionalUserInfo.username;
       await apolloClient.mutate<User, CreateUserMutationVariables>({
         mutation: CREATE_USER,
-        variables: { uid: authUser?.uid, githubId: githubId },
+        variables: { uid: authUser?.uid, githubId: githubId || "" },
       });
     }
   } catch (error) {

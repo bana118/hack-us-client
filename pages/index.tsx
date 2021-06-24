@@ -3,11 +3,16 @@ import { MyHead } from "../components/MyHead";
 import Link from "next/link";
 import { ProjectComp } from "../components/Project";
 import { Project } from "../interfaces/Project";
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticProps } from "next";
 import { Container, Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
 
-const IndexPage = ({ item }): JSX.Element => (
+// TODO サーバーからプロジェクトを取得できたらそこから型を指定する
+type IndexPageProps = {
+  item: Project[];
+};
+
+const IndexPage = ({ item }: IndexPageProps): JSX.Element => (
   <Layout>
     <MyHead title="Hack Us"></MyHead>
     <Box>
@@ -55,15 +60,6 @@ const IndexPage = ({ item }): JSX.Element => (
 export default IndexPage;
 
 export const getStaticProps: GetStaticProps = () => {
-  // try {
-  //   const id = params?.id;
-  //   const { data } = await apolloClient.query({ query: GET_USERS });
-  //   console.log(data);
-  //   const item = data.users.find((user) => user.id === id);
-  //   return { props: { item } };
-  // } catch (err) {
-  //   return { props: { errors: err.message } };
-  // }
   console.log("log getStaticProps");
   const item: Array<Project> = [
     {

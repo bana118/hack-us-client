@@ -36,7 +36,6 @@ const projectStatusStyle = css`
 `;
 
 export const ProjectComp = ({
-  id = "default",
   name = "default",
   detail = "default",
   language = "asembly",
