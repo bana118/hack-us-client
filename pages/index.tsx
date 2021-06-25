@@ -109,7 +109,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   ];
 
-  if (uid.length == 0) {
+  if (uid == null || uid.length == 0) {
     const noObject: Array<Project> = [];
     return {
       props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
