@@ -90,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
 
-  const newProjectsItem: Object = [
+  const newProjectsItem: Array<Project> = [
     {
       id: "testId",
       name: "testProject",
@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   ];
 
   if (uid.length == 0) {
-    const noObject: Object = [];
+    const noObject: Array<Project> = [];
     return {
       props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
     };
