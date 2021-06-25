@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactNode, useContext, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -24,29 +18,19 @@ import {
 } from "@material-ui/core";
 import { Global } from "@emotion/react";
 import { LoginDialog } from "./LoginDialog";
-import { createUserfromLoginResult } from "../utils/auth-provider";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
+import Image from "next/image";
 
 type LayoutProps = {
   children?: ReactNode;
 };
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
-  const { authUser } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const userButtonRef = useRef(null);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
-
-  useEffect(() => {
-    const getLoginResult = async () => {
-      await createUserfromLoginResult();
-    };
-
-    if (authUser != null) {
-      getLoginResult();
-    }
-  }, [authUser]);
 
   return (
     <div>
@@ -63,21 +47,36 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       />
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-            Hack Us
-          </Typography>
-          {authUser === null && (
+          <div css={{ flexGrow: 1 }}>
+            <Link href="/" passHref>
+              <Typography
+                variant="h5"
+                component="a"
+                css={{ textDecoration: "none", color: "inherit" }}
+              >
+                Hack Us
+              </Typography>
+            </Link>
+          </div>
+
+          {user === null && (
             <Button color="inherit" onClick={() => setLoginDialogOpen(true)}>
               Login
             </Button>
           )}
-          {authUser != null && (
+          {user != null && (
             <React.Fragment>
               <IconButton
                 ref={userButtonRef}
                 onClick={() => setUserPopoverOpen(true)}
               >
-                <Avatar />
+                <Avatar>
+                  <Image
+                    src={user.githubIconUrl}
+                    alt="Github Icon"
+                    layout="fill"
+                  />
+                </Avatar>
               </IconButton>
               <Popover
                 open={userPopoverOpen}

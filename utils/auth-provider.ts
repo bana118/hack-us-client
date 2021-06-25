@@ -3,7 +3,10 @@ import firebase from "firebase/app";
 import { auth } from "./firebase";
 import { apolloClient } from "./apollo-client";
 import { CREATE_USER } from "../interfaces/User";
-import { CreateUserMutationVariables, User } from "../types/graphql";
+import {
+  CreateUserMutation,
+  CreateUserMutationVariables,
+} from "../types/graphql";
 import { ApolloError } from "@apollo/client";
 
 export const getProviderUserData = (
@@ -49,7 +52,10 @@ export const createUserfromLoginResult = async (): Promise<void> => {
     ) {
       authUser = result.user;
       const githubId = result.additionalUserInfo.username;
-      await apolloClient.mutate<User, CreateUserMutationVariables>({
+      await apolloClient.mutate<
+        CreateUserMutation,
+        CreateUserMutationVariables
+      >({
         mutation: CREATE_USER,
         variables: { uid: authUser?.uid, githubId: githubId || "" },
       });

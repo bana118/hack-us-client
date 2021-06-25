@@ -1,10 +1,8 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
 import { ProjectComp } from "../components/Project";
 import { Project, GET_USER_PARTICIPANTS } from "../interfaces/Project";
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import { GetServerSideProps } from "next";
 import { Container, Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
 import { apolloClient } from "../utils/apollo-client";
@@ -111,7 +109,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   ];
 
-  if (uid.length == 0) {
+  if (uid == null || uid.length == 0) {
     const noObject: Array<Project> = [];
     return {
       props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
