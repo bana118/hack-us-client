@@ -19,7 +19,7 @@ NEXT_PUBLIC_BACKEND_URL="http://host.docker.internal:3001"
 
 # Graphql の型生成
 
-1. interfaces/\*.ts に Apollo の gql を用いて query や mutation を記述
+1. interfaces/\*.ts に Apollo の gql を用いて query や mutation を記述 (gql 以外を記述するとエラーが発生します)
 
 2. `yarn generate`を実行
 
