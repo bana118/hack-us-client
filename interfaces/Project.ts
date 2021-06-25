@@ -19,3 +19,15 @@ export const GET_USER_PARTICIPANTS = gql`
     }
   }
 `;
+
+// export const GET_PROJECT = gql`
+//   query GetProject($id: String!) {
+//       project(id: $id) {
+//           id
+//           name
+//           detail
+//           language
+//           status
+//       }
+//   }
+// `;

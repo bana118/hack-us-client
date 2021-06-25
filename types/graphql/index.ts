@@ -458,8 +458,7 @@ export const GetUserDocument = gql`
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetUserQuery__

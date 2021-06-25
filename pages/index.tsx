@@ -19,9 +19,13 @@ import {
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
   newProjectsItem: Project[];
+  myProjectsItem: Participant[];
 };
 
-const IndexPage = ({ newProjectsItem }: IndexPageProps): JSX.Element => {
+const IndexPage = ({
+  newProjectsItem,
+  myProjectsItem,
+}: IndexPageProps): JSX.Element => {
   return (
     <Layout>
       <MyHead title="Hack Us"></MyHead>
@@ -51,14 +55,14 @@ const IndexPage = ({ newProjectsItem }: IndexPageProps): JSX.Element => {
             />
           </Container>
           <Grid container className="myProjects">
-            {newProjectsItem.map((x, idx) => {
+            {myProjectsItem.map((x, idx) => {
               return (
                 <Grid item xs={12} md={6} lg={4} key={idx}>
                   <ProjectComp
-                    id={x.id}
-                    name={x.name}
-                    detail={x.detail}
-                    status={x.status}
+                    id={x.project.id}
+                    name={x.project.name}
+                    // detail={x.project.detail}
+                    // status={x.project.status}
                   />
                 </Grid>
               );
@@ -82,11 +86,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // } catch (err) {
   //   return { props: { errors: err.message } };
   // }
+
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
   console.log(uid);
 
-  const newProjectsItem: Array<Project> = [
+  const newProjectsItem: object = [
     {
       id: "testId",
       name: "testProject",
@@ -108,7 +113,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   ];
 
   if (uid.length == 0) {
-    return { props: { newProjectsItem } };
+    const noObject: object = [];
+    return {
+      props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
+    };
   }
 
   try {
@@ -120,11 +128,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: { uid: uid },
       fetchPolicy: "no-cache",
     });
-    console.log(data);
-    // return { props: { newProjectsItem, myProjectsItem.userParticipants } };
+    console.log(typeof data);
+    console.log(typeof data.userParticipants);
+    return {
+      props: {
+        newProjectsItem: newProjectsItem,
+        myProjectsItem: data.userParticipants,
+      },
+    };
   } catch (err) {
     console.log(err);
   }
 
-  return { props: { newProjectsItem } };
+  // return { props: { newProjectsItem } };
 };
