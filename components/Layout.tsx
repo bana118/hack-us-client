@@ -47,9 +47,18 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       />
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-            Hack Us
-          </Typography>
+          <div css={{ flexGrow: 1 }}>
+            <Link href="/" passHref>
+              <Typography
+                variant="h5"
+                component="a"
+                css={{ textDecoration: "none", color: "inherit" }}
+              >
+                Hack Us
+              </Typography>
+            </Link>
+          </div>
+
           {user === null && (
             <Button color="inherit" onClick={() => setLoginDialogOpen(true)}>
               Login
