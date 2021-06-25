@@ -5,7 +5,6 @@ import { TextField, Button, Grid, Avatar } from "@material-ui/core";
 import MuiTooltip from "@material-ui/core/Tooltip";
 import { GetUserQuery, useUpdateUserMutation } from "../types/graphql";
 import Image from "next/image";
-import { css } from "@emotion/react";
 import { useState } from "react";
 import Link from "next/link";
 import { ContributionPieChart } from "./ContributionPieChart";
@@ -58,11 +57,6 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
     }
   };
 
-  const avatarStyle = css({
-    width: 120,
-    height: 120,
-  });
-
   // TODO 連携Githubアカウント変更
   // TODO アカウント削除処理
   // TODO プロジェクト表示機能
@@ -70,8 +64,12 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
     <form onSubmit={handleSubmit(updateProfile)}>
       <Grid container direction="column" alignItems="center" spacing={2}>
         <Grid item>
-          {/* TODO アイコンを常に右上に表示 */}
-          <Avatar css={avatarStyle}>
+          <Avatar
+            css={{
+              width: 120,
+              height: 120,
+            }}
+          >
             <Image src={user.githubIconUrl} alt="Github Icon" layout="fill" />
           </Avatar>
         </Grid>

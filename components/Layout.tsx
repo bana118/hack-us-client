@@ -20,6 +20,7 @@ import { Global } from "@emotion/react";
 import { LoginDialog } from "./LoginDialog";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
+import Image from "next/image";
 
 type LayoutProps = {
   children?: ReactNode;
@@ -60,7 +61,13 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                 ref={userButtonRef}
                 onClick={() => setUserPopoverOpen(true)}
               >
-                <Avatar />
+                <Avatar>
+                  <Image
+                    src={user.githubIconUrl}
+                    alt="Github Icon"
+                    layout="fill"
+                  />
+                </Avatar>
               </IconButton>
               <Popover
                 open={userPopoverOpen}
