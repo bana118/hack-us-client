@@ -89,9 +89,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
-  console.log(uid);
 
-  const newProjectsItem: object = [
+  const newProjectsItem: Object = [
     {
       id: "testId",
       name: "testProject",
@@ -113,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   ];
 
   if (uid.length == 0) {
-    const noObject: object = [];
+    const noObject: Object = [];
     return {
       props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
     };
@@ -128,8 +127,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: { uid: uid },
       fetchPolicy: "no-cache",
     });
-    console.log(typeof data);
-    console.log(typeof data.userParticipants);
     return {
       props: {
         newProjectsItem: newProjectsItem,
@@ -140,5 +137,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log(err);
   }
 
-  // return { props: { newProjectsItem } };
+  return { props: { newProjectsItem } };
 };
