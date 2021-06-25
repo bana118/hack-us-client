@@ -1,5 +1,36 @@
 import { gql } from "@apollo/client";
 
+// export type Project = {
+//   id?: string;
+//   name?: string;
+//   detail?: string;
+//   language?: string;
+//   status?: string;
+// };
+export const GET_PROJECTS = gql`
+  query GetProjects {
+    projects {
+      id
+      name
+      description
+      startsAt
+      endsAt
+      technology1
+      technology2
+      technology3
+      technology4
+      technology5
+      recruitmentNumbers
+      toolLink
+      contribution
+      owner {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export const CREATE_PROJECT = gql`
   mutation CreateProject(
     $name: String!

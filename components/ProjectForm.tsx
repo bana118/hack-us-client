@@ -3,13 +3,7 @@ import Link from "next/link";
 import { Box, Button, Container, TextField, Tooltip } from "@material-ui/core";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
-import {
-  useCreateProjectMutation,
-  CreateProjectMutation,
-} from "../types/graphql";
-import { CREATE_PROJECT } from "../interfaces/Project";
-import { useMutation } from "@apollo/client";
-
+import { useCreateProjectMutation } from "../types/graphql";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -26,7 +20,7 @@ type InputsType = {
   technology3: string;
   technology4: string;
   technology5: string;
-  recruitmentNumbers: number;
+  recruitmentNumbers: string;
   toolLink: string;
   contribution: string;
 };
@@ -42,7 +36,7 @@ const defaultValues: InputsType = {
   technology3: "",
   technology4: "",
   technology5: "",
-  recruitmentNumbers: 1,
+  recruitmentNumbers: "1",
   toolLink: "",
   contribution: "",
 };
@@ -52,70 +46,6 @@ const schema = yup.object().shape({
 });
 
 export const ProjectForm = (): JSX.Element => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm<InputsType>({ defaultValues, resolver: yupResolver(schema) });
-
-  const setUnexpectedError = () => {
-    setError("name", {
-      type: "manual",
-      message: "予期せぬエラーが発生しました！ もう一度お試しください",
-    });
-  };
-
-  const cookies = nookies.get();
-  const uid = cookies[uidKeyName];
-
-  const [createProject] = useMutation<CreateProjectMutation>(CREATE_PROJECT, {
-    update(cache, { data: { createProject } }) {
-      const cacheId = cache.identify(createProject.project);
-
-      cache.modify({
-        fields: {
-          projects(existingProjects, { toReference }) {
-            return [toReference(cacheId), ...existingProjects];
-          },
-        },
-      });
-    },
-  });
-
-  const [updatedTooltipOpen, setUpdatedTooltipOpen] = useState(false);
-
-  // const [createProjectMutation] = useCreateProjectMutation();
-
-  const create = async (data: InputsType) => {
-    try {
-      await createProject({
-        variables: {
-          name: data["name"],
-          description: data["description"],
-          githubUrl: data["githubUrl"],
-          startsAt: data["startsAt"],
-          endsAt: data["endsAt"],
-          technology1: data["technology1"],
-          technology2: data["technology2"],
-          technology3: data["technology3"],
-          technology4: data["technology4"],
-          technology5: data["technology5"],
-          recruitmentNumbers: data["recruitmentNumbers"],
-          toolLink: data["toolLink"],
-          contribution: data["contribution"],
-          ownerUid: uid,
-        },
-      });
-      console.log("成功");
-
-      setUpdatedTooltipOpen(true);
-    } catch {
-      console.log("エラー");
-      setUnexpectedError();
-    }
-  };
-
   const container = css({
     backgroundColor: "#ffffff",
     padding: "40px 30px",
@@ -142,9 +72,61 @@ export const ProjectForm = (): JSX.Element => {
     cursor: "pointer",
   });
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<InputsType>({ defaultValues, resolver: yupResolver(schema) });
+
+  const setUnexpectedError = () => {
+    setError("name", {
+      type: "manual",
+      message: "予期せぬエラーが発生しました！ もう一度お試しください",
+    });
+  };
+
+  const cookies = nookies.get();
+  const uid = cookies[uidKeyName];
+
+  const [updatedTooltipOpen, setUpdatedTooltipOpen] = useState(false);
+
+  const [createProjectMutation] = useCreateProjectMutation();
+
+  const createProject = async (data: InputsType) => {
+    try {
+      await createProjectMutation({
+        variables: {
+          name: data["name"],
+          description: data["description"],
+          githubUrl: data["githubUrl"],
+          startsAt: data["startsAt"],
+          endsAt: data["endsAt"],
+          technology1: data["technology1"],
+          technology2: data["technology2"],
+          technology3: data["technology3"],
+          technology4: data["technology4"],
+          technology5: data["technology5"],
+          recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
+          toolLink: data["toolLink"],
+          contribution: data["contribution"],
+          ownerUid: uid,
+        },
+      });
+      console.log("成功");
+
+      setUpdatedTooltipOpen(true);
+    } catch (err) {
+      console.log("エラー");
+      console.log(err);
+      console.log(typeof data["recruitmentNumbers"]);
+      setUnexpectedError();
+    }
+  };
+
   return (
     <Container css={container}>
-      <form onSubmit={handleSubmit(create)}>
+      <form onSubmit={handleSubmit(createProject)}>
         <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
           <h2 css={subTitle}>プロジェクト名</h2>
           <Controller
@@ -188,7 +170,7 @@ export const ProjectForm = (): JSX.Element => {
             )}
           />
         </Box>
-        <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
+        {/* <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
           <h2 css={subTitle}>開発期間</h2>
           <Box display="flex">
             <Controller
@@ -221,7 +203,7 @@ export const ProjectForm = (): JSX.Element => {
               )}
             />
           </Box>
-        </Box>
+        </Box> */}
         <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
           <h2 css={subTitle}>使用技術</h2>
           <Box display="flex" flexWrap="wrap" justifyContent="space-between">
