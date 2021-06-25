@@ -65,6 +65,30 @@ export type CreateParticipantPayload = {
 export type CreateProjectInput = {
   ownerUid: Scalars["String"];
   name: Scalars["String"];
+  /** プロジェクト概要 */
+  description?: Maybe<Scalars["String"]>;
+  /** GitHubリポジトリURL */
+  githubUrl?: Maybe<Scalars["String"]>;
+  /** 開発期間：開始 */
+  startsAt?: Maybe<Scalars["ISO8601DateTime"]>;
+  /** 開発期間：終了 */
+  endsAt?: Maybe<Scalars["ISO8601DateTime"]>;
+  /** 使用技術1 */
+  technology1?: Maybe<Scalars["String"]>;
+  /** 使用技術2 */
+  technology2?: Maybe<Scalars["String"]>;
+  /** 使用技術3 */
+  technology3?: Maybe<Scalars["String"]>;
+  /** 使用技術4 */
+  technology4?: Maybe<Scalars["String"]>;
+  /** 使用技術5 */
+  technology5?: Maybe<Scalars["String"]>;
+  /** 募集人数 */
+  recruitmentNumbers?: Maybe<Scalars["Int"]>;
+  /** コミュニケーションツールのリンク */
+  toolLink?: Maybe<Scalars["String"]>;
+  /** コントリビュート方法 */
+  contribution?: Maybe<Scalars["String"]>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars["String"]>;
 };
@@ -144,10 +168,22 @@ export type Participant = {
 
 export type Project = {
   __typename?: "Project";
+  contribution?: Maybe<Scalars["String"]>;
   createdAt: Scalars["ISO8601DateTime"];
+  description?: Maybe<Scalars["String"]>;
+  endsAt?: Maybe<Scalars["ISO8601DateTime"]>;
+  githubUrl?: Maybe<Scalars["String"]>;
   id: Scalars["ID"];
   name: Scalars["String"];
   owner: User;
+  recruitmentNumbers?: Maybe<Scalars["Int"]>;
+  startsAt?: Maybe<Scalars["ISO8601DateTime"]>;
+  technology1?: Maybe<Scalars["String"]>;
+  technology2?: Maybe<Scalars["String"]>;
+  technology3?: Maybe<Scalars["String"]>;
+  technology4?: Maybe<Scalars["String"]>;
+  technology5?: Maybe<Scalars["String"]>;
+  toolLink?: Maybe<Scalars["String"]>;
   updatedAt: Scalars["ISO8601DateTime"];
 };
 
@@ -228,6 +264,18 @@ export type User = {
   updatedAt: Scalars["ISO8601DateTime"];
 };
 
+export type GetUserParticipantsQueryVariables = Exact<{
+  uid: Scalars["String"];
+}>;
+
+export type GetUserParticipantsQuery = { __typename?: "Query" } & {
+  userParticipants: Array<
+    { __typename?: "Participant" } & Pick<Participant, "id"> & {
+        project: { __typename?: "Project" } & Pick<Project, "id" | "name">;
+      }
+  >;
+};
+
 export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetUsersQuery = { __typename?: "Query" } & {
@@ -279,6 +327,68 @@ export type UpdateUserMutation = { __typename?: "Mutation" } & {
   >;
 };
 
+export const GetUserParticipantsDocument = gql`
+  query GetUserParticipants($uid: String!) {
+    userParticipants(uid: $uid) {
+      id
+      project {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetUserParticipantsQuery__
+ *
+ * To run a query within a React component, call `useGetUserParticipantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserParticipantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserParticipantsQuery({
+ *   variables: {
+ *      uid: // value for 'uid'
+ *   },
+ * });
+ */
+export function useGetUserParticipantsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetUserParticipantsQuery,
+    GetUserParticipantsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetUserParticipantsQuery,
+    GetUserParticipantsQueryVariables
+  >(GetUserParticipantsDocument, options);
+}
+export function useGetUserParticipantsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUserParticipantsQuery,
+    GetUserParticipantsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetUserParticipantsQuery,
+    GetUserParticipantsQueryVariables
+  >(GetUserParticipantsDocument, options);
+}
+export type GetUserParticipantsQueryHookResult = ReturnType<
+  typeof useGetUserParticipantsQuery
+>;
+export type GetUserParticipantsLazyQueryHookResult = ReturnType<
+  typeof useGetUserParticipantsLazyQuery
+>;
+export type GetUserParticipantsQueryResult = Apollo.QueryResult<
+  GetUserParticipantsQuery,
+  GetUserParticipantsQueryVariables
+>;
 export const GetUsersDocument = gql`
   query GetUsers {
     users {

@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
     return { props: { user: data.user } };
   } catch (err) {
+    console.log(err);
     return { props: { errors: err.message } };
   }
 };
