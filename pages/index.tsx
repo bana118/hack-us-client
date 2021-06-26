@@ -1,7 +1,8 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
 import { ProjectComp } from "../components/Project";
-import { Project, GET_USER_PARTICIPANTS } from "../interfaces/Project";
+import { GET_USER_PARTICIPANTS } from "../interfaces/Project";
+import { GET_USER } from "../interfaces/User";
 import { GetServerSideProps } from "next";
 import { Container, Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
@@ -12,7 +13,12 @@ import {
   GetUserParticipantsQuery,
   GetUserParticipantsQueryVariables,
   Participant,
+  Project,
+  User,
 } from "../types/graphql";
+import React, { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
+import Router from "next/router";
 
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
@@ -20,10 +26,32 @@ type IndexPageProps = {
   myProjectsItem: Participant[];
 };
 
+const getUser = async (uid: string) => {
+  try {
+    const { data } = await apolloClient.query({
+      query: GET_USER,
+      variables: { uid: uid },
+      fetchPolicy: "no-cache",
+    });
+    console.log(data);
+    return data.user;
+  } catch (err) {
+    return;
+  }
+};
+
 const IndexPage = ({
   newProjectsItem,
   myProjectsItem,
 }: IndexPageProps): JSX.Element => {
+  // const { user } = useContext(AuthContext);
+
+  // useEffect(() => {
+  //   if (user === null) {
+  //     Router.push("/");
+  //   }
+  // }, [user]);
+
   return (
     <Layout>
       <MyHead title="Hack Us"></MyHead>
@@ -37,20 +65,24 @@ const IndexPage = ({
                   <ProjectComp
                     id={x.id}
                     name={x.name}
-                    detail={x.detail}
-                    status={x.status}
+                    description={x.description}
+                    createdAt={x.createdAt}
+                    owner={x.owner}
+                    updatedAt={x.updatedAt}
                   />
                 </Grid>
               );
             })}
           </Grid>
           <Container className="likes">
-            <ProjectComp
+            {/* <ProjectComp
               id={newProjectsItem[0].id}
               name={newProjectsItem[0].name}
-              detail={newProjectsItem[0].detail}
-              status={newProjectsItem[0].status}
-            />
+              description={newProjectsItem[0].description}
+              createdAt={newProjectsItem[0].createdAt}
+              owner={newProjectsItem[0].owner}
+              updatedAt={newProjectsItem[0].updatedAt}
+            /> */}
           </Container>
           <Grid container className="myProjects">
             {myProjectsItem.map((x, idx) => {
@@ -59,8 +91,10 @@ const IndexPage = ({
                   <ProjectComp
                     id={x.project.id}
                     name={x.project.name}
-                    // detail={x.project.detail}
-                    // status={x.project.status}
+                    description={x.project.description}
+                    createdAt={x.project.createdAt}
+                    owner={x.project.owner}
+                    updatedAt={x.project.updatedAt}
                   />
                 </Grid>
               );
@@ -88,33 +122,46 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
 
-  const newProjectsItem: Array<Project> = [
-    {
-      id: "testId",
-      name: "testProject",
-      detail: "testDetail",
-      status: "testNow",
-    },
-    {
-      id: "testId",
-      name: "testProject",
-      detail: "testDetail",
-      status: "testNow",
-    },
-    {
-      id: "testId",
-      name: "testProject",
-      detail: "testDetail",
-      status: "testNow",
-    },
-  ];
-
   if (uid == null || uid.length == 0) {
     const noObject: Array<Project> = [];
     return {
-      props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
+      props: { newProjectsItem: noObject, myProjectsItem: noObject },
     };
   }
+
+  // const testUser: User = {
+  //   contributionInfo: "test",
+  //   createdAt: "test",
+  //   description: "test",
+  //   githubIconUrl: "test",
+  //   githubId: "test",
+  //   id: "test",
+  //   name: "test",
+  //   uid: "test",
+  //   updatedAt: "test",
+  // };
+
+  const newProjectsItem: Array<Project> = [
+    // {
+    //   contribution: "test",
+    //   createdAt: "test",
+    //   description: "test",
+    //   endsAt: "test",
+    //   githubUrl: "test",
+    //   id: "test",
+    //   name: "test",
+    //   owner: user,
+    //   // recruitmentNumbers: 2,
+    //   startsAt: "test",
+    //   technology1: "test",
+    //   technology2: "test",
+    //   technology3: "test",
+    //   technology4: "test",
+    //   technology5: "test",
+    //   toolLink: "test",
+    //   updatedAt: "test",
+    // },
+  ];
 
   try {
     const { data } = await apolloClient.query<

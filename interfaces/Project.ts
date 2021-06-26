@@ -1,11 +1,3 @@
-export type Project = {
-  id?: string;
-  name?: string;
-  detail?: string;
-  language?: string;
-  status?: string;
-};
-
 import { gql } from "@apollo/client";
 
 export const GET_USER_PARTICIPANTS = gql`
@@ -15,19 +7,40 @@ export const GET_USER_PARTICIPANTS = gql`
       project {
         id
         name
+        description
+        githubUrl
+        startsAt
+        endsAt
+        technology1
+        technology2
+        technology3
+        technology4
+        technology5
+        recruitmentNumbers
+        toolLink
+        contribution
       }
     }
   }
 `;
 
-// export const GET_PROJECT = gql`
-//   query GetProject($id: String!) {
-//       project(id: $id) {
-//           id
-//           name
-//           detail
-//           language
-//           status
-//       }
-//   }
-// `;
+export const GET_PROJECT = gql`
+  query GetProject($id: String!) {
+    project(id: $id) {
+      id
+      name
+      description
+      githubUrl
+      startsAt
+      endsAt
+      technology1
+      technology2
+      technology3
+      technology4
+      technology5
+      recruitmentNumbers
+      toolLink
+      contribution
+    }
+  }
+`;

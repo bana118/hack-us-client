@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Container } from "@material-ui/core";
-import { Project } from "../interfaces/Project";
+import { Project } from "../types/graphql";
 
 const projectStyle = css`
   background-color: #ffffff;
@@ -37,16 +37,14 @@ const projectStatusStyle = css`
 
 export const ProjectComp = ({
   name = "default",
-  detail = "default",
-  language = "asembly",
-  status = "default",
+  description = "default",
 }: Project): JSX.Element => {
   return (
     <Container css={projectStyle}>
       <p css={projectNameStyle}>{name}</p>
-      <p css={projectDetailStyle}>{detail}</p>
-      <p css={projectLanguageStyle}>{language}</p>
-      <p css={projectStatusStyle}>{status}</p>
+      <p css={projectDetailStyle}>{description}</p>
+      {/* <p css={projectLanguageStyle}>{language}</p> */}
+      {/* <p css={projectStatusStyle}>{status}</p> */}
     </Container>
   );
 };
