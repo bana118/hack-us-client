@@ -97,8 +97,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                     <ListItemText primary="プロフィールの編集" />
                   </ListItem>
                   <Divider />
-                  <ListItem button>
-                    {/* TODO プロジェクト作成ページ */}
+                  <ListItem button component="a" href={"/create-project"}>
                     <ListItemText primary="プロジェクトの作成" />
                   </ListItem>
                   <Divider />

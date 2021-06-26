@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import { Box, Button, Container, TextField, Tooltip } from "@material-ui/core";
 import nookies from "nookies";
@@ -13,8 +14,8 @@ type InputsType = {
   name: string;
   description: string;
   githubUrl: string;
-  startsAt: Date;
-  endsAt: Date;
+  startsAt: string;
+  endsAt: string;
   technology1: string;
   technology2: string;
   technology3: string;
@@ -25,12 +26,22 @@ type InputsType = {
   contribution: string;
 };
 
+const defaultDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month =
+    today.getMonth() < 9 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
+  const date = today.getDate();
+
+  return `${year}-${month}-${date}`;
+};
+
 const defaultValues: InputsType = {
   name: "",
   description: "",
   githubUrl: "",
-  startsAt: new Date(),
-  endsAt: new Date(),
+  startsAt: defaultDate(),
+  endsAt: defaultDate(),
   technology1: "",
   technology2: "",
   technology3: "",
@@ -43,9 +54,12 @@ const defaultValues: InputsType = {
 
 const schema = yup.object().shape({
   name: yup.string().required("名前は必須です"),
+  recruitmentNumbers: yup.number().min(1, "最低でも1人は募集してください"),
 });
 
 export const ProjectForm = (): JSX.Element => {
+  const router = useRouter();
+
   const container = css({
     backgroundColor: "#ffffff",
     padding: "40px 30px",
@@ -113,13 +127,9 @@ export const ProjectForm = (): JSX.Element => {
           ownerUid: uid,
         },
       });
-      console.log("成功");
-
       setUpdatedTooltipOpen(true);
+      router.push("/");
     } catch (err) {
-      console.log("エラー");
-      console.log(err);
-      console.log(typeof data["recruitmentNumbers"]);
       setUnexpectedError();
     }
   };
@@ -170,7 +180,7 @@ export const ProjectForm = (): JSX.Element => {
             )}
           />
         </Box>
-        {/* <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
+        <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
           <h2 css={subTitle}>開発期間</h2>
           <Box display="flex">
             <Controller
@@ -203,7 +213,7 @@ export const ProjectForm = (): JSX.Element => {
               )}
             />
           </Box>
-        </Box> */}
+        </Box>
         <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
           <h2 css={subTitle}>使用技術</h2>
           <Box display="flex" flexWrap="wrap" justifyContent="space-between">
@@ -250,7 +260,14 @@ export const ProjectForm = (): JSX.Element => {
             name="recruitmentNumbers"
             control={control}
             render={({ field }) => (
-              <TextField fullWidth variant="standard" {...field} />
+              <TextField
+                fullWidth
+                type="number"
+                variant="standard"
+                error={!!errors.recruitmentNumbers}
+                helperText={errors.recruitmentNumbers?.message}
+                {...field}
+              />
             )}
           />
         </Box>
