@@ -1,7 +1,8 @@
 import { createContext } from "react";
 import firebase from "firebase/app";
+import { GetUserQuery } from "../types/graphql";
 
-// TODO firebase.UserではなくUserをcontextに入れた方がいいかもしれない
 export const AuthContext = createContext<{
   authUser?: firebase.User | null;
+  user?: GetUserQuery["user"] | null;
 }>({});

@@ -1,54 +1,80 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
-import Link from "next/link";
 import { ProjectComp } from "../components/Project";
-import { Project } from "../interfaces/Project";
-import { GetStaticProps, GetStaticPaths } from "next";
-import { Container, Box } from "@material-ui/core";
+import { Project, GET_USER_PARTICIPANTS } from "../interfaces/Project";
+import { GetServerSideProps } from "next";
+import { Container, Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
+import { apolloClient } from "../utils/apollo-client";
+import nookies from "nookies";
+import { uidKeyName } from "../utils/cookie-key-names";
+import {
+  GetUserParticipantsQuery,
+  GetUserParticipantsQueryVariables,
+  Participant,
+} from "../types/graphql";
 
-const IndexPage = ({ item }): JSX.Element => (
-  <Layout>
-    <MyHead title="Hack Us"></MyHead>
-    <Box>
-      {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
-      <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
-        <Container className="newProjects">
-          <ProjectComp
-            id={item.id}
-            name={item.name}
-            detail={item.detail}
-            status={item.status}
-          />
-        </Container>
-        <Container className="Likes">
-          <ProjectComp
-            id={item.id}
-            name={item.name}
-            detail={item.detail}
-            status={item.status}
-          />
-        </Container>
-        <Container className="myProjects">
-          <ProjectComp
-            id={item.id}
-            name={item.name}
-            detail={item.detail}
-            status={item.status}
-          />
-        </Container>
-      </MyTabs>
+// TODO サーバーからプロジェクトを取得できたらそこから型を指定する
+type IndexPageProps = {
+  newProjectsItem: Project[];
+  myProjectsItem: Participant[];
+};
 
-      <Link href="/users/testId">
-        <a>ユーザーページ(仮)</a>
-      </Link>
-    </Box>
-  </Layout>
-);
+const IndexPage = ({
+  newProjectsItem,
+  myProjectsItem,
+}: IndexPageProps): JSX.Element => {
+  return (
+    <Layout>
+      <MyHead title="Hack Us"></MyHead>
+      <Box>
+        {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
+        <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
+          <Grid container className="newProjects">
+            {newProjectsItem.map((x, idx) => {
+              return (
+                <Grid item xs={12} md={6} lg={4} key={idx}>
+                  <ProjectComp
+                    id={x.id}
+                    name={x.name}
+                    detail={x.detail}
+                    status={x.status}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+          <Container className="likes">
+            <ProjectComp
+              id={newProjectsItem[0].id}
+              name={newProjectsItem[0].name}
+              detail={newProjectsItem[0].detail}
+              status={newProjectsItem[0].status}
+            />
+          </Container>
+          <Grid container className="myProjects">
+            {myProjectsItem.map((x, idx) => {
+              return (
+                <Grid item xs={12} md={6} lg={4} key={idx}>
+                  <ProjectComp
+                    id={x.project.id}
+                    name={x.project.name}
+                    // detail={x.project.detail}
+                    // status={x.project.status}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </MyTabs>
+      </Box>
+    </Layout>
+  );
+};
 
 export default IndexPage;
 
-export const getStaticProps: GetStaticProps = () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   // try {
   //   const id = params?.id;
   //   const { data } = await apolloClient.query({ query: GET_USERS });
@@ -58,12 +84,56 @@ export const getStaticProps: GetStaticProps = () => {
   // } catch (err) {
   //   return { props: { errors: err.message } };
   // }
-  console.log("log getStaticProps");
-  const item: Project = {
-    id: "testId",
-    name: "testProject",
-    detail: "testDetail",
-    status: "testNow",
-  };
-  return { props: { item } };
+
+  const cookies = nookies.get(context);
+  const uid = cookies[uidKeyName];
+
+  const newProjectsItem: Array<Project> = [
+    {
+      id: "testId",
+      name: "testProject",
+      detail: "testDetail",
+      status: "testNow",
+    },
+    {
+      id: "testId",
+      name: "testProject",
+      detail: "testDetail",
+      status: "testNow",
+    },
+    {
+      id: "testId",
+      name: "testProject",
+      detail: "testDetail",
+      status: "testNow",
+    },
+  ];
+
+  if (uid == null || uid.length == 0) {
+    const noObject: Array<Project> = [];
+    return {
+      props: { newProjectsItem: newProjectsItem, myProjectsItem: noObject },
+    };
+  }
+
+  try {
+    const { data } = await apolloClient.query<
+      GetUserParticipantsQuery,
+      GetUserParticipantsQueryVariables
+    >({
+      query: GET_USER_PARTICIPANTS,
+      variables: { uid: uid },
+      fetchPolicy: "no-cache",
+    });
+    return {
+      props: {
+        newProjectsItem: newProjectsItem,
+        myProjectsItem: data.userParticipants,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+  }
+
+  return { props: { newProjectsItem } };
 };

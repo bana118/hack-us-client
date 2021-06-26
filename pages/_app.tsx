@@ -8,6 +8,9 @@ import nookies from "nookies";
 import { apolloClient } from "../utils/apollo-client";
 import { ApolloProvider } from "@apollo/client";
 import { tokenKeyName, uidKeyName } from "../utils/cookie-key-names";
+import { GetUserQuery, GetUserQueryVariables } from "../types/graphql";
+import { createUserfromLoginResult } from "../utils/auth-provider";
+import { GET_USER } from "../interfaces/User";
 
 const theme = createTheme({
   typography: {
@@ -19,11 +22,18 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   const [authUser, setAuthUser] = useState<firebase.User | null | undefined>(
     undefined
   );
+  const [user, setUser] = useState<GetUserQuery["user"] | null | undefined>(
+    undefined
+  );
 
   useEffect(() => {
+    const getLoginResult = async () => {
+      await createUserfromLoginResult();
+    };
     auth.onIdTokenChanged(async (u) => {
       if (!u) {
         setAuthUser(null);
+        setUser(null);
         nookies.set(undefined, tokenKeyName, "", { path: "/" });
         nookies.set(undefined, uidKeyName, "", { path: "/" });
       } else {
@@ -31,6 +41,15 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
         setAuthUser(u);
         nookies.set(undefined, tokenKeyName, token, { path: "/" });
         nookies.set(undefined, uidKeyName, u.uid, { path: "/" });
+        await getLoginResult();
+        const { data } = await apolloClient.query<
+          GetUserQuery,
+          GetUserQueryVariables
+        >({
+          query: GET_USER,
+          variables: { uid: u.uid },
+        });
+        setUser(data.user);
       }
     });
 
@@ -51,7 +70,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ authUser }}>
+    <AuthContext.Provider value={{ authUser, user }}>
       <ApolloProvider client={apolloClient}>
         <ThemeProvider theme={theme}>
           <Component {...pageProps} />
