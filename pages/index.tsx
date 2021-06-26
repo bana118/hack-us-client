@@ -26,19 +26,19 @@ type IndexPageProps = {
   myProjectsItem: Participant[];
 };
 
-const getUser = async (uid: string) => {
-  try {
-    const { data } = await apolloClient.query({
-      query: GET_USER,
-      variables: { uid: uid },
-      fetchPolicy: "no-cache",
-    });
-    console.log(data);
-    return data.user;
-  } catch (err) {
-    return;
-  }
-};
+// const getUser = async (uid: string) => {
+//   try {
+//     const { data } = await apolloClient.query({
+//       query: GET_USER,
+//       variables: { uid: uid },
+//       fetchPolicy: "no-cache",
+//     });
+//     console.log(data);
+//     return data.user;
+//   } catch (err) {
+//     return;
+//   }
+// };
 
 const IndexPage = ({
   newProjectsItem,
@@ -172,6 +172,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: { uid: uid },
       fetchPolicy: "no-cache",
     });
+    console.log(data);
     return {
       props: {
         newProjectsItem: newProjectsItem,
