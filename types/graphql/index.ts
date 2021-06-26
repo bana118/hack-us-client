@@ -454,6 +454,10 @@ export type GetUserQuery = (
   & { user: (
     { __typename?: 'User' }
     & Pick<User, 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
+    & { contributionInfo: Array<(
+      { __typename?: 'ContributionInfo' }
+      & Pick<ContributionInfo, 'language' | 'color' | 'contributions'>
+    )> }
   ) }
 );
 
@@ -692,6 +696,11 @@ export const GetUserDocument = gql`
     description
     githubId
     githubIconUrl
+    contributionInfo {
+      language
+      color
+      contributions
+    }
   }
 }
     `;
