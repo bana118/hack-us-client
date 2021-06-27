@@ -261,18 +261,18 @@ export type ParticipantEdge = {
 
 export type Project = {
   __typename?: 'Project';
-  contribution?: Maybe<Scalars['String']>;
+  contribution: Scalars['String'];
   createdAt: Scalars['ISO8601DateTime'];
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
   endsAt?: Maybe<Scalars['ISO8601DateTime']>;
-  githubUrl?: Maybe<Scalars['String']>;
+  githubUrl: Scalars['String'];
   id: Scalars['ID'];
-  languages?: Maybe<Array<Language>>;
+  languages: Array<Language>;
   name: Scalars['String'];
   owner: User;
   recruitmentNumbers?: Maybe<Scalars['Int']>;
   startsAt?: Maybe<Scalars['ISO8601DateTime']>;
-  toolLink?: Maybe<Scalars['String']>;
+  toolLink: Scalars['String'];
   updatedAt: Scalars['ISO8601DateTime'];
 };
 
@@ -500,23 +500,29 @@ export type GetProjectsQuery = (
     { __typename?: 'ProjectConnection' }
     & { nodes?: Maybe<Array<Maybe<(
       { __typename?: 'Project' }
-      & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
-      & { languages?: Maybe<Array<(
+      & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+      & { languages: Array<(
         { __typename?: 'Language' }
         & Pick<Language, 'name' | 'color'>
-      )>>, owner: (
+      )>, owner: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'name'>
+        & Pick<User, 'name'>
       ) }
     )>>> }
   ), userParticipants: (
     { __typename?: 'ParticipantConnection' }
     & { nodes?: Maybe<Array<Maybe<(
       { __typename?: 'Participant' }
-      & Pick<Participant, 'id'>
       & { project: (
         { __typename?: 'Project' }
-        & Pick<Project, 'id' | 'name'>
+        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'name'>
+        ) }
       ) }
     )>>> }
   ), userFavorites: (
@@ -526,7 +532,14 @@ export type GetProjectsQuery = (
       & Pick<Favorite, 'id'>
       & { project: (
         { __typename?: 'Project' }
-        & Pick<Project, 'id' | 'name'>
+        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'name'>
+        ) }
       ) }
     )>>> }
   ) }
@@ -553,10 +566,10 @@ export type CreateProjectMutation = (
     & { project?: Maybe<(
       { __typename?: 'Project' }
       & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
-      & { languages?: Maybe<Array<(
+      & { languages: Array<(
         { __typename?: 'Language' }
         & Pick<Language, 'name' | 'color'>
-      )>>, owner: (
+      )>, owner: (
         { __typename?: 'User' }
         & Pick<User, 'id' | 'name'>
       ) }
@@ -635,7 +648,6 @@ export const GetProjectsDocument = gql`
     query GetProjects($uid: String!, $projectsFirst: Int!, $userParticipantsFirst: Int!, $userFavoritsFirst: Int!) {
   projects(first: $projectsFirst) {
     nodes {
-      id
       name
       description
       startsAt
@@ -648,17 +660,27 @@ export const GetProjectsDocument = gql`
       toolLink
       contribution
       owner {
-        id
         name
       }
     }
   }
   userParticipants(uid: $uid, first: $userParticipantsFirst) {
     nodes {
-      id
       project {
-        id
         name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+        owner {
+          name
+        }
       }
     }
   }
@@ -666,8 +688,20 @@ export const GetProjectsDocument = gql`
     nodes {
       id
       project {
-        id
         name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+        owner {
+          name
+        }
       }
     }
   }

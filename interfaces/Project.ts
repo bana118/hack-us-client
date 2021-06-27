@@ -9,7 +9,6 @@ export const GET_PROJECTS = gql`
   ) {
     projects(first: $projectsFirst) {
       nodes {
-        id
         name
         description
         startsAt
@@ -22,17 +21,27 @@ export const GET_PROJECTS = gql`
         toolLink
         contribution
         owner {
-          id
           name
         }
       }
     }
     userParticipants(uid: $uid, first: $userParticipantsFirst) {
       nodes {
-        id
         project {
-          id
           name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            name
+          }
         }
       }
     }
@@ -40,8 +49,20 @@ export const GET_PROJECTS = gql`
       nodes {
         id
         project {
-          id
           name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            name
+          }
         }
       }
     }
