@@ -1,16 +1,13 @@
 import { gql } from "@apollo/client";
 
-export type Project = {
-  id?: string;
-  name?: string;
-  detail?: string;
-  language?: string;
-  status?: string;
-};
-
 export const GET_PROJECTS = gql`
-  query GetProjects {
-    projects {
+  query GetProjects(
+    $uid: String!
+    $projectsFirst: Int!
+    $userParticipantsFirst: Int!
+    $userFavoritsFirst: Int!
+  ) {
+    projects(first: $projectsFirst) {
       nodes {
         id
         name
@@ -25,6 +22,24 @@ export const GET_PROJECTS = gql`
         toolLink
         contribution
         owner {
+          id
+          name
+        }
+      }
+    }
+    userParticipants(uid: $uid, first: $userParticipantsFirst) {
+      nodes {
+        id
+        project {
+          id
+          name
+        }
+      }
+    }
+    userFavorites(uid: $uid, first: $userFavoritsFirst) {
+      nodes {
+        id
+        project {
           id
           name
         }
@@ -44,7 +59,7 @@ export const CREATE_PROJECT = gql`
     $recruitmentNumbers: Int
     $toolLink: String
     $contribution: String
-    $ownerId: Int!
+    $ownerUid: String!
   ) {
     createProject(
       input: {
@@ -57,7 +72,7 @@ export const CREATE_PROJECT = gql`
         recruitmentNumbers: $recruitmentNumbers
         toolLink: $toolLink
         contribution: $contribution
-        ownerId: $ownerId
+        ownerUid: $ownerUid
       }
     ) {
       project {
@@ -74,32 +89,6 @@ export const CREATE_PROJECT = gql`
         toolLink
         contribution
         owner {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-// export const GET_PROJECT = gql`
-//   query GetProject($id: String!) {
-//       project(id: $id) {
-//           id
-//           name
-//           detail
-//           language
-//           status
-//       }
-//   }
-// `;
-
-export const GET_USER_PARTICIPANTS = gql`
-  query GetUserParticipants($uid: String!) {
-    userParticipants(uid: $uid) {
-      nodes {
-        id
-        project {
           id
           name
         }
