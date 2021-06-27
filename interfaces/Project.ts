@@ -11,22 +11,24 @@ export type Project = {
 export const GET_PROJECTS = gql`
   query GetProjects {
     projects {
-      id
-      name
-      description
-      startsAt
-      endsAt
-      technology1
-      technology2
-      technology3
-      technology4
-      technology5
-      recruitmentNumbers
-      toolLink
-      contribution
-      owner {
+      nodes {
         id
         name
+        description
+        startsAt
+        endsAt
+        technology1
+        technology2
+        technology3
+        technology4
+        technology5
+        recruitmentNumbers
+        toolLink
+        contribution
+        owner {
+          id
+          name
+        }
       }
     }
   }
@@ -105,10 +107,12 @@ export const CREATE_PROJECT = gql`
 export const GET_USER_PARTICIPANTS = gql`
   query GetUserParticipants($uid: String!) {
     userParticipants(uid: $uid) {
-      id
-      project {
+      nodes {
         id
-        name
+        project {
+          id
+          name
+        }
       }
     }
   }
