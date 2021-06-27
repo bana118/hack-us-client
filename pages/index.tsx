@@ -172,11 +172,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: { uid: uid },
       fetchPolicy: "no-cache",
     });
-    console.log(data);
+    console.log(data.userParticipants.nodes);
     return {
       props: {
         newProjectsItem: newProjectsItem,
-        myProjectsItem: data.userParticipants,
+        myProjectsItem: data.userParticipants.nodes,
       },
     };
   } catch (err) {
