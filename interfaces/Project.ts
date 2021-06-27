@@ -9,11 +9,10 @@ export const GET_PROJECTS = gql`
         description
         startsAt
         endsAt
-        technology1
-        technology2
-        technology3
-        technology4
-        technology5
+        languages {
+          name
+          color
+        }
         recruitmentNumbers
         toolLink
         contribution
@@ -33,15 +32,11 @@ export const CREATE_PROJECT = gql`
     $githubUrl: String
     $startsAt: ISO8601DateTime
     $endsAt: ISO8601DateTime
-    $technology1: String
-    $technology2: String
-    $technology3: String
-    $technology4: String
-    $technology5: String
+    $languages: [LanguageInput!]
     $recruitmentNumbers: Int
     $toolLink: String
     $contribution: String
-    $ownerUid: String!
+    $ownerId: Int!
   ) {
     createProject(
       input: {
@@ -50,15 +45,11 @@ export const CREATE_PROJECT = gql`
         githubUrl: $githubUrl
         startsAt: $startsAt
         endsAt: $endsAt
-        technology1: $technology1
-        technology2: $technology2
-        technology3: $technology3
-        technology4: $technology4
-        technology5: $technology5
+        languages: $languages
         recruitmentNumbers: $recruitmentNumbers
         toolLink: $toolLink
         contribution: $contribution
-        ownerUid: $ownerUid
+        ownerId: $ownerId
       }
     ) {
       project {
@@ -67,11 +58,10 @@ export const CREATE_PROJECT = gql`
         description
         startsAt
         endsAt
-        technology1
-        technology2
-        technology3
-        technology4
-        technology5
+        languages {
+          name
+          color
+        }
         recruitmentNumbers
         toolLink
         contribution
