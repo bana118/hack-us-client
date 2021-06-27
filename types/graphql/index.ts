@@ -140,6 +140,26 @@ export type Favorite = {
   user: User;
 };
 
+/** The connection type for Favorite. */
+export type FavoriteConnection = {
+  __typename?: 'FavoriteConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<FavoriteEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<Favorite>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type FavoriteEdge = {
+  __typename?: 'FavoriteEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Favorite>;
+};
+
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -193,6 +213,19 @@ export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
 };
 
+/** Information about pagination in a connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']>;
+  /** When paginating forwards, are there more items? */
+  hasNextPage: Scalars['Boolean'];
+  /** When paginating backwards, are there more items? */
+  hasPreviousPage: Scalars['Boolean'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['String']>;
+};
+
 export type Participant = {
   __typename?: 'Participant';
   createdAt: Scalars['ISO8601DateTime'];
@@ -201,6 +234,26 @@ export type Participant = {
   project: Project;
   updatedAt: Scalars['ISO8601DateTime'];
   user: User;
+};
+
+/** The connection type for Participant. */
+export type ParticipantConnection = {
+  __typename?: 'ParticipantConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<ParticipantEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<Participant>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type ParticipantEdge = {
+  __typename?: 'ParticipantEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Participant>;
 };
 
 export type Project = {
@@ -224,58 +277,112 @@ export type Project = {
   updatedAt: Scalars['ISO8601DateTime'];
 };
 
+/** The connection type for Project. */
+export type ProjectConnection = {
+  __typename?: 'ProjectConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<ProjectEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<Project>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type ProjectEdge = {
+  __typename?: 'ProjectEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Project>;
+};
+
 export type Query = {
   __typename?: 'Query';
   favorite: Favorite;
   participant: Participant;
   project: Project;
-  projectFavorites: Array<Favorite>;
-  projectParticipants: Array<Participant>;
-  projects: Array<Project>;
+  projectFavorites: FavoriteConnection;
+  projectParticipants: ParticipantConnection;
+  projects: ProjectConnection;
   user: User;
-  userFavorites: Array<Favorite>;
-  userParticipants: Array<Participant>;
-  users: Array<User>;
+  userFavorites: FavoriteConnection;
+  userParticipants: ParticipantConnection;
+  users: UserConnection;
 };
 
 
 export type QueryFavoriteArgs = {
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
 };
 
 
 export type QueryParticipantArgs = {
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
 };
 
 
 export type QueryProjectArgs = {
-  id?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
 };
 
 
 export type QueryProjectFavoritesArgs = {
-  projectId?: Maybe<Scalars['ID']>;
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  projectId: Scalars['ID'];
 };
 
 
 export type QueryProjectParticipantsArgs = {
-  projectId?: Maybe<Scalars['ID']>;
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  projectId: Scalars['ID'];
+};
+
+
+export type QueryProjectsArgs = {
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  query?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryUserArgs = {
-  uid?: Maybe<Scalars['String']>;
+  uid: Scalars['String'];
 };
 
 
 export type QueryUserFavoritesArgs = {
-  uid?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  uid: Scalars['String'];
 };
 
 
 export type QueryUserParticipantsArgs = {
-  uid?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  uid: Scalars['String'];
+};
+
+
+export type QueryUsersArgs = {
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  language?: Maybe<Scalars['String']>;
 };
 
 /** Autogenerated input type of UpdateParticipant */
@@ -368,19 +475,42 @@ export type User = {
   updatedAt: Scalars['ISO8601DateTime'];
 };
 
+/** The connection type for User. */
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<UserEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<User>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<User>;
+};
+
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetProjectsQuery = (
   { __typename?: 'Query' }
-  & { projects: Array<(
-    { __typename?: 'Project' }
-    & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'technology1' | 'technology2' | 'technology3' | 'technology4' | 'technology5' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
-    & { owner: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'name'>
-    ) }
-  )> }
+  & { projects: (
+    { __typename?: 'ProjectConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Project' }
+      & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'technology1' | 'technology2' | 'technology3' | 'technology4' | 'technology5' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+      & { owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name'>
+      ) }
+    )>>> }
+  ) }
 );
 
 export type CreateProjectMutationVariables = Exact<{
@@ -423,14 +553,17 @@ export type GetUserParticipantsQueryVariables = Exact<{
 
 export type GetUserParticipantsQuery = (
   { __typename?: 'Query' }
-  & { userParticipants: Array<(
-    { __typename?: 'Participant' }
-    & Pick<Participant, 'id'>
-    & { project: (
-      { __typename?: 'Project' }
-      & Pick<Project, 'id' | 'name'>
-    ) }
-  )> }
+  & { userParticipants: (
+    { __typename?: 'ParticipantConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Participant' }
+      & Pick<Participant, 'id'>
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id' | 'name'>
+      ) }
+    )>>> }
+  ) }
 );
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
@@ -438,10 +571,13 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = (
   { __typename?: 'Query' }
-  & { users: Array<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'uid'>
-  )> }
+  & { users: (
+    { __typename?: 'UserConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'uid'>
+    )>>> }
+  ) }
 );
 
 export type GetUserQueryVariables = Exact<{
@@ -500,22 +636,24 @@ export type UpdateUserMutation = (
 export const GetProjectsDocument = gql`
     query GetProjects {
   projects {
-    id
-    name
-    description
-    startsAt
-    endsAt
-    technology1
-    technology2
-    technology3
-    technology4
-    technology5
-    recruitmentNumbers
-    toolLink
-    contribution
-    owner {
+    nodes {
       id
       name
+      description
+      startsAt
+      endsAt
+      technology1
+      technology2
+      technology3
+      technology4
+      technology5
+      recruitmentNumbers
+      toolLink
+      contribution
+      owner {
+        id
+        name
+      }
     }
   }
 }
@@ -616,10 +754,12 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProj
 export const GetUserParticipantsDocument = gql`
     query GetUserParticipants($uid: String!) {
   userParticipants(uid: $uid) {
-    id
-    project {
+    nodes {
       id
-      name
+      project {
+        id
+        name
+      }
     }
   }
 }
@@ -655,9 +795,11 @@ export type GetUserParticipantsQueryResult = Apollo.QueryResult<GetUserParticipa
 export const GetUsersDocument = gql`
     query GetUsers {
   users {
-    id
-    name
-    uid
+    nodes {
+      id
+      name
+      uid
+    }
   }
 }
     `;
