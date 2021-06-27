@@ -16,9 +16,6 @@ import {
   Project,
   User,
 } from "../types/graphql";
-import React, { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import Router from "next/router";
 
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
@@ -26,31 +23,11 @@ type IndexPageProps = {
   myProjectsItem: Participant[];
 };
 
-// const getUser = async (uid: string) => {
-//   try {
-//     const { data } = await apolloClient.query({
-//       query: GET_USER,
-//       variables: { uid: uid },
-//       fetchPolicy: "no-cache",
-//     });
-//     console.log(data);
-//     return data.user;
-//   } catch (err) {
-//     return;
-//   }
-// };
-
 const IndexPage = ({
   newProjectsItem,
   myProjectsItem,
 }: IndexPageProps): JSX.Element => {
   // const { user } = useContext(AuthContext);
-
-  // useEffect(() => {
-  //   if (user === null) {
-  //     Router.push("/");
-  //   }
-  // }, [user]);
 
   return (
     <Layout>
@@ -122,6 +99,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
 
+  console.log(uid);
+  console.log(typeof uid);
+
   if (uid == null || uid.length == 0) {
     const noObject: Array<Project> = [];
     return {
@@ -129,38 +109,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  // const testUser: User = {
-  //   contributionInfo: "test",
-  //   createdAt: "test",
-  //   description: "test",
-  //   githubIconUrl: "test",
-  //   githubId: "test",
-  //   id: "test",
-  //   name: "test",
-  //   uid: "test",
-  //   updatedAt: "test",
-  // };
+  const testUser: User = {
+    // contributionInfo: "test",
+    createdAt: "test",
+    description: "test",
+    githubIconUrl: "test",
+    githubId: "test",
+    id: "test",
+    name: "test",
+    uid: "test",
+    updatedAt: "test",
+  };
 
   const newProjectsItem: Array<Project> = [
-    // {
-    //   contribution: "test",
-    //   createdAt: "test",
-    //   description: "test",
-    //   endsAt: "test",
-    //   githubUrl: "test",
-    //   id: "test",
-    //   name: "test",
-    //   owner: user,
-    //   // recruitmentNumbers: 2,
-    //   startsAt: "test",
-    //   technology1: "test",
-    //   technology2: "test",
-    //   technology3: "test",
-    //   technology4: "test",
-    //   technology5: "test",
-    //   toolLink: "test",
-    //   updatedAt: "test",
-    // },
+    {
+      contribution: "test",
+      createdAt: "test",
+      description: "test",
+      endsAt: "test",
+      githubUrl: "test",
+      id: "test",
+      name: "test",
+      owner: testUser,
+      // recruitmentNumbers: 2,
+      startsAt: "test",
+      // languages: [],
+      toolLink: "test",
+      updatedAt: "test",
+    },
   ];
 
   try {

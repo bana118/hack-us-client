@@ -1,8 +1,10 @@
 import { css } from "@emotion/react";
-import { Container } from "@material-ui/core";
+import { Button, Container } from "@material-ui/core";
 import { Project } from "../types/graphql";
 
 const projectStyle = css`
+  display: flex;
+  flex-flow: column;
   background-color: #ffffff;
   width: 400px;
   height: 150px;
@@ -15,24 +17,28 @@ const projectNameStyle = css`
   padding-top: 20px;
   padding-left: 20px;
   margin-top: 0;
+  margin-right: auto;
 `;
 
-const projectDetailStyle = css`
+const projectDescriptionStyle = css`
   padding-left: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
+  margin-right: auto;
 `;
 
 const projectLanguageStyle = css`
   padding-left: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
+  margin-right: auto;
 `;
 
 const projectStatusStyle = css`
   padding-left: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
+  margin-right: auto;
 `;
 
 export const ProjectComp = ({
@@ -40,11 +46,11 @@ export const ProjectComp = ({
   description = "default",
 }: Project): JSX.Element => {
   return (
-    <Container css={projectStyle}>
+    <Button css={projectStyle}>
       <p css={projectNameStyle}>{name}</p>
-      <p css={projectDetailStyle}>{description}</p>
+      <p css={projectDescriptionStyle}>{description}</p>
       {/* <p css={projectLanguageStyle}>{language}</p> */}
       {/* <p css={projectStatusStyle}>{status}</p> */}
-    </Container>
+    </Button>
   );
 };
