@@ -20,7 +20,7 @@ export const ContributionPieChart = ({
 
   if (otherContributions > 0) {
     mainContributionInfo.push({
-      language: "other",
+      language: "Other",
       color: "#444444",
       contributions: otherContributions,
     });
