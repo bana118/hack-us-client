@@ -15,6 +15,7 @@ export const GET_USERS = gql`
 export const GET_USER = gql`
   query GetUser($uid: String!) {
     user(uid: $uid) {
+      id
       name
       uid
       description

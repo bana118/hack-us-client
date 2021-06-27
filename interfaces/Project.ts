@@ -44,7 +44,7 @@ export const CREATE_PROJECT = gql`
     $recruitmentNumbers: Int
     $toolLink: String
     $contribution: String
-    $ownerUid: String!
+    $ownerId: Int!
   ) {
     createProject(
       input: {
@@ -57,7 +57,7 @@ export const CREATE_PROJECT = gql`
         recruitmentNumbers: $recruitmentNumbers
         toolLink: $toolLink
         contribution: $contribution
-        ownerUid: $ownerUid
+        ownerId: $ownerId
       }
     ) {
       project {

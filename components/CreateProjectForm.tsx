@@ -1,17 +1,24 @@
 import { useState } from "react";
 import Router from "next/router";
 import Link from "next/link";
-import { Box, Button, Container, TextField, Tooltip } from "@material-ui/core";
-import nookies from "nookies";
-import { uidKeyName } from "../utils/cookie-key-names";
-import { useCreateProjectMutation } from "../types/graphql";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Tooltip,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
+import { LanguageInput, useCreateProjectMutation } from "../types/graphql";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { css } from "@emotion/react";
 import { GetUserQuery } from "../types/graphql";
+import { LanguageColors } from "../utils/language-colors";
 
-type ProjectFormProps = {
+type CreateProjectFormProps = {
   user: GetUserQuery["user"];
 };
 
@@ -21,11 +28,9 @@ type InputsType = {
   githubUrl: string;
   startsAt: string;
   endsAt: string;
-  technology1: string;
-  technology2: string;
-  technology3: string;
-  technology4: string;
-  technology5: string;
+  language1: string;
+  language2: string;
+  language3: string;
   recruitmentNumbers: string;
   toolLink: string;
   contribution: string;
@@ -42,7 +47,7 @@ const subTitle = css({
   fontWeight: "bold",
 });
 
-const tecnologyWidth = css({
+const languageWidth = css({
   width: "140px",
 });
 
@@ -73,11 +78,9 @@ const defaultValues: InputsType = {
   githubUrl: "",
   startsAt: defaultDate(),
   endsAt: defaultDate(),
-  technology1: "",
-  technology2: "",
-  technology3: "",
-  technology4: "",
-  technology5: "",
+  language1: "",
+  language2: "",
+  language3: "",
   recruitmentNumbers: "1",
   toolLink: "",
   contribution: "",
@@ -88,7 +91,9 @@ const schema = yup.object().shape({
   recruitmentNumbers: yup.number().min(1, "最低でも1人は募集してください"),
 });
 
-export const ProjectForm = ({ user }: ProjectFormProps): JSX.Element => {
+export const CreateProjectForm = ({
+  user,
+}: CreateProjectFormProps): JSX.Element => {
   const {
     control,
     handleSubmit,
@@ -108,6 +113,11 @@ export const ProjectForm = ({ user }: ProjectFormProps): JSX.Element => {
   const [createProjectMutation] = useCreateProjectMutation();
 
   const createProject = async (data: InputsType) => {
+    const languages: LanguageInput[] = [
+      JSON.parse(data["language1"]),
+      JSON.parse(data["language2"]),
+      JSON.parse(data["language3"]),
+    ];
     try {
       await createProjectMutation({
         variables: {
@@ -116,20 +126,17 @@ export const ProjectForm = ({ user }: ProjectFormProps): JSX.Element => {
           githubUrl: data["githubUrl"],
           startsAt: data["startsAt"],
           endsAt: data["endsAt"],
-          technology1: data["technology1"],
-          technology2: data["technology2"],
-          technology3: data["technology3"],
-          technology4: data["technology4"],
-          technology5: data["technology5"],
+          languages: languages,
           recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
           toolLink: data["toolLink"],
           contribution: data["contribution"],
-          ownerUid: user.uid,
+          ownerId: parseInt(user.id, 10),
         },
       });
       setUpdatedTooltipOpen(true);
       Router.push("/");
     } catch (err) {
+      console.log(err);
       setUnexpectedError();
     }
   };
@@ -214,42 +221,65 @@ export const ProjectForm = ({ user }: ProjectFormProps): JSX.Element => {
             />
           </Box>
         </Box>
+        {/* TODO 使用言語の数を可変にする */}
         <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
-          <h2 css={subTitle}>使用技術</h2>
+          <h2 css={subTitle}>使用言語</h2>
           <Box display="flex" flexWrap="wrap" justifyContent="space-between">
             <Controller
-              name="technology1"
+              name="language1"
               control={control}
               render={({ field }) => (
-                <TextField css={tecnologyWidth} variant="standard" {...field} />
+                <Select css={languageWidth} variant="standard" {...field}>
+                  <MenuItem value="">なし</MenuItem>
+                  {LanguageColors.map((languageColor, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        value={JSON.stringify(languageColor)}
+                      >
+                        {languageColor["name"]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
               )}
             />
             <Controller
-              name="technology2"
+              name="language2"
               control={control}
               render={({ field }) => (
-                <TextField css={tecnologyWidth} variant="standard" {...field} />
+                <Select css={languageWidth} variant="standard" {...field}>
+                  <MenuItem value="">なし</MenuItem>
+                  {LanguageColors.map((languageColor, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        value={JSON.stringify(languageColor)}
+                      >
+                        {languageColor["name"]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
               )}
             />
             <Controller
-              name="technology3"
+              name="language3"
               control={control}
               render={({ field }) => (
-                <TextField css={tecnologyWidth} variant="standard" {...field} />
-              )}
-            />
-            <Controller
-              name="technology4"
-              control={control}
-              render={({ field }) => (
-                <TextField css={tecnologyWidth} variant="standard" {...field} />
-              )}
-            />
-            <Controller
-              name="technology5"
-              control={control}
-              render={({ field }) => (
-                <TextField css={tecnologyWidth} variant="standard" {...field} />
+                <Select css={languageWidth} variant="standard" {...field}>
+                  <MenuItem value="">なし</MenuItem>
+                  {LanguageColors.map((languageColor, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        value={JSON.stringify(languageColor)}
+                      >
+                        {languageColor["name"]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
               )}
             />
           </Box>
