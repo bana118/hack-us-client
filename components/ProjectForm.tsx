@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import Link from "next/link";
 import { Box, Button, Container, TextField, Tooltip } from "@material-ui/core";
 import nookies from "nookies";
@@ -9,6 +9,11 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { css } from "@emotion/react";
+import { GetUserQuery } from "../types/graphql";
+
+type ProjectFormProps = {
+  user: GetUserQuery["user"];
+};
 
 type InputsType = {
   name: string;
@@ -25,6 +30,32 @@ type InputsType = {
   toolLink: string;
   contribution: string;
 };
+
+const container = css({
+  backgroundColor: "#ffffff",
+  padding: "40px 30px",
+  borderRadius: "10px",
+});
+
+const subTitle = css({
+  fontSize: "20px",
+  fontWeight: "bold",
+});
+
+const tecnologyWidth = css({
+  width: "140px",
+});
+
+const button = css({
+  borderRadius: "100px",
+  height: "64px",
+});
+
+const linkTitle = css({
+  fontSize: "14px",
+  color: "#3e74e8",
+  cursor: "pointer",
+});
 
 const defaultDate = () => {
   const today = new Date();
@@ -57,35 +88,7 @@ const schema = yup.object().shape({
   recruitmentNumbers: yup.number().min(1, "最低でも1人は募集してください"),
 });
 
-export const ProjectForm = (): JSX.Element => {
-  const router = useRouter();
-
-  const container = css({
-    backgroundColor: "#ffffff",
-    padding: "40px 30px",
-    borderRadius: "10px",
-  });
-
-  const subTitle = css({
-    fontSize: "20px",
-    fontWeight: "bold",
-  });
-
-  const tecnologyWidth = css({
-    width: "140px",
-  });
-
-  const button = css({
-    borderRadius: "100px",
-    height: "64px",
-  });
-
-  const linkTitle = css({
-    fontSize: "14px",
-    color: "#3e74e8",
-    cursor: "pointer",
-  });
-
+export const ProjectForm = ({ user }: ProjectFormProps): JSX.Element => {
   const {
     control,
     handleSubmit,
@@ -99,9 +102,6 @@ export const ProjectForm = (): JSX.Element => {
       message: "予期せぬエラーが発生しました！ もう一度お試しください",
     });
   };
-
-  const cookies = nookies.get();
-  const uid = cookies[uidKeyName];
 
   const [updatedTooltipOpen, setUpdatedTooltipOpen] = useState(false);
 
@@ -124,11 +124,11 @@ export const ProjectForm = (): JSX.Element => {
           recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
           toolLink: data["toolLink"],
           contribution: data["contribution"],
-          ownerUid: uid,
+          ownerUid: user.uid,
         },
       });
       setUpdatedTooltipOpen(true);
-      router.push("/");
+      Router.push("/");
     } catch (err) {
       setUnexpectedError();
     }
