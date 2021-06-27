@@ -1,38 +1,35 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
-import { ProjectForm } from "../components/ProjectForm";
+import { CreateProjectForm } from "../components/CreateProjectForm";
 import { css } from "@emotion/react";
-import { User } from "../types/graphql";
+import React, { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
+import Router from "next/router";
 
 const title = css`
   margin: 30px;
 `;
 
-type Props = {
-  user?: Pick<
-    User,
-    "name" | "uid" | "description" | "githubId" | "githubIconUrl"
-  >;
-  errors?: string;
-};
+const CreateProject = (): JSX.Element => {
+  const { user } = useContext(AuthContext);
 
-const createProject = (props: Props): JSX.Element => {
-  if (props.errors) {
-    return (
-      <Layout>
-        <p>
-          <span style={{ color: "red" }}>Error:</span> {props.errors}
-        </p>
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    if (user === null) {
+      Router.push("/");
+    }
+  }, [user]);
+
   return (
     <Layout>
-      <MyHead title="プロジェクトの作成 - Hack Us"></MyHead>
-      <h1 css={title}>プロジェクトの作成</h1>
-      <ProjectForm />
+      {user != null && (
+        <React.Fragment>
+          <MyHead title="プロジェクトの作成 - Hack Us"></MyHead>
+          <h1 css={title}>プロジェクトの作成</h1>
+          <CreateProjectForm user={user} />
+        </React.Fragment>
+      )}
     </Layout>
   );
 };
 
-export default createProject;
+export default CreateProject;

@@ -1,6 +1,8 @@
 // Pick up from language name and color https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
 
-export const languageColors = [
+import { LanguageInput } from "../types/graphql";
+
+export const LanguageColors: LanguageInput[] = [
   { name: "C", color: "#555555" },
   { name: "C#", color: "#178600" },
   { name: "C++", color: "#f34b7d" },
