@@ -39,8 +39,8 @@ type ProjectContainerProps = {
   name?: string;
   description?: string;
   languages?: LanguageInput[];
-  startsAt?: Date | null;
-  endsAt?: Date | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
 };
 
 export const ProjectContainer = ({
@@ -50,14 +50,35 @@ export const ProjectContainer = ({
   startsAt = null,
   endsAt = null,
 }: ProjectContainerProps): JSX.Element => {
+  // TODO 開発ステータスの追加
+  // TODO お気に入り機能の追加
+  // TODO descriptionを適当な文字数で切る
   return (
     <Container css={projectStyle}>
       <p css={projectNameStyle}>{name}</p>
       <p css={projectDetailStyle}>{description}</p>
-      <p css={projectLanguageStyle}>{languages}</p>
-      <p css={projectStatusStyle}>
-        {startsAt}-{endsAt}
+      <p css={projectLanguageStyle}>
+        言語:{" "}
+        {languages.map((language, index) => {
+          if (index == languages.length - 1)
+            return (
+              <span key={index} css={{ color: language.color }}>
+                {language.name}
+              </span>
+            );
+          return (
+            <span key={index} css={{ color: language.color }}>
+              {language.name},{" "}
+            </span>
+          );
+        })}
       </p>
+      {startsAt && endsAt && (
+        <p css={projectStatusStyle}>
+          {new Date(startsAt).toLocaleDateString()}～
+          {new Date(endsAt).toLocaleDateString()}
+        </p>
+      )}
     </Container>
   );
 };
