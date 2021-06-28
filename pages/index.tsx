@@ -176,7 +176,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         newProjectsItem: newProjectsItem,
-        myProjectsItem: data.userParticipants,
+        myProjectsItem: data.userParticipants.nodes,
       },
     };
   } catch (err) {

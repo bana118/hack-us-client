@@ -3,9 +3,11 @@ import { gql } from "@apollo/client";
 export const GET_USERS = gql`
   query GetUsers {
     users {
-      id
-      name
-      uid
+      nodes {
+        id
+        name
+        uid
+      }
     }
   }
 `;
@@ -13,6 +15,7 @@ export const GET_USERS = gql`
 export const GET_USER = gql`
   query GetUser($uid: String!) {
     user(uid: $uid) {
+      id
       name
       uid
       description
