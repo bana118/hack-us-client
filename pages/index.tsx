@@ -63,7 +63,7 @@ const IndexPage = ({
             /> */}
           </Container>
           <Grid container className="myProjects">
-            {myProjectsItem.map((x, idx) => {
+            {/* {myProjectsItem.map((x, idx) => {
               return (
                 <Grid item xs={12} md={6} lg={4} key={idx}>
                   <ProjectComp
@@ -77,7 +77,7 @@ const IndexPage = ({
                   />
                 </Grid>
               );
-            })}
+            })} */}
           </Grid>
         </MyTabs>
       </Box>
@@ -130,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       description: "test",
       endsAt: "test",
       githubUrl: "test",
-      id: "test",
+      id: "test_id",
       name: "test",
       owner: testUser,
       // recruitmentNumbers: 2,
@@ -141,25 +141,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   ];
 
-  try {
-    const { data } = await apolloClient.query<
-      GetUserParticipantsQuery,
-      GetUserParticipantsQueryVariables
-    >({
-      query: GET_USER_PARTICIPANTS,
-      variables: { uid: uid },
-      fetchPolicy: "no-cache",
-    });
-    console.log(data.userParticipants.nodes);
-    return {
-      props: {
-        newProjectsItem: newProjectsItem,
-        myProjectsItem: data.userParticipants.nodes,
-      },
-    };
-  } catch (err) {
-    console.log(err);
-  }
+  // try {
+  //   const { data } = await apolloClient.query<
+  //     GetUserParticipantsQuery,
+  //     GetUserParticipantsQueryVariables
+  //   >({
+  //     query: GET_USER_PARTICIPANTS,
+  //     variables: { uid: uid },
+  //     fetchPolicy: "no-cache",
+  //   });
+  //   console.log(data.userParticipants.nodes);
+  //   return {
+  //     props: {
+  //       newProjectsItem: newProjectsItem,
+  //       myProjectsItem: data.userParticipants.nodes,
+  //     },
+  //   };
+  // } catch (err) {
+  //   console.log(err);
+  // }
 
   return { props: { newProjectsItem } };
 };

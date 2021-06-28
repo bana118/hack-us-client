@@ -83,11 +83,10 @@ export const GET_PROJECT = gql`
       githubUrl
       startsAt
       endsAt
-      technology1
-      technology2
-      technology3
-      technology4
-      technology5
+      languages {
+        name
+        color
+      }
       recruitmentNumbers
       toolLink
       contribution

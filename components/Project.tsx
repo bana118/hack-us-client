@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import React, { useState } from "react";
 import { Button, Container } from "@material-ui/core";
 import { Project } from "../types/graphql";
 // import { Route } from "react-router-dom";
-import { ProjectDetail } from "./ProjectDetail";
 import { useRouter } from "next/router";
+import link from "next/link";
+import { AnyNsRecord } from "dns";
 
 const projectStyle = css`
   display: flex;
@@ -52,10 +52,30 @@ type ProjectCompProps = {
 export const ProjectComp = ({ project }: ProjectCompProps): JSX.Element => {
   const router = useRouter();
 
+  // const languages: any[] = new Array(1);
+  // project.languages.map((x, idx) => {
+  //   languages.push([x.name, x.color]);
+  // });
+
   const handleClick = (): void => {
     router.push({
-      pathname: "../pages/project/[pid]",
-      query: { pid: project.id },
+      pathname: "/project/[pid]",
+      // pathname: "../pages/index",
+      query: {
+        contribution: project.contribution,
+        pid: project.id,
+        name: project.name,
+        description: project.description,
+        githubUrl: project.githubUrl,
+        recruitmentNumbers: project.recruitmentNumbers,
+        toolLink: project.toolLink,
+        // languages: languages,
+        updatedAt: project.updatedAt,
+        createdAt: project.createdAt,
+        startsAt: project.startsAt,
+        endsAt: project.endsAt,
+        owner: project.owner.name,
+      },
     });
   };
 
