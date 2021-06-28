@@ -16,10 +16,10 @@ export type Scalars = {
   ISO8601DateTime: any;
 };
 
-export type ContributionInfo = {
-  __typename?: 'ContributionInfo';
+export type Contribution = {
+  __typename?: 'Contribution';
   color: Scalars['String'];
-  contributions: Scalars['Int'];
+  count: Scalars['Int'];
   language: Scalars['String'];
 };
 
@@ -455,7 +455,7 @@ export type UpdateUserPayload = {
 
 export type User = {
   __typename?: 'User';
-  contributionInfo: Array<ContributionInfo>;
+  contributions: Array<Contribution>;
   createdAt: Scalars['ISO8601DateTime'];
   description: Scalars['String'];
   githubIconUrl: Scalars['String'];
@@ -601,9 +601,9 @@ export type GetUserQuery = (
   & { user: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
-    & { contributionInfo: Array<(
-      { __typename?: 'ContributionInfo' }
-      & Pick<ContributionInfo, 'language' | 'color' | 'contributions'>
+    & { contributions: Array<(
+      { __typename?: 'Contribution' }
+      & Pick<Contribution, 'language' | 'color' | 'count'>
     )> }
   ) }
 );
@@ -846,10 +846,10 @@ export const GetUserDocument = gql`
     description
     githubId
     githubIconUrl
-    contributionInfo {
+    contributions {
       language
       color
-      contributions
+      count
     }
   }
 }
