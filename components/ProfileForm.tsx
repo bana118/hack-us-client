@@ -84,7 +84,7 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
         <Grid item textAlign="center">
           <p>言語別コントリビューション</p>
           {/* TODO SSR時のChart表示に関するWarningがでる */}
-          <ContributionPieChart contributionInfo={user.contributionInfo} />
+          <ContributionPieChart contributions={user.contributions} />
         </Grid>
         <Grid item>
           <Controller

@@ -130,7 +130,7 @@ export const CreateProjectForm = ({
           recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
           toolLink: data["toolLink"],
           contribution: data["contribution"],
-          ownerId: parseInt(user.id, 10),
+          ownerUid: user.uid,
         },
       });
       setUpdatedTooltipOpen(true);
