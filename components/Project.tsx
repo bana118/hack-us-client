@@ -1,6 +1,10 @@
 import { css } from "@emotion/react";
+import React, { useState } from "react";
 import { Button, Container } from "@material-ui/core";
 import { Project } from "../types/graphql";
+// import { Route } from "react-router-dom";
+import { ProjectDetail } from "./ProjectDetail";
+import { useRouter } from "next/router";
 
 const projectStyle = css`
   display: flex;
@@ -41,14 +45,24 @@ const projectStatusStyle = css`
   margin-right: auto;
 `;
 
-export const ProjectComp = ({
-  name = "default",
-  description = "default",
-}: Project): JSX.Element => {
+type ProjectCompProps = {
+  project: Project;
+};
+
+export const ProjectComp = ({ project }: ProjectCompProps): JSX.Element => {
+  const router = useRouter();
+
+  const handleClick = (): void => {
+    router.push({
+      pathname: "../pages/project/[pid]",
+      query: { pid: project.id },
+    });
+  };
+
   return (
-    <Button css={projectStyle}>
-      <p css={projectNameStyle}>{name}</p>
-      <p css={projectDescriptionStyle}>{description}</p>
+    <Button css={projectStyle} onClick={handleClick}>
+      <p css={projectNameStyle}>{project.name}</p>
+      <p css={projectDescriptionStyle}>{project.description}</p>
       {/* <p css={projectLanguageStyle}>{language}</p> */}
       {/* <p css={projectStatusStyle}>{status}</p> */}
     </Button>

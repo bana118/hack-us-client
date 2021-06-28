@@ -40,12 +40,13 @@ const IndexPage = ({
               return (
                 <Grid item xs={12} md={6} lg={4} key={idx}>
                   <ProjectComp
-                    id={x.id}
-                    name={x.name}
-                    description={x.description}
-                    createdAt={x.createdAt}
-                    owner={x.owner}
-                    updatedAt={x.updatedAt}
+                    // id={x.id}
+                    // name={x.name}
+                    // description={x.description}
+                    // createdAt={x.createdAt}
+                    // owner={x.owner}
+                    // updatedAt={x.updatedAt}
+                    project={x}
                   />
                 </Grid>
               );
@@ -66,12 +67,13 @@ const IndexPage = ({
               return (
                 <Grid item xs={12} md={6} lg={4} key={idx}>
                   <ProjectComp
-                    id={x.project.id}
-                    name={x.project.name}
-                    description={x.project.description}
-                    createdAt={x.project.createdAt}
-                    owner={x.project.owner}
-                    updatedAt={x.project.updatedAt}
+                    // id={x.project.id}
+                    // name={x.project.name}
+                    // description={x.project.description}
+                    // createdAt={x.project.createdAt}
+                    // owner={x.project.owner}
+                    // updatedAt={x.project.updatedAt}
+                    project={x.project}
                   />
                 </Grid>
               );
