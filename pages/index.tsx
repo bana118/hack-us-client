@@ -37,7 +37,6 @@ const IndexPage = ({
     <Layout>
       <MyHead title="Hack Us"></MyHead>
       <Box>
-        {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
         <MyTabs
           labels={[
             "New Projects",
@@ -111,9 +110,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       query: GET_PROJECTS,
       variables: {
         uid: uid,
-        projectsFirst: 4,
-        userParticipantsFirst: 4,
-        userFavoritsFirst: 4,
+        projectsFirst: 8,
+        userParticipantsFirst: 8,
+        userFavoritsFirst: 8,
       },
       fetchPolicy: "no-cache",
     });
