@@ -118,32 +118,6 @@ export const CREATE_PROJECT = gql`
   }
 `;
 
-// export const GET_PROJECT = gql`
-//   query GetProject($id: String!) {
-//       project(id: $id) {
-//           id
-//           name
-//           detail
-//           language
-//           status
-//       }
-//   }
-// `;
-
-export const GET_USER_PARTICIPANTS = gql`
-  query GetUserParticipants($uid: String!) {
-    userParticipants(uid: $uid) {
-      nodes {
-        id
-        project {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
 export const CREATE_FAVORITE = gql`
   mutation CreateFavorite($uid: String!, $projectId: ID!) {
     createFavorite(input: { uid: $uid, projectId: $projectId }) {

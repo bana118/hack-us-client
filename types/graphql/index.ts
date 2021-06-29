@@ -577,26 +577,6 @@ export type CreateProjectMutation = (
   )> }
 );
 
-export type GetUserParticipantsQueryVariables = Exact<{
-  uid: Scalars['String'];
-}>;
-
-
-export type GetUserParticipantsQuery = (
-  { __typename?: 'Query' }
-  & { userParticipants: (
-    { __typename?: 'ParticipantConnection' }
-    & { nodes?: Maybe<Array<Maybe<(
-      { __typename?: 'Participant' }
-      & Pick<Participant, 'id'>
-      & { project: (
-        { __typename?: 'Project' }
-        & Pick<Project, 'id' | 'name'>
-      ) }
-    )>>> }
-  ) }
-);
-
 export type CreateFavoriteMutationVariables = Exact<{
   uid: Scalars['String'];
   projectId: Scalars['ID'];
@@ -843,47 +823,6 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
-export const GetUserParticipantsDocument = gql`
-    query GetUserParticipants($uid: String!) {
-  userParticipants(uid: $uid) {
-    nodes {
-      id
-      project {
-        id
-        name
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetUserParticipantsQuery__
- *
- * To run a query within a React component, call `useGetUserParticipantsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserParticipantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetUserParticipantsQuery({
- *   variables: {
- *      uid: // value for 'uid'
- *   },
- * });
- */
-export function useGetUserParticipantsQuery(baseOptions: Apollo.QueryHookOptions<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>(GetUserParticipantsDocument, options);
-      }
-export function useGetUserParticipantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>(GetUserParticipantsDocument, options);
-        }
-export type GetUserParticipantsQueryHookResult = ReturnType<typeof useGetUserParticipantsQuery>;
-export type GetUserParticipantsLazyQueryHookResult = ReturnType<typeof useGetUserParticipantsLazyQuery>;
-export type GetUserParticipantsQueryResult = Apollo.QueryResult<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>;
 export const CreateFavoriteDocument = gql`
     mutation CreateFavorite($uid: String!, $projectId: ID!) {
   createFavorite(input: {uid: $uid, projectId: $projectId}) {
