@@ -44,7 +44,7 @@ export const CREATE_PROJECT = gql`
     $recruitmentNumbers: Int
     $toolLink: String
     $contribution: String
-    $ownerId: Int!
+    $ownerUid: String!
   ) {
     createProject(
       input: {
@@ -57,7 +57,7 @@ export const CREATE_PROJECT = gql`
         recruitmentNumbers: $recruitmentNumbers
         toolLink: $toolLink
         contribution: $contribution
-        ownerId: $ownerId
+        ownerUid: $ownerUid
       }
     ) {
       project {
@@ -107,3 +107,35 @@ export const GET_USER_PARTICIPANTS = gql`
     }
   }
 `;
+
+export const CREATE_FAVORITE = gql`
+  mutation CreateFavorite($uid: String!, $projectId: ID!) {
+    createFavorite(input: { uid: $uid, projectId: $projectId }) {
+      favorite {
+        id
+        user {
+          id
+        }
+        project {
+          id
+        }
+      }
+    }
+  }
+`;
+
+// export const DELETE_FAVORITE = gql`
+//   mutation DeleteFavorite($id: ID!) {
+//     deleteFavorite(input: { id: $id }) {
+//       favorite {
+//         id
+//         user {
+//           id
+//         }
+//         project {
+//           id
+//         }
+//       }
+//     }
+//   }
+// `;
