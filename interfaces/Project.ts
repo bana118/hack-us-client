@@ -1,18 +1,14 @@
 import { gql } from "@apollo/client";
 
-export type Project = {
-  id?: string;
-  name?: string;
-  detail?: string;
-  language?: string;
-  status?: string;
-};
-
 export const GET_PROJECTS = gql`
-  query GetProjects {
-    projects {
+  query GetProjects(
+    $uid: String!
+    $projectsFirst: Int!
+    $userParticipantsFirst: Int!
+    $userFavoritsFirst: Int!
+  ) {
+    projects(first: $projectsFirst) {
       nodes {
-        id
         name
         description
         startsAt
@@ -25,8 +21,48 @@ export const GET_PROJECTS = gql`
         toolLink
         contribution
         owner {
-          id
           name
+        }
+      }
+    }
+    userParticipants(uid: $uid, first: $userParticipantsFirst) {
+      nodes {
+        project {
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            name
+          }
+        }
+      }
+    }
+    userFavorites(uid: $uid, first: $userFavoritsFirst) {
+      nodes {
+        id
+        project {
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            name
+          }
         }
       }
     }

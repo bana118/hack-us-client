@@ -1,0 +1,105 @@
+import { css } from "@emotion/react";
+import { Box, Container, IconButton } from "@material-ui/core";
+import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
+import StarIcon from "@material-ui/icons/Star";
+import StarOutlineIcon from "@material-ui/icons/StarOutline";
+
+const container = css`
+  background-color: #ffffff;
+  width: 400px;
+  height: 150px;
+  padding: 20px;
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+  display: flex;
+`;
+
+const projectStyle = css`
+  margin: 0;
+  padding: 0;
+`;
+
+const projectNameStyle = css`
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 10px;
+`;
+
+const projectDetailStyle = css`
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 10px;
+`;
+
+const projectLanguageStyle = css`
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 10px;
+`;
+
+const projectStatusStyle = css`
+  font-size: 14px;
+  margin: 0px;
+`;
+
+type ProjectContainerProps = {
+  name?: string;
+  description?: string;
+  languages?: LanguageInput[];
+  startsAt?: string | null;
+  endsAt?: string | null;
+};
+
+export const ProjectContainer = ({
+  name = "Default Name",
+  description = "Default Description",
+  languages = [],
+  startsAt = null,
+  endsAt = null,
+}: ProjectContainerProps): JSX.Element => {
+  // const [createFavoriteMutation] = useCreateFavoriteMutation();
+
+  const clickFavorite = async () => {
+    console.log("ClickFavorite");
+  };
+
+  // TODO 開発ステータスの追加
+  // TODO descriptionを適当な文字数で切る
+  return (
+    <Container css={container}>
+      <Container css={projectStyle}>
+        <p css={projectNameStyle}>{name}</p>
+        <p css={projectDetailStyle}>{description}</p>
+        <p css={projectLanguageStyle}>
+          言語:{" "}
+          {languages.map((language, index) => {
+            if (index == languages.length - 1)
+              return (
+                <span key={index} css={{ color: language.color }}>
+                  {language.name}
+                </span>
+              );
+            return (
+              <span key={index} css={{ color: language.color }}>
+                {language.name},{" "}
+              </span>
+            );
+          })}
+        </p>
+        {startsAt && endsAt && (
+          <p css={projectStatusStyle}>
+            {new Date(startsAt).toLocaleDateString()}～
+            {new Date(endsAt).toLocaleDateString()}
+          </p>
+        )}
+      </Container>
+      <Box>
+        <IconButton onClick={clickFavorite}>
+          <StarOutlineIcon />
+        </IconButton>
+      </Box>
+    </Container>
+  );
+};
