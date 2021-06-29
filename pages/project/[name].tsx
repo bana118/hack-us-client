@@ -11,15 +11,24 @@ const projectDetailStyle = css`
   flex-flow: column;
   width: 80vw;
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
 `;
 
-const titleStyle = css`
+const subTitleStyle = css`
   font-size: 20px;
   font-weight: bold;
+  padding-top: 20px;
+  padding-left: 20px;
 `;
 
 const nameStyle = css`
   font-size: 1.5em;
+  padding-top: 20px;
+  padding-left: 20px;
+`;
+
+const paragraphStyle = css`
+  padding-left: 20px;
 `;
 
 const linkTitle = css`
@@ -44,21 +53,23 @@ const ProjectDetail = (): JSX.Element => {
     <Layout>
       <Container css={projectDetailStyle}>
         <p css={nameStyle}>{name}</p>
-        <p>
+        <p css={paragraphStyle}>
           開発期間: {startsAt} ~ {endsAt}
         </p>
-        <h2 css={titleStyle}>プロジェクトの説明</h2>
-        <p>{description}</p>
-        <h2 css={titleStyle}>使用言語</h2>
+        <h2 css={subTitleStyle}>プロジェクトの説明</h2>
+        <p css={paragraphStyle}>{description}</p>
+        <h2 css={subTitleStyle}>使用言語</h2>
         <List>
           <ListItem>Java</ListItem>
           <ListItem>Python</ListItem>
           <ListItem>HTML</ListItem>
         </List>
-        <h2 css={titleStyle}>コントリビュートの方法</h2>
+        <h2 css={subTitleStyle}>募集人数</h2>
+        <p css={paragraphStyle}>{recruitmentNumbers}</p>
+        <h2 css={subTitleStyle}>コントリビュートの方法</h2>
       </Container>
       <Link href="/">
-        <a css={linkTitle}>&#65124; ホームに戻る</a>
+        <div css={linkTitle}>&#65124; ホームに戻る</div>
       </Link>
     </Layout>
   );

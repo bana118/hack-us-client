@@ -45,7 +45,7 @@ type ProjectContainerProps = {
   endsAt?: string | null;
   contribution?: string | null;
   id?: string | null;
-  recruitmentNumbers?: number | undefined;
+  recruitmentNumbers?: number | null;
 };
 
 export const ProjectContainer = ({
@@ -55,13 +55,13 @@ export const ProjectContainer = ({
   startsAt = null,
   endsAt = null,
   contribution = null,
-  recruitmentNumbers = 0,
+  recruitmentNumbers = null,
 }: ProjectContainerProps): JSX.Element => {
   const router = useRouter();
 
   const handleClick = (): void => {
     router.push({
-      pathname: "/project/[pid]",
+      pathname: "/project/[name]",
       // pathname: "../pages/index",
       query: {
         contribution: contribution,
