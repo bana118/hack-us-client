@@ -12,6 +12,7 @@ import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
 
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
+  uid?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
   userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
@@ -19,11 +20,22 @@ type IndexPageProps = {
 };
 
 const IndexPage = ({
+  uid,
   projects,
   userParticipants,
   userFavorits,
   errors,
 }: IndexPageProps): JSX.Element => {
+  console.log(userFavorits);
+
+  const isFavorite = (id: string | undefined) => {
+    if (userFavorits?.length !== 0) {
+      return userFavorits?.some((item) => item?.project.id === id);
+    }
+
+    return false;
+  };
+
   if (errors || !projects || !userParticipants || !userFavorits) {
     return (
       <Layout>
@@ -50,6 +62,9 @@ const IndexPage = ({
               return (
                 <Grid item xs={12} md={6} lg={4} key={index}>
                   <ProjectContainer
+                    id={project?.id}
+                    uid={uid}
+                    favorite={isFavorite(project?.id)}
                     name={project?.name}
                     description={project?.description}
                     languages={project?.languages}
@@ -68,6 +83,9 @@ const IndexPage = ({
               return (
                 <Grid item xs={12} md={6} lg={4} key={index}>
                   <ProjectContainer
+                    id={project?.id}
+                    uid={uid}
+                    favorite={true}
                     name={project?.name}
                     description={project?.description}
                     languages={project?.languages}
@@ -86,6 +104,9 @@ const IndexPage = ({
               return (
                 <Grid item xs={12} md={6} lg={4} key={index}>
                   <ProjectContainer
+                    id={project?.id}
+                    uid={uid}
+                    favorite={isFavorite(project?.id)}
                     name={project?.name}
                     description={project?.description}
                     languages={project?.languages}
@@ -126,6 +147,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log(data);
     return {
       props: {
+        uid: uid,
         projects: data.projects.nodes,
         userParticipants: data.userParticipants.nodes,
         userFavorits: data.userFavorites.nodes,

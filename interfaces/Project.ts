@@ -9,6 +9,7 @@ export const GET_PROJECTS = gql`
   ) {
     projects(first: $projectsFirst) {
       nodes {
+        id
         name
         description
         startsAt
@@ -20,14 +21,12 @@ export const GET_PROJECTS = gql`
         recruitmentNumbers
         toolLink
         contribution
-        owner {
-          name
-        }
       }
     }
     userParticipants(uid: $uid, first: $userParticipantsFirst) {
       nodes {
         project {
+          id
           name
           description
           startsAt
@@ -39,9 +38,6 @@ export const GET_PROJECTS = gql`
           recruitmentNumbers
           toolLink
           contribution
-          owner {
-            name
-          }
         }
       }
     }
@@ -49,6 +45,7 @@ export const GET_PROJECTS = gql`
       nodes {
         id
         project {
+          id
           name
           description
           startsAt
@@ -60,9 +57,6 @@ export const GET_PROJECTS = gql`
           recruitmentNumbers
           toolLink
           contribution
-          owner {
-            name
-          }
         }
       }
     }
@@ -117,3 +111,35 @@ export const CREATE_PROJECT = gql`
     }
   }
 `;
+
+export const CREATE_FAVORITE = gql`
+  mutation CreateFavorite($uid: String!, $projectId: ID!) {
+    createFavorite(input: { uid: $uid, projectId: $projectId }) {
+      favorite {
+        id
+        user {
+          id
+        }
+        project {
+          id
+        }
+      }
+    }
+  }
+`;
+
+// export const DELETE_FAVORITE = gql`
+//   mutation DeleteFavorite($id: ID!) {
+//     deleteFavorite(input: { id: $id }) {
+//       favorite {
+//         id
+//         user {
+//           id
+//         }
+//         project {
+//           id
+//         }
+//       }
+//     }
+//   }
+// `;
