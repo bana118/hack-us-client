@@ -500,14 +500,11 @@ export type GetProjectsQuery = (
     { __typename?: 'ProjectConnection' }
     & { nodes?: Maybe<Array<Maybe<(
       { __typename?: 'Project' }
-      & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+      & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
       & { languages: Array<(
         { __typename?: 'Language' }
         & Pick<Language, 'name' | 'color'>
-      )>, owner: (
-        { __typename?: 'User' }
-        & Pick<User, 'name'>
-      ) }
+      )> }
     )>>> }
   ), userParticipants: (
     { __typename?: 'ParticipantConnection' }
@@ -515,14 +512,11 @@ export type GetProjectsQuery = (
       { __typename?: 'Participant' }
       & { project: (
         { __typename?: 'Project' }
-        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )>, owner: (
-          { __typename?: 'User' }
-          & Pick<User, 'name'>
-        ) }
+        )> }
       ) }
     )>>> }
   ), userFavorites: (
@@ -532,14 +526,11 @@ export type GetProjectsQuery = (
       & Pick<Favorite, 'id'>
       & { project: (
         { __typename?: 'Project' }
-        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )>, owner: (
-          { __typename?: 'User' }
-          & Pick<User, 'name'>
-        ) }
+        )> }
       ) }
     )>>> }
   ) }
@@ -574,6 +565,30 @@ export type CreateProjectMutation = (
         & Pick<User, 'id' | 'name'>
       ) }
     )> }
+  )> }
+);
+
+export type CreateFavoriteMutationVariables = Exact<{
+  uid: Scalars['String'];
+  projectId: Scalars['ID'];
+}>;
+
+
+export type CreateFavoriteMutation = (
+  { __typename?: 'Mutation' }
+  & { createFavorite?: Maybe<(
+    { __typename?: 'CreateFavoritePayload' }
+    & { favorite: (
+      { __typename?: 'Favorite' }
+      & Pick<Favorite, 'id'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id'>
+      ), project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id'>
+      ) }
+    ) }
   )> }
 );
 
@@ -648,6 +663,7 @@ export const GetProjectsDocument = gql`
     query GetProjects($uid: String!, $projectsFirst: Int!, $userParticipantsFirst: Int!, $userFavoritsFirst: Int!) {
   projects(first: $projectsFirst) {
     nodes {
+      id
       name
       description
       startsAt
@@ -659,14 +675,12 @@ export const GetProjectsDocument = gql`
       recruitmentNumbers
       toolLink
       contribution
-      owner {
-        name
-      }
     }
   }
   userParticipants(uid: $uid, first: $userParticipantsFirst) {
     nodes {
       project {
+        id
         name
         description
         startsAt
@@ -678,9 +692,6 @@ export const GetProjectsDocument = gql`
         recruitmentNumbers
         toolLink
         contribution
-        owner {
-          name
-        }
       }
     }
   }
@@ -688,6 +699,7 @@ export const GetProjectsDocument = gql`
     nodes {
       id
       project {
+        id
         name
         description
         startsAt
@@ -699,9 +711,6 @@ export const GetProjectsDocument = gql`
         recruitmentNumbers
         toolLink
         contribution
-        owner {
-          name
-        }
       }
     }
   }
@@ -799,6 +808,48 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const CreateFavoriteDocument = gql`
+    mutation CreateFavorite($uid: String!, $projectId: ID!) {
+  createFavorite(input: {uid: $uid, projectId: $projectId}) {
+    favorite {
+      id
+      user {
+        id
+      }
+      project {
+        id
+      }
+    }
+  }
+}
+    `;
+export type CreateFavoriteMutationFn = Apollo.MutationFunction<CreateFavoriteMutation, CreateFavoriteMutationVariables>;
+
+/**
+ * __useCreateFavoriteMutation__
+ *
+ * To run a mutation, you first call `useCreateFavoriteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFavoriteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFavoriteMutation, { data, loading, error }] = useCreateFavoriteMutation({
+ *   variables: {
+ *      uid: // value for 'uid'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useCreateFavoriteMutation(baseOptions?: Apollo.MutationHookOptions<CreateFavoriteMutation, CreateFavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFavoriteMutation, CreateFavoriteMutationVariables>(CreateFavoriteDocument, options);
+      }
+export type CreateFavoriteMutationHookResult = ReturnType<typeof useCreateFavoriteMutation>;
+export type CreateFavoriteMutationResult = Apollo.MutationResult<CreateFavoriteMutation>;
+export type CreateFavoriteMutationOptions = Apollo.BaseMutationOptions<CreateFavoriteMutation, CreateFavoriteMutationVariables>;
 export const GetUsersDocument = gql`
     query GetUsers {
   users {
