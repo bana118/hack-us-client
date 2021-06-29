@@ -500,14 +500,11 @@ export type GetProjectsQuery = (
     { __typename?: 'ProjectConnection' }
     & { nodes?: Maybe<Array<Maybe<(
       { __typename?: 'Project' }
-      & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+      & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
       & { languages: Array<(
         { __typename?: 'Language' }
         & Pick<Language, 'name' | 'color'>
-      )>, owner: (
-        { __typename?: 'User' }
-        & Pick<User, 'name'>
-      ) }
+      )> }
     )>>> }
   ), userParticipants: (
     { __typename?: 'ParticipantConnection' }
@@ -515,14 +512,11 @@ export type GetProjectsQuery = (
       { __typename?: 'Participant' }
       & { project: (
         { __typename?: 'Project' }
-        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )>, owner: (
-          { __typename?: 'User' }
-          & Pick<User, 'name'>
-        ) }
+        )> }
       ) }
     )>>> }
   ), userFavorites: (
@@ -532,14 +526,11 @@ export type GetProjectsQuery = (
       & Pick<Favorite, 'id'>
       & { project: (
         { __typename?: 'Project' }
-        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )>, owner: (
-          { __typename?: 'User' }
-          & Pick<User, 'name'>
-        ) }
+        )> }
       ) }
     )>>> }
   ) }
@@ -672,6 +663,7 @@ export const GetProjectsDocument = gql`
     query GetProjects($uid: String!, $projectsFirst: Int!, $userParticipantsFirst: Int!, $userFavoritsFirst: Int!) {
   projects(first: $projectsFirst) {
     nodes {
+      id
       name
       description
       startsAt
@@ -683,14 +675,12 @@ export const GetProjectsDocument = gql`
       recruitmentNumbers
       toolLink
       contribution
-      owner {
-        name
-      }
     }
   }
   userParticipants(uid: $uid, first: $userParticipantsFirst) {
     nodes {
       project {
+        id
         name
         description
         startsAt
@@ -702,9 +692,6 @@ export const GetProjectsDocument = gql`
         recruitmentNumbers
         toolLink
         contribution
-        owner {
-          name
-        }
       }
     }
   }
@@ -712,6 +699,7 @@ export const GetProjectsDocument = gql`
     nodes {
       id
       project {
+        id
         name
         description
         startsAt
@@ -723,9 +711,6 @@ export const GetProjectsDocument = gql`
         recruitmentNumbers
         toolLink
         contribution
-        owner {
-          name
-        }
       }
     }
   }

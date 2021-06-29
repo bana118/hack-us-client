@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { css } from "@emotion/react";
 import { Box, Container, IconButton } from "@material-ui/core";
 import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
@@ -45,6 +46,9 @@ const projectStatusStyle = css`
 `;
 
 type ProjectContainerProps = {
+  id?: string;
+  uid?: string;
+  favorite: boolean | undefined;
   name?: string;
   description?: string;
   languages?: LanguageInput[];
@@ -53,16 +57,35 @@ type ProjectContainerProps = {
 };
 
 export const ProjectContainer = ({
+  id = "",
+  uid = "",
+  favorite = false,
   name = "Default Name",
   description = "Default Description",
   languages = [],
   startsAt = null,
   endsAt = null,
 }: ProjectContainerProps): JSX.Element => {
-  // const [createFavoriteMutation] = useCreateFavoriteMutation();
+  const [changeIcon, setChangeIcon] = useState(favorite);
+
+  const [createFavoriteMutation] = useCreateFavoriteMutation();
 
   const clickFavorite = async () => {
-    console.log("ClickFavorite");
+    if (!favorite) {
+      try {
+        await createFavoriteMutation({
+          variables: {
+            uid: uid,
+            projectId: id,
+          },
+        });
+        setChangeIcon(true);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      // TODO deleteFavoriteMutationの実装
+    }
   };
 
   // TODO 開発ステータスの追加
@@ -97,7 +120,7 @@ export const ProjectContainer = ({
       </Container>
       <Box>
         <IconButton onClick={clickFavorite}>
-          <StarOutlineIcon />
+          {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
         </IconButton>
       </Box>
     </Container>
