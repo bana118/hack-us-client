@@ -12,6 +12,11 @@ const projectDetailStyle = css`
   width: 80vw;
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
+  padding-bottom: 20px;
+`;
+
+const titleStyle = css`
+  margin-left: 3vw;
 `;
 
 const subTitleStyle = css`
@@ -19,16 +24,11 @@ const subTitleStyle = css`
   font-weight: bold;
   padding-top: 20px;
   padding-left: 20px;
-`;
-
-const nameStyle = css`
-  font-size: 1.5em;
-  padding-top: 20px;
-  padding-left: 20px;
+  margin: 0;
 `;
 
 const paragraphStyle = css`
-  padding-left: 20px;
+  padding-left: 40px;
 `;
 
 const linkTitle = css`
@@ -37,36 +37,64 @@ const linkTitle = css`
   cursor: pointer;
 `;
 
+type ProjectDetailType = {
+  contribution?: string;
+  name: string;
+  description: string;
+  languages: Array<string>;
+  startsAt: string;
+  endsAt: string;
+  recruitmentNumbers: string;
+};
+
 const ProjectDetail = (): JSX.Element => {
   const router = useRouter();
   const {
     contribution,
     name,
     description,
+    languages,
     startsAt,
     endsAt,
     recruitmentNumbers,
   } = router.query;
   console.log(router.query);
 
+  // avoid undefined error of map function
+  const detail: ProjectDetailType = {
+    contribution: contribution as string,
+    name: name as string,
+    description: description as string,
+    languages: languages as Array<string>,
+    startsAt: startsAt as string,
+    endsAt: endsAt as string,
+    recruitmentNumbers: recruitmentNumbers as string,
+  };
+
   return (
     <Layout>
+      <h1 css={titleStyle}>Detail Project</h1>
       <Container css={projectDetailStyle}>
-        <p css={nameStyle}>{name}</p>
+        <p css={subTitleStyle}>{detail.name}</p>
         <p css={paragraphStyle}>
-          開発期間: {startsAt} ~ {endsAt}
+          開発期間: {detail.startsAt} ~ {detail.endsAt}
         </p>
         <h2 css={subTitleStyle}>プロジェクトの説明</h2>
-        <p css={paragraphStyle}>{description}</p>
+        <p css={paragraphStyle}>{detail.description}</p>
         <h2 css={subTitleStyle}>使用言語</h2>
         <List>
-          <ListItem>Java</ListItem>
-          <ListItem>Python</ListItem>
-          <ListItem>HTML</ListItem>
+          {detail.languages.map((language, index) => {
+            return (
+              <ListItem css={paragraphStyle} key={index}>
+                ・{language}
+              </ListItem>
+            );
+          })}
         </List>
         <h2 css={subTitleStyle}>募集人数</h2>
-        <p css={paragraphStyle}>{recruitmentNumbers}</p>
+        <p css={paragraphStyle}>{detail.recruitmentNumbers}</p>
         <h2 css={subTitleStyle}>コントリビュートの方法</h2>
+        <p css={paragraphStyle}>{detail.contribution}</p>
       </Container>
       <Link href="/">
         <div css={linkTitle}>&#65124; ホームに戻る</div>
@@ -74,30 +102,5 @@ const ProjectDetail = (): JSX.Element => {
     </Layout>
   );
 };
-
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   try {
-//     const { data } = await apolloClient.query<
-//       GetProjectQuery
-//     >({
-//       query: GET_PROJECT,
-//       variables: { id: id },
-//       fetchPolicy: "no-cache",
-//     });
-//     console.log(data.userParticipants.nodes);
-//     return {
-//       props: {
-//         newProjectsItem: newProjectsItem,
-//         myProjectsItem: data.userParticipants.nodes,
-//       },
-//     };
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-// export const getStaticProps: GetStaticProps = async () => {
-//   return;
-// }
 
 export default ProjectDetail;

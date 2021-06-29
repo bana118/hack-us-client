@@ -75,6 +75,11 @@ export const ProjectContainer = ({
   const router = useRouter();
 
   const projectClick = (): void => {
+    const languageNames: Array<string> = [];
+    languages.map((language, index) => {
+      languageNames.push(language.name);
+    });
+
     router.push({
       pathname: "/project/[name]",
       // pathname: "../pages/index",
@@ -85,7 +90,7 @@ export const ProjectContainer = ({
         // githubUrl: githubUrl,
         recruitmentNumbers: recruitmentNumbers,
         // toolLink: toolLink,
-        // languages: languages,
+        languages: languageNames,
         // updatedAt: updatedAt,
         // createdAt: createdAt,
         startsAt: startsAt,
