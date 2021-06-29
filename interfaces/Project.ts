@@ -1,10 +1,14 @@
 import { gql } from "@apollo/client";
 
 export const GET_PROJECTS = gql`
-  query GetProjects {
-    projects {
+  query GetProjects(
+    $uid: String!
+    $projectsFirst: Int!
+    $userParticipantsFirst: Int!
+    $userFavoritsFirst: Int!
+  ) {
+    projects(first: $projectsFirst) {
       nodes {
-        id
         name
         description
         startsAt
@@ -17,8 +21,48 @@ export const GET_PROJECTS = gql`
         toolLink
         contribution
         owner {
-          id
           name
+        }
+      }
+    }
+    userParticipants(uid: $uid, first: $userParticipantsFirst) {
+      nodes {
+        project {
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            name
+          }
+        }
+      }
+    }
+    userFavorites(uid: $uid, first: $userFavoritsFirst) {
+      nodes {
+        id
+        project {
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            name
+          }
         }
       }
     }
@@ -36,7 +80,7 @@ export const CREATE_PROJECT = gql`
     $recruitmentNumbers: Int
     $toolLink: String
     $contribution: String
-    $ownerId: Int!
+    $ownerUid: String!
   ) {
     createProject(
       input: {
@@ -49,7 +93,7 @@ export const CREATE_PROJECT = gql`
         recruitmentNumbers: $recruitmentNumbers
         toolLink: $toolLink
         contribution: $contribution
-        ownerId: $ownerId
+        ownerUid: $ownerUid
       }
     ) {
       project {
@@ -66,40 +110,6 @@ export const CREATE_PROJECT = gql`
         toolLink
         contribution
         owner {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-export const GET_PROJECT = gql`
-  query GetProject($id: String!) {
-    project(id: $id) {
-      id
-      name
-      description
-      githubUrl
-      startsAt
-      endsAt
-      languages {
-        name
-        color
-      }
-      recruitmentNumbers
-      toolLink
-      contribution
-    }
-  }
-`;
-
-export const GET_USER_PARTICIPANTS = gql`
-  query GetUserParticipants($uid: String!) {
-    userParticipants(uid: $uid) {
-      nodes {
-        id
-        project {
           id
           name
         }
