@@ -21,10 +21,10 @@ export const GET_USER = gql`
       description
       githubId
       githubIconUrl
-      contributionInfo {
+      contributions {
         language
         color
-        contributions
+        count
       }
     }
   }

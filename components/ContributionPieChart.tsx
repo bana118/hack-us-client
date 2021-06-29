@@ -1,41 +1,41 @@
 import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
-import { ContributionInfo } from "../types/graphql";
+import { GetUserQuery } from "../types/graphql";
 
 export type ContributionPieChartProps = {
-  contributionInfo: ContributionInfo[];
+  contributions: GetUserQuery["user"]["contributions"];
 };
 
 export const ContributionPieChart = ({
-  contributionInfo,
+  contributions,
 }: ContributionPieChartProps): JSX.Element => {
-  const mainContributionInfo = contributionInfo.slice(0, 5);
-  const totalContributions = contributionInfo
-    .map((info) => info.contributions)
+  const mainContributions = contributions.slice(0, 5);
+  const totalContributions = contributions
+    .map((info) => info.count)
     .reduce((total, current) => total + current);
   const otherContributions =
     totalContributions -
-    mainContributionInfo
-      .map((info) => info.contributions)
+    mainContributions
+      .map((info) => info.count)
       .reduce((total, current) => total + current);
 
   if (otherContributions > 0) {
-    mainContributionInfo.push({
-      language: "other",
+    mainContributions.push({
+      language: "Other",
       color: "#444444",
-      contributions: otherContributions,
+      count: otherContributions,
     });
   }
   return (
     <PieChart width={730} height={250}>
       <Pie
-        data={mainContributionInfo}
-        dataKey="contributions"
+        data={mainContributions}
+        dataKey="count"
         nameKey="language"
         fill="#8884d8"
         startAngle={450}
         endAngle={90}
       >
-        {mainContributionInfo.map((v, i) => (
+        {mainContributions.map((v, i) => (
           <Cell key={i} fill={v.color} />
         ))}
       </Pie>

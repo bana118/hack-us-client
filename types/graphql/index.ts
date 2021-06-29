@@ -16,10 +16,10 @@ export type Scalars = {
   ISO8601DateTime: any;
 };
 
-export type ContributionInfo = {
-  __typename?: 'ContributionInfo';
+export type Contribution = {
+  __typename?: 'Contribution';
   color: Scalars['String'];
-  contributions: Scalars['Int'];
+  count: Scalars['Int'];
   language: Scalars['String'];
 };
 
@@ -455,7 +455,7 @@ export type UpdateUserPayload = {
 
 export type User = {
   __typename?: 'User';
-  contributionInfo: Array<ContributionInfo>;
+  contributions: Array<Contribution>;
   createdAt: Scalars['ISO8601DateTime'];
   description: Scalars['String'];
   githubIconUrl: Scalars['String'];
@@ -486,7 +486,12 @@ export type UserEdge = {
   node?: Maybe<User>;
 };
 
-export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetProjectsQueryVariables = Exact<{
+  uid: Scalars['String'];
+  projectsFirst: Scalars['Int'];
+  userParticipantsFirst: Scalars['Int'];
+  userFavoritsFirst: Scalars['Int'];
+}>;
 
 
 export type GetProjectsQuery = (
@@ -495,13 +500,46 @@ export type GetProjectsQuery = (
     { __typename?: 'ProjectConnection' }
     & { nodes?: Maybe<Array<Maybe<(
       { __typename?: 'Project' }
-      & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+      & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
       & { languages: Array<(
         { __typename?: 'Language' }
         & Pick<Language, 'name' | 'color'>
       )>, owner: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'name'>
+        & Pick<User, 'name'>
+      ) }
+    )>>> }
+  ), userParticipants: (
+    { __typename?: 'ParticipantConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Participant' }
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'name'>
+        ) }
+      ) }
+    )>>> }
+  ), userFavorites: (
+    { __typename?: 'FavoriteConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Favorite' }
+      & Pick<Favorite, 'id'>
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'name'>
+        ) }
       ) }
     )>>> }
   ) }
@@ -537,26 +575,6 @@ export type CreateProjectMutation = (
       ) }
     )> }
   )> }
-);
-
-export type GetUserParticipantsQueryVariables = Exact<{
-  uid: Scalars['String'];
-}>;
-
-
-export type GetUserParticipantsQuery = (
-  { __typename?: 'Query' }
-  & { userParticipants: (
-    { __typename?: 'ParticipantConnection' }
-    & { nodes?: Maybe<Array<Maybe<(
-      { __typename?: 'Participant' }
-      & Pick<Participant, 'id'>
-      & { project: (
-        { __typename?: 'Project' }
-        & Pick<Project, 'id' | 'name'>
-      ) }
-    )>>> }
-  ) }
 );
 
 export type CreateFavoriteMutationVariables = Exact<{
@@ -607,9 +625,9 @@ export type GetUserQuery = (
   & { user: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
-    & { contributionInfo: Array<(
-      { __typename?: 'ContributionInfo' }
-      & Pick<ContributionInfo, 'language' | 'color' | 'contributions'>
+    & { contributions: Array<(
+      { __typename?: 'Contribution' }
+      & Pick<Contribution, 'language' | 'color' | 'count'>
     )> }
   ) }
 );
@@ -651,10 +669,9 @@ export type UpdateUserMutation = (
 
 
 export const GetProjectsDocument = gql`
-    query GetProjects {
-  projects {
+    query GetProjects($uid: String!, $projectsFirst: Int!, $userParticipantsFirst: Int!, $userFavoritsFirst: Int!) {
+  projects(first: $projectsFirst) {
     nodes {
-      id
       name
       description
       startsAt
@@ -667,8 +684,48 @@ export const GetProjectsDocument = gql`
       toolLink
       contribution
       owner {
-        id
         name
+      }
+    }
+  }
+  userParticipants(uid: $uid, first: $userParticipantsFirst) {
+    nodes {
+      project {
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+        owner {
+          name
+        }
+      }
+    }
+  }
+  userFavorites(uid: $uid, first: $userFavoritsFirst) {
+    nodes {
+      id
+      project {
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+        owner {
+          name
+        }
       }
     }
   }
@@ -687,10 +744,14 @@ export const GetProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useGetProjectsQuery({
  *   variables: {
+ *      uid: // value for 'uid'
+ *      projectsFirst: // value for 'projectsFirst'
+ *      userParticipantsFirst: // value for 'userParticipantsFirst'
+ *      userFavoritsFirst: // value for 'userFavoritsFirst'
  *   },
  * });
  */
-export function useGetProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+export function useGetProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
       }
@@ -762,47 +823,6 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
-export const GetUserParticipantsDocument = gql`
-    query GetUserParticipants($uid: String!) {
-  userParticipants(uid: $uid) {
-    nodes {
-      id
-      project {
-        id
-        name
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetUserParticipantsQuery__
- *
- * To run a query within a React component, call `useGetUserParticipantsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserParticipantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetUserParticipantsQuery({
- *   variables: {
- *      uid: // value for 'uid'
- *   },
- * });
- */
-export function useGetUserParticipantsQuery(baseOptions: Apollo.QueryHookOptions<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>(GetUserParticipantsDocument, options);
-      }
-export function useGetUserParticipantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>(GetUserParticipantsDocument, options);
-        }
-export type GetUserParticipantsQueryHookResult = ReturnType<typeof useGetUserParticipantsQuery>;
-export type GetUserParticipantsLazyQueryHookResult = ReturnType<typeof useGetUserParticipantsLazyQuery>;
-export type GetUserParticipantsQueryResult = Apollo.QueryResult<GetUserParticipantsQuery, GetUserParticipantsQueryVariables>;
 export const CreateFavoriteDocument = gql`
     mutation CreateFavorite($uid: String!, $projectId: ID!) {
   createFavorite(input: {uid: $uid, projectId: $projectId}) {
@@ -892,10 +912,10 @@ export const GetUserDocument = gql`
     description
     githubId
     githubIconUrl
-    contributionInfo {
+    contributions {
       language
       color
-      contributions
+      count
     }
   }
 }
