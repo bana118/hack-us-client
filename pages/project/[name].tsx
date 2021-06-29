@@ -1,8 +1,6 @@
-import { GetStaticProps, GetStaticPaths } from "next";
-import { apolloClient } from "../../utils/apollo-client";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
-import { Container, List, ListItem, Link } from "@material-ui/core";
+import { Container, List, ListItem, Link, Button } from "@material-ui/core";
 import { css } from "@emotion/react";
 
 const projectDetailStyle = css`
@@ -35,6 +33,14 @@ const linkTitle = css`
   font-size: 14px;
   color: #3e74e8;
   cursor: pointer;
+`;
+
+const button = css`
+  border-radius: 100px;
+  height: 64px;
+  margin-left: 40%;
+  margin-right: 40%;
+  min-width: 200px;
 `;
 
 type ProjectDetailType = {
@@ -95,6 +101,10 @@ const ProjectDetail = (): JSX.Element => {
         <p css={paragraphStyle}>{detail.recruitmentNumbers}</p>
         <h2 css={subTitleStyle}>コントリビュートの方法</h2>
         <p css={paragraphStyle}>{detail.contribution}</p>
+
+        <Button css={button} type="submit" variant="contained">
+          プロジェクトに応募する
+        </Button>
       </Container>
       <Link href="/">
         <div css={linkTitle}>&#65124; ホームに戻る</div>

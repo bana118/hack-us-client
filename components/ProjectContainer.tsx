@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { css } from "@emotion/react";
-import { Container, Button, Box, IconButton } from "@material-ui/core";
+import { Container, Box, IconButton } from "@material-ui/core";
 import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
-import { Project } from "../types/graphql";
 import { useRouter } from "next/router";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
@@ -76,7 +75,7 @@ export const ProjectContainer = ({
 
   const projectClick = (): void => {
     const languageNames: Array<string> = [];
-    languages.map((language, index) => {
+    languages.map((language) => {
       languageNames.push(language.name);
     });
 
