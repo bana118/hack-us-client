@@ -41,15 +41,19 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
         setAuthUser(u);
         nookies.set(undefined, tokenKeyName, token, { path: "/" });
         nookies.set(undefined, uidKeyName, u.uid, { path: "/" });
-        await getLoginResult();
-        const { data } = await apolloClient.query<
-          GetUserQuery,
-          GetUserQueryVariables
-        >({
-          query: GET_USER,
-          variables: { uid: u.uid },
-        });
-        setUser(data.user);
+        try {
+          await getLoginResult();
+          const { data } = await apolloClient.query<
+            GetUserQuery,
+            GetUserQueryVariables
+          >({
+            query: GET_USER,
+            variables: { uid: u.uid },
+          });
+          setUser(data.user);
+        } catch (error) {
+          console.error(error);
+        }
       }
     });
 

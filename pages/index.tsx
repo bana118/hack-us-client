@@ -1,100 +1,92 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
-import { ProjectComp } from "../components/Project";
-import { GET_USER_PARTICIPANTS } from "../interfaces/Project";
-import { GET_USER } from "../interfaces/User";
+import { ProjectContainer } from "../components/ProjectContainer";
+import { GET_PROJECTS } from "../interfaces/Project";
 import { GetServerSideProps } from "next";
-import { Container, Box, Grid } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
 import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
-import {
-  GetUserParticipantsQuery,
-  GetUserParticipantsQueryVariables,
-  Participant,
-  Project,
-  User,
-} from "../types/graphql";
-import React, { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import Router from "next/router";
+import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
 
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
-  newProjectsItem: Project[];
-  myProjectsItem: Participant[];
+  projects?: GetProjectsQuery["projects"]["nodes"];
+  userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
+  userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
+  errors?: string;
 };
 
-// const getUser = async (uid: string) => {
-//   try {
-//     const { data } = await apolloClient.query({
-//       query: GET_USER,
-//       variables: { uid: uid },
-//       fetchPolicy: "no-cache",
-//     });
-//     console.log(data);
-//     return data.user;
-//   } catch (err) {
-//     return;
-//   }
-// };
-
 const IndexPage = ({
-  newProjectsItem,
-  myProjectsItem,
+  projects,
+  userParticipants,
+  userFavorits,
+  errors,
 }: IndexPageProps): JSX.Element => {
-  // const { user } = useContext(AuthContext);
-
-  // useEffect(() => {
-  //   if (user === null) {
-  //     Router.push("/");
-  //   }
-  // }, [user]);
+  if (errors || !projects || !userParticipants || !userFavorits) {
+    return (
+      <Layout>
+        <p>
+          <span style={{ color: "red" }}>Error:</span> {errors}
+        </p>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <MyHead title="Hack Us"></MyHead>
       <Box>
-        {/* <p>おすすめプロジェクトなどを表示する予定</p> */}
-        <MyTabs labels={["New Projects", "Likes", "My Projects"]}>
-          <Grid container className="newProjects">
-            {newProjectsItem.map((x, idx) => {
+        <MyTabs
+          labels={[
+            "New Projects",
+            "Favorite Projects",
+            "Participating Projects",
+          ]}
+        >
+          <Grid container className="new-projects">
+            {projects.map((project, index) => {
               return (
-                <Grid item xs={12} md={6} lg={4} key={idx}>
-                  <ProjectComp
-                    id={x.id}
-                    name={x.name}
-                    description={x.description}
-                    createdAt={x.createdAt}
-                    owner={x.owner}
-                    updatedAt={x.updatedAt}
+                <Grid item xs={12} md={6} lg={4} key={index}>
+                  <ProjectContainer
+                    name={project?.name}
+                    description={project?.description}
+                    languages={project?.languages}
+                    startsAt={project?.startsAt}
+                    endsAt={project?.endsAt}
                   />
                 </Grid>
               );
             })}
           </Grid>
-          <Container className="likes">
-            {/* <ProjectComp
-              id={newProjectsItem[0].id}
-              name={newProjectsItem[0].name}
-              description={newProjectsItem[0].description}
-              createdAt={newProjectsItem[0].createdAt}
-              owner={newProjectsItem[0].owner}
-              updatedAt={newProjectsItem[0].updatedAt}
-            /> */}
-          </Container>
-          <Grid container className="myProjects">
-            {myProjectsItem.map((x, idx) => {
+          <Grid container className="favorite-projects">
+            {userFavorits.map((userFavorite, index) => {
+              const project = userFavorite?.project;
               return (
-                <Grid item xs={12} md={6} lg={4} key={idx}>
-                  <ProjectComp
-                    id={x.project.id}
-                    name={x.project.name}
-                    description={x.project.description}
-                    createdAt={x.project.createdAt}
-                    owner={x.project.owner}
-                    updatedAt={x.project.updatedAt}
+                <Grid item xs={12} md={6} lg={4} key={index}>
+                  <ProjectContainer
+                    name={project?.name}
+                    description={project?.description}
+                    languages={project?.languages}
+                    startsAt={project?.startsAt}
+                    endsAt={project?.endsAt}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+          <Grid container className="participanting-projects">
+            {userParticipants.map((userParticipant, index) => {
+              const project = userParticipant?.project;
+              return (
+                <Grid item xs={12} md={6} lg={4} key={index}>
+                  <ProjectContainer
+                    name={project?.name}
+                    description={project?.description}
+                    languages={project?.languages}
+                    startsAt={project?.startsAt}
+                    endsAt={project?.endsAt}
                   />
                 </Grid>
               );
@@ -109,79 +101,31 @@ const IndexPage = ({
 export default IndexPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // try {
-  //   const id = params?.id;
-  //   const { data } = await apolloClient.query({ query: GET_USERS });
-  //   console.log(data);
-  //   const item = data.users.find((user) => user.id === id);
-  //   return { props: { item } };
-  // } catch (err) {
-  //   return { props: { errors: err.message } };
-  // }
-
-  const cookies = nookies.get(context);
-  const uid = cookies[uidKeyName];
-
-  if (uid == null || uid.length == 0) {
-    const noObject: Array<Project> = [];
-    return {
-      props: { newProjectsItem: noObject, myProjectsItem: noObject },
-    };
-  }
-
-  // const testUser: User = {
-  //   contributionInfo: "test",
-  //   createdAt: "test",
-  //   description: "test",
-  //   githubIconUrl: "test",
-  //   githubId: "test",
-  //   id: "test",
-  //   name: "test",
-  //   uid: "test",
-  //   updatedAt: "test",
-  // };
-
-  const newProjectsItem: Array<Project> = [
-    // {
-    //   contribution: "test",
-    //   createdAt: "test",
-    //   description: "test",
-    //   endsAt: "test",
-    //   githubUrl: "test",
-    //   id: "test",
-    //   name: "test",
-    //   owner: user,
-    //   // recruitmentNumbers: 2,
-    //   startsAt: "test",
-    //   technology1: "test",
-    //   technology2: "test",
-    //   technology3: "test",
-    //   technology4: "test",
-    //   technology5: "test",
-    //   toolLink: "test",
-    //   updatedAt: "test",
-    // },
-  ];
-
   try {
+    const cookies = nookies.get(context);
+    const uid = cookies[uidKeyName];
     const { data } = await apolloClient.query<
-      GetUserParticipantsQuery,
-      GetUserParticipantsQueryVariables
+      GetProjectsQuery,
+      GetProjectsQueryVariables
     >({
-      query: GET_USER_PARTICIPANTS,
-      variables: { uid: uid },
+      query: GET_PROJECTS,
+      variables: {
+        uid: uid,
+        projectsFirst: 8,
+        userParticipantsFirst: 8,
+        userFavoritsFirst: 8,
+      },
       fetchPolicy: "no-cache",
     });
     console.log(data);
     return {
       props: {
-        newProjectsItem: newProjectsItem,
-        myProjectsItem: data.userParticipants.nodes,
+        projects: data.projects.nodes,
+        userParticipants: data.userParticipants.nodes,
+        userFavorits: data.userFavorites.nodes,
       },
     };
   } catch (err) {
-    console.log(err);
+    return { props: { errors: err.message } };
   }
-
-  return { props: { newProjectsItem } };
 };
