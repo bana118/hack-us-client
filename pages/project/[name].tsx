@@ -83,7 +83,8 @@ const ProjectDetail = (): JSX.Element => {
       <Container css={projectDetailStyle}>
         <p css={subTitleStyle}>{detail.name}</p>
         <p css={paragraphStyle}>
-          開発期間: {detail.startsAt} ~ {detail.endsAt}
+          開発期間: {new Date(detail.startsAt).toLocaleDateString()} ~{" "}
+          {new Date(detail.endsAt).toLocaleDateString()}
         </p>
         <h2 css={subTitleStyle}>プロジェクトの説明</h2>
         <p css={paragraphStyle}>{detail.description}</p>
