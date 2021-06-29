@@ -55,6 +55,8 @@ const IndexPage = ({
                     languages={project?.languages}
                     startsAt={project?.startsAt}
                     endsAt={project?.endsAt}
+                    contribution={project?.contribution}
+                    recruitmentNumbers={project?.recruitmentNumbers}
                   />
                 </Grid>
               );
@@ -71,6 +73,8 @@ const IndexPage = ({
                     languages={project?.languages}
                     startsAt={project?.startsAt}
                     endsAt={project?.endsAt}
+                    contribution={project?.contribution}
+                    recruitmentNumbers={project?.recruitmentNumbers}
                   />
                 </Grid>
               );
@@ -87,6 +91,8 @@ const IndexPage = ({
                     languages={project?.languages}
                     startsAt={project?.startsAt}
                     endsAt={project?.endsAt}
+                    contribution={project?.contribution}
+                    recruitmentNumbers={project?.recruitmentNumbers}
                   />
                 </Grid>
               );

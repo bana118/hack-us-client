@@ -1,5 +1,4 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { GET_PROJECT } from "../../interfaces/Project";
 import { apolloClient } from "../../utils/apollo-client";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
@@ -31,16 +30,25 @@ const linkTitle = css`
 
 const ProjectDetail = (): JSX.Element => {
   const router = useRouter();
-  const { pid } = router.query;
+  const {
+    contribution,
+    name,
+    description,
+    startsAt,
+    endsAt,
+    recruitmentNumbers,
+  } = router.query;
   console.log(router.query);
-  const project = router.query;
 
   return (
     <Layout>
       <Container css={projectDetailStyle}>
-        <p css={nameStyle}>{project.name}</p>
+        <p css={nameStyle}>{name}</p>
+        <p>
+          開発期間: {startsAt} ~ {endsAt}
+        </p>
         <h2 css={titleStyle}>プロジェクトの説明</h2>
-        <p>{project.description}</p>
+        <p>{description}</p>
         <h2 css={titleStyle}>使用言語</h2>
         <List>
           <ListItem>Java</ListItem>

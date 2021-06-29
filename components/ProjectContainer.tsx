@@ -1,6 +1,8 @@
 import { css } from "@emotion/react";
-import { Container } from "@material-ui/core";
+import { Container, Button } from "@material-ui/core";
 import { LanguageInput } from "../types/graphql";
+import { Project } from "../types/graphql";
+import { useRouter } from "next/router";
 
 const projectStyle = css`
   background-color: #ffffff;
@@ -41,6 +43,9 @@ type ProjectContainerProps = {
   languages?: LanguageInput[];
   startsAt?: string | null;
   endsAt?: string | null;
+  contribution?: string | null;
+  id?: string | null;
+  recruitmentNumbers?: number | undefined;
 };
 
 export const ProjectContainer = ({
@@ -49,12 +54,36 @@ export const ProjectContainer = ({
   languages = [],
   startsAt = null,
   endsAt = null,
+  contribution = null,
+  recruitmentNumbers = 0,
 }: ProjectContainerProps): JSX.Element => {
+  const router = useRouter();
+
+  const handleClick = (): void => {
+    router.push({
+      pathname: "/project/[pid]",
+      // pathname: "../pages/index",
+      query: {
+        contribution: contribution,
+        name: name,
+        description: description,
+        // githubUrl: githubUrl,
+        recruitmentNumbers: recruitmentNumbers,
+        // toolLink: toolLink,
+        // languages: languages,
+        // updatedAt: updatedAt,
+        // createdAt: createdAt,
+        startsAt: startsAt,
+        endsAt: endsAt,
+        // owner: owner.name,
+      },
+    });
+  };
   // TODO 開発ステータスの追加
   // TODO お気に入り機能の追加
   // TODO descriptionを適当な文字数で切る
   return (
-    <Container css={projectStyle}>
+    <Button css={projectStyle} onClick={handleClick}>
       <p css={projectNameStyle}>{name}</p>
       <p css={projectDetailStyle}>{description}</p>
       <p css={projectLanguageStyle}>
@@ -79,6 +108,6 @@ export const ProjectContainer = ({
           {new Date(endsAt).toLocaleDateString()}
         </p>
       )}
-    </Container>
+    </Button>
   );
 };
