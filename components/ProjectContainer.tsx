@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { css } from "@emotion/react";
-import { Container, Box, IconButton } from "@material-ui/core";
+import { Container, Box, IconButton, Button } from "@material-ui/core";
 import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 
@@ -14,6 +15,7 @@ const container = css`
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
   display: flex;
+  flex-flow: row;
 `;
 
 const projectStyle = css`
@@ -46,6 +48,10 @@ const projectStatusStyle = css`
   margin: 0px;
 `;
 
+const buttonStyle = css`
+  margin-left: auto;
+`;
+
 type ProjectContainerProps = {
   id?: string;
   uid?: string;
@@ -71,33 +77,67 @@ export const ProjectContainer = ({
   contribution = null,
   recruitmentNumbers = null,
 }: ProjectContainerProps): JSX.Element => {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const projectClick = (): void => {
-    const languageNames: Array<string> = [];
-    languages.map((language) => {
-      languageNames.push(language.name);
-    });
+  // const ProjectDisplay = React.forwardRef(function ProjectDisplay(
+  //   props,
+  //   ref
+  // ): JSX.Element {
+  //   return (
+  //     <Container ref={ref}>
+  //       <p css={projectNameStyle}>{name}</p>
+  //       <p css={projectDetailStyle}>{description}</p>
+  //       <p css={projectLanguageStyle}>
+  //         言語:{" "}
+  //         {languages.map((language, index) => {
+  //           if (index == languages.length - 1)
+  //             return (
+  //               <span key={index} css={{ color: language.color }}>
+  //                 {language.name}
+  //               </span>
+  //             );
+  //           return (
+  //             <span key={index} css={{ color: language.color }}>
+  //               {language.name},{" "}
+  //             </span>
+  //           );
+  //         })}
+  //       </p>
+  //       {startsAt && endsAt && (
+  //         <p css={projectStatusStyle}>
+  //           {new Date(startsAt).toLocaleDateString()}～
+  //           {new Date(endsAt).toLocaleDateString()}
+  //         </p>
+  //       )}
+  //     </Container>
+  //   );
+  // });
 
-    router.push({
-      pathname: "/project/[name]",
-      // pathname: "../pages/index",
-      query: {
-        contribution: contribution,
-        name: name,
-        description: description,
-        // githubUrl: githubUrl,
-        recruitmentNumbers: recruitmentNumbers,
-        // toolLink: toolLink,
-        languages: languageNames,
-        // updatedAt: updatedAt,
-        // createdAt: createdAt,
-        startsAt: startsAt,
-        endsAt: endsAt,
-        // owner: owner.name,
-      },
-    });
-  };
+  // const projectClick = (): void => {
+  //   const languageNames: Array<string> = [];
+  //   languages.map((language) => {
+  //     languageNames.push(language.name);
+  //   });
+
+  //   router.push({
+  //     pathname: "/project/[name]",
+  //     // pathname: "../pages/index",
+  //     query: {
+  //       contribution: contribution,
+  //       name: name,
+  //       description: description,
+  //       // githubUrl: githubUrl,
+  //       recruitmentNumbers: recruitmentNumbers,
+  //       // toolLink: toolLink,
+  //       languages: languageNames,
+  //       // updatedAt: updatedAt,
+  //       // createdAt: createdAt,
+  //       startsAt: startsAt,
+  //       endsAt: endsAt,
+  //       // owner: owner.name,
+  //     },
+  //   });
+  // };
 
   const [changeIcon, setChangeIcon] = useState(favorite);
 
@@ -121,37 +161,47 @@ export const ProjectContainer = ({
     }
   };
 
+  const ref = useRef();
+
   // TODO 開発ステータスの追加
   // TODO descriptionを適当な文字数で切る
   return (
     <Container css={container}>
-      <Container css={projectStyle} onClick={projectClick}>
-        <p css={projectNameStyle}>{name}</p>
-        <p css={projectDetailStyle}>{description}</p>
-        <p css={projectLanguageStyle}>
-          言語:{" "}
-          {languages.map((language, index) => {
-            if (index == languages.length - 1)
+      <Link
+        css={projectStyle}
+        as={"/project/" + id}
+        href={{ pathname: "/project/[id]", query: { id: id } }}
+        passHref
+      >
+        {/* <ProjectDisplay ref={ref} /> */}
+        <Button>
+          <p css={projectNameStyle}>{name}</p>
+          <p css={projectDetailStyle}>{description}</p>
+          <p css={projectLanguageStyle}>
+            言語:{" "}
+            {languages.map((language, index) => {
+              if (index == languages.length - 1)
+                return (
+                  <span key={index} css={{ color: language.color }}>
+                    {language.name}
+                  </span>
+                );
               return (
                 <span key={index} css={{ color: language.color }}>
-                  {language.name}
+                  {language.name},{" "}
                 </span>
               );
-            return (
-              <span key={index} css={{ color: language.color }}>
-                {language.name},{" "}
-              </span>
-            );
-          })}
-        </p>
-        {startsAt && endsAt && (
-          <p css={projectStatusStyle}>
-            {new Date(startsAt).toLocaleDateString()}～
-            {new Date(endsAt).toLocaleDateString()}
+            })}
           </p>
-        )}
-      </Container>
-      <Box>
+          {startsAt && endsAt && (
+            <p css={projectStatusStyle}>
+              {new Date(startsAt).toLocaleDateString()}～
+              {new Date(endsAt).toLocaleDateString()}
+            </p>
+          )}
+        </Button>
+      </Link>
+      <Box css={buttonStyle}>
         <IconButton onClick={clickFavorite}>
           {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
         </IconButton>
