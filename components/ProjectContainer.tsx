@@ -1,8 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { css } from "@emotion/react";
 import { Container, Box, IconButton, Button } from "@material-ui/core";
 import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
@@ -11,7 +10,6 @@ const container = css`
   background-color: #ffffff;
   width: 400px;
   height: 150px;
-  padding: 20px;
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
   display: flex;
@@ -21,6 +19,9 @@ const container = css`
 const projectStyle = css`
   margin: 0;
   padding: 0;
+  width: 100%;
+  flex-flow: column;
+  color: #000000;
 `;
 
 const projectNameStyle = css`
@@ -28,24 +29,29 @@ const projectNameStyle = css`
   font-weight: bold;
   margin-top: 0;
   margin-bottom: 10px;
+  margin-right: auto;
 `;
 
 const projectDetailStyle = css`
   font-size: 14px;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 3px;
+  margin-right: auto;
 `;
 
 const projectLanguageStyle = css`
   font-size: 14px;
   font-weight: bold;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 3px;
+  margin-right: auto;
 `;
 
 const projectStatusStyle = css`
   font-size: 14px;
   margin: 0px;
+  margin-right: auto;
+  margin-right: auto;
 `;
 
 const buttonStyle = css`
@@ -77,68 +83,6 @@ export const ProjectContainer = ({
   contribution = null,
   recruitmentNumbers = null,
 }: ProjectContainerProps): JSX.Element => {
-  // const router = useRouter();
-
-  // const ProjectDisplay = React.forwardRef(function ProjectDisplay(
-  //   props,
-  //   ref
-  // ): JSX.Element {
-  //   return (
-  //     <Container ref={ref}>
-  //       <p css={projectNameStyle}>{name}</p>
-  //       <p css={projectDetailStyle}>{description}</p>
-  //       <p css={projectLanguageStyle}>
-  //         言語:{" "}
-  //         {languages.map((language, index) => {
-  //           if (index == languages.length - 1)
-  //             return (
-  //               <span key={index} css={{ color: language.color }}>
-  //                 {language.name}
-  //               </span>
-  //             );
-  //           return (
-  //             <span key={index} css={{ color: language.color }}>
-  //               {language.name},{" "}
-  //             </span>
-  //           );
-  //         })}
-  //       </p>
-  //       {startsAt && endsAt && (
-  //         <p css={projectStatusStyle}>
-  //           {new Date(startsAt).toLocaleDateString()}～
-  //           {new Date(endsAt).toLocaleDateString()}
-  //         </p>
-  //       )}
-  //     </Container>
-  //   );
-  // });
-
-  // const projectClick = (): void => {
-  //   const languageNames: Array<string> = [];
-  //   languages.map((language) => {
-  //     languageNames.push(language.name);
-  //   });
-
-  //   router.push({
-  //     pathname: "/project/[name]",
-  //     // pathname: "../pages/index",
-  //     query: {
-  //       contribution: contribution,
-  //       name: name,
-  //       description: description,
-  //       // githubUrl: githubUrl,
-  //       recruitmentNumbers: recruitmentNumbers,
-  //       // toolLink: toolLink,
-  //       languages: languageNames,
-  //       // updatedAt: updatedAt,
-  //       // createdAt: createdAt,
-  //       startsAt: startsAt,
-  //       endsAt: endsAt,
-  //       // owner: owner.name,
-  //     },
-  //   });
-  // };
-
   const [changeIcon, setChangeIcon] = useState(favorite);
 
   const [createFavoriteMutation] = useCreateFavoriteMutation();
@@ -161,20 +105,17 @@ export const ProjectContainer = ({
     }
   };
 
-  const ref = useRef();
-
   // TODO 開発ステータスの追加
   // TODO descriptionを適当な文字数で切る
   return (
     <Container css={container}>
       <Link
-        css={projectStyle}
         as={"/project/" + id}
         href={{ pathname: "/project/[id]", query: { id: id } }}
         passHref
       >
         {/* <ProjectDisplay ref={ref} /> */}
-        <Button>
+        <Button css={projectStyle}>
           <p css={projectNameStyle}>{name}</p>
           <p css={projectDetailStyle}>{description}</p>
           <p css={projectLanguageStyle}>

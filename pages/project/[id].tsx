@@ -9,6 +9,7 @@ import { GET_PROJECTS } from "../../interfaces/Project";
 import {
   GetProjectsQuery,
   GetProjectsQueryVariables,
+  Project,
 } from "../../types/graphql";
 
 const projectDetailStyle = css`
@@ -51,53 +52,74 @@ const button = css`
   min-width: 200px;
 `;
 
-type ProjectDetailType = {
-  contribution?: string;
-  name: string;
-  description: string;
-  languages: Array<string>;
-  startsAt: string;
-  endsAt: string;
-  recruitmentNumbers: string;
+type ProjectDetailProps = {
+  uid?: string;
+  projectId?: string;
+  projects?: GetProjectsQuery["projects"]["nodes"];
+  userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
+  errors?: string;
 };
 
-const ProjectDetail = (): JSX.Element => {
-  return (
-    <div>hello</div>
-    // <Layout>
-    //   <h1 css={titleStyle}>Detail Project</h1>
-    //   <Container css={projectDetailStyle}>
-    //     <p css={subTitleStyle}>{detail.name}</p>
-    //     <p css={paragraphStyle}>
-    //       開発期間: {new Date(detail.startsAt).toLocaleDateString()} ~{" "}
-    //       {new Date(detail.endsAt).toLocaleDateString()}
-    //     </p>
-    //     <h2 css={subTitleStyle}>プロジェクトの説明</h2>
-    //     <p css={paragraphStyle}>{detail.description}</p>
-    //     <h2 css={subTitleStyle}>使用言語</h2>
-    //     <List>
-    //       {detail.languages.map((language, index) => {
-    //         return (
-    //           <ListItem css={paragraphStyle} key={index}>
-    //             ・{language}
-    //           </ListItem>
-    //         );
-    //       })}
-    //     </List>
-    //     <h2 css={subTitleStyle}>募集人数</h2>
-    //     <p css={paragraphStyle}>{detail.recruitmentNumbers}</p>
-    //     <h2 css={subTitleStyle}>コントリビュートの方法</h2>
-    //     <p css={paragraphStyle}>{detail.contribution}</p>
+const ProjectDetail = ({
+  uid,
+  projectId,
+  projects,
+  userParticipants,
+  errors,
+}: ProjectDetailProps): JSX.Element => {
+  if (errors) {
+    return (
+      <Layout>
+        <p>
+          <span style={{ color: "red" }}>Error:</span> {errors}
+        </p>
+      </Layout>
+    );
+  }
 
-    //     <Button css={button} type="submit" variant="contained">
-    //       プロジェクトに応募する
-    //     </Button>
-    //   </Container>
-    //   <Link href="/">
-    //     <div css={linkTitle}>&#65124; ホームに戻る</div>
-    //   </Link>
-    // </Layout>
-  );
+  const targetProject = projects?.find((v) => v?.id === projectId);
+
+  if (!userParticipants?.find((v) => v?.project.id == projectId)) {
+    return (
+      <Layout>
+        <h1 css={titleStyle}>Detail Project</h1>
+        <Container css={projectDetailStyle}>
+          <p css={subTitleStyle}>{targetProject?.name}</p>
+          <p css={paragraphStyle}>
+            開発期間: {new Date(targetProject?.startsAt).toLocaleDateString()} ~{" "}
+            {new Date(targetProject?.endsAt).toLocaleDateString()}
+          </p>
+          <h2 css={subTitleStyle}>プロジェクトの説明</h2>
+          <p css={paragraphStyle}>{targetProject?.description}</p>
+          <h2 css={subTitleStyle}>使用言語</h2>
+          <List>
+            {targetProject?.languages.map((language, index) => {
+              return (
+                <ListItem css={paragraphStyle} key={index}>
+                  ・{language}
+                </ListItem>
+              );
+            })}
+          </List>
+          <h2 css={subTitleStyle}>募集人数</h2>
+          <p css={paragraphStyle}>{targetProject?.recruitmentNumbers}</p>
+          <h2 css={subTitleStyle}>コントリビュートの方法</h2>
+          <p css={paragraphStyle}>{targetProject?.contribution}</p>
+
+          <Button css={button} type="submit" variant="contained">
+            プロジェクトに応募する
+          </Button>
+        </Container>
+        <Link href="/">
+          <div css={linkTitle}>&#65124; ホームに戻る</div>
+        </Link>
+      </Layout>
+    );
+  } else {
+    return <div>hello</div>;
+  }
+
+  return <div>hello</div>;
 };
 
 export default ProjectDetail;
@@ -107,6 +129,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const uid = cookies[uidKeyName];
   console.log("log: ", context.query);
   console.log("hello");
+
   try {
     const { data } = await apolloClient.query<
       GetProjectsQuery,
@@ -125,9 +148,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         uid: uid,
+        projectId: context.query.id,
         projects: data.projects.nodes,
         userParticipants: data.userParticipants.nodes,
-        userFavorits: data.userFavorites.nodes,
       },
     };
   } catch (err) {
