@@ -81,6 +81,7 @@ const ProjectDetail = ({
 
   if (!userParticipants?.find((v) => v?.project.id == projectId)) {
     return (
+      //  not participant layout
       <Layout>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
@@ -116,10 +117,41 @@ const ProjectDetail = ({
       </Layout>
     );
   } else {
-    return <div>hello</div>;
+    //  true participant layout
+    return (
+      <Layout>
+        <h1 css={titleStyle}>Detail Project</h1>
+        <Container css={projectDetailStyle}>
+          <p css={subTitleStyle}>{targetProject?.name}</p>
+          <p css={paragraphStyle}>
+            開発期間: {new Date(targetProject?.startsAt).toLocaleDateString()} ~{" "}
+            {new Date(targetProject?.endsAt).toLocaleDateString()}
+          </p>
+          <h2 css={subTitleStyle}>プロジェクトの説明</h2>
+          <p css={paragraphStyle}>{targetProject?.description}</p>
+          <h2 css={subTitleStyle}>Discordのリンク</h2>
+          <p css={paragraphStyle}>{targetProject?.toolLink}</p>
+          <h2 css={subTitleStyle}>参加者</h2>
+          <p css={paragraphStyle}>いない</p>
+          <h2 css={subTitleStyle}>使用言語</h2>
+          <List>
+            {targetProject?.languages.map((language, index) => {
+              return (
+                <ListItem css={paragraphStyle} key={index}>
+                  ・{language.name}
+                </ListItem>
+              );
+            })}
+          </List>
+          <h2 css={subTitleStyle}>コントリビュートの方法</h2>
+          <p css={paragraphStyle}>{targetProject?.contribution}</p>
+        </Container>
+        <Link href="/">
+          <div css={linkTitle}>&#65124; ホームに戻る</div>
+        </Link>
+      </Layout>
+    );
   }
-
-  return <div>hello</div>;
 };
 
 export default ProjectDetail;
