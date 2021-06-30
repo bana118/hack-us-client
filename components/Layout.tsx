@@ -100,6 +100,10 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                     <ListItemText primary="プロジェクトの作成" />
                   </ListItem>
                   <Divider />
+                  <ListItem button component="a" href={"/my-project"}>
+                    <ListItemText primary="プロジェクトの管理" />
+                  </ListItem>
+                  <Divider />
                   <ListItem button onClick={() => auth.signOut()}>
                     <ListItemText primary="ログアウト" />
                   </ListItem>

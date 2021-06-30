@@ -26,8 +26,6 @@ const IndexPage = ({
   userFavorits,
   errors,
 }: IndexPageProps): JSX.Element => {
-  console.log(userFavorits);
-
   const isFavorite = (id: string | undefined) => {
     if (userFavorits?.length !== 0) {
       return userFavorits?.some((item) => item?.project.id === id);
