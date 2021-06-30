@@ -1,4 +1,5 @@
 import Layout from "../../components/Layout";
+import { FavoriteButton } from "../../components/FavoriteButton";
 import { Container, List, ListItem, Link, Button } from "@material-ui/core";
 import { css } from "@emotion/react";
 import { GetServerSideProps } from "next";
@@ -9,17 +10,16 @@ import { GET_PROJECTS } from "../../interfaces/Project";
 import {
   GetProjectsQuery,
   GetProjectsQueryVariables,
-  Project,
 } from "../../types/graphql";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
-  display-flex;
-  flex-flow: column;
   width: 80vw;
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
   padding-bottom: 20px;
+  display: flex;
+  flex-flow: row;
 `;
 
 const titleStyle = css`
@@ -52,11 +52,14 @@ const button = css`
   min-width: 200px;
 `;
 
+const buttonStyle = css``;
+
 type ProjectDetailProps = {
   uid?: string;
   projectId?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
+  userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
@@ -65,6 +68,7 @@ const ProjectDetail = ({
   projectId,
   projects,
   userParticipants,
+  userFavorits,
   errors,
 }: ProjectDetailProps): JSX.Element => {
   if (errors) {
@@ -77,6 +81,14 @@ const ProjectDetail = ({
     );
   }
 
+  const isFavorite = (id: string | undefined) => {
+    if (userFavorits?.length !== 0) {
+      return userFavorits?.some((item) => item?.project.id === id);
+    }
+
+    return false;
+  };
+
   const targetProject = projects?.find((v) => v?.id === projectId);
 
   if (!userParticipants?.find((v) => v?.project.id == projectId)) {
@@ -85,31 +97,39 @@ const ProjectDetail = ({
       <Layout>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
-          <p css={subTitleStyle}>{targetProject?.name}</p>
-          <p css={paragraphStyle}>
-            開発期間: {new Date(targetProject?.startsAt).toLocaleDateString()} ~{" "}
-            {new Date(targetProject?.endsAt).toLocaleDateString()}
-          </p>
-          <h2 css={subTitleStyle}>プロジェクトの説明</h2>
-          <p css={paragraphStyle}>{targetProject?.description}</p>
-          <h2 css={subTitleStyle}>使用言語</h2>
-          <List>
-            {targetProject?.languages.map((language, index) => {
-              return (
-                <ListItem css={paragraphStyle} key={index}>
-                  ・{language.name}
-                </ListItem>
-              );
-            })}
-          </List>
-          <h2 css={subTitleStyle}>募集人数</h2>
-          <p css={paragraphStyle}>{targetProject?.recruitmentNumbers}</p>
-          <h2 css={subTitleStyle}>コントリビュートの方法</h2>
-          <p css={paragraphStyle}>{targetProject?.contribution}</p>
+          <Container>
+            <p css={subTitleStyle}>{targetProject?.name}</p>
+            <p css={paragraphStyle}>
+              開発期間: {new Date(targetProject?.startsAt).toLocaleDateString()}{" "}
+              ~ {new Date(targetProject?.endsAt).toLocaleDateString()}
+            </p>
+            <h2 css={subTitleStyle}>プロジェクトの説明</h2>
+            <p css={paragraphStyle}>{targetProject?.description}</p>
+            <h2 css={subTitleStyle}>使用言語</h2>
+            <List>
+              {targetProject?.languages.map((language, index) => {
+                return (
+                  <ListItem css={paragraphStyle} key={index}>
+                    ・{language.name}
+                  </ListItem>
+                );
+              })}
+            </List>
+            <h2 css={subTitleStyle}>募集人数</h2>
+            <p css={paragraphStyle}>{targetProject?.recruitmentNumbers}</p>
+            <h2 css={subTitleStyle}>コントリビュートの方法</h2>
+            <p css={paragraphStyle}>{targetProject?.contribution}</p>
 
-          <Button css={button} type="submit" variant="contained">
-            プロジェクトに応募する
-          </Button>
+            <Button css={button} type="submit" variant="contained">
+              プロジェクトに応募する
+            </Button>
+          </Container>
+          <FavoriteButton
+            css={buttonStyle}
+            id={projectId}
+            uid={uid}
+            favorite={isFavorite(projectId)}
+          />
         </Container>
         <Link href="/">
           <div css={linkTitle}>&#65124; ホームに戻る</div>
@@ -122,29 +142,37 @@ const ProjectDetail = ({
       <Layout>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
-          <p css={subTitleStyle}>{targetProject?.name}</p>
-          <p css={paragraphStyle}>
-            開発期間: {new Date(targetProject?.startsAt).toLocaleDateString()} ~{" "}
-            {new Date(targetProject?.endsAt).toLocaleDateString()}
-          </p>
-          <h2 css={subTitleStyle}>プロジェクトの説明</h2>
-          <p css={paragraphStyle}>{targetProject?.description}</p>
-          <h2 css={subTitleStyle}>Discordのリンク</h2>
-          <p css={paragraphStyle}>{targetProject?.toolLink}</p>
-          <h2 css={subTitleStyle}>参加者</h2>
-          <p css={paragraphStyle}>いない</p>
-          <h2 css={subTitleStyle}>使用言語</h2>
-          <List>
-            {targetProject?.languages.map((language, index) => {
-              return (
-                <ListItem css={paragraphStyle} key={index}>
-                  ・{language.name}
-                </ListItem>
-              );
-            })}
-          </List>
-          <h2 css={subTitleStyle}>コントリビュートの方法</h2>
-          <p css={paragraphStyle}>{targetProject?.contribution}</p>
+          <Container>
+            <p css={subTitleStyle}>{targetProject?.name}</p>
+            <p css={paragraphStyle}>
+              開発期間: {new Date(targetProject?.startsAt).toLocaleDateString()}{" "}
+              ~ {new Date(targetProject?.endsAt).toLocaleDateString()}
+            </p>
+            <h2 css={subTitleStyle}>プロジェクトの説明</h2>
+            <p css={paragraphStyle}>{targetProject?.description}</p>
+            <h2 css={subTitleStyle}>Discordのリンク</h2>
+            <p css={paragraphStyle}>{targetProject?.toolLink}</p>
+            <h2 css={subTitleStyle}>参加者</h2>
+            <p css={paragraphStyle}>いない</p>
+            <h2 css={subTitleStyle}>使用言語</h2>
+            <List>
+              {targetProject?.languages.map((language, index) => {
+                return (
+                  <ListItem css={paragraphStyle} key={index}>
+                    ・{language.name}
+                  </ListItem>
+                );
+              })}
+            </List>
+            <h2 css={subTitleStyle}>コントリビュートの方法</h2>
+            <p css={paragraphStyle}>{targetProject?.contribution}</p>
+          </Container>
+          <FavoriteButton
+            css={buttonStyle}
+            id={projectId}
+            uid={uid}
+            favorite={isFavorite(projectId)}
+          />
         </Container>
         <Link href="/">
           <div css={linkTitle}>&#65124; ホームに戻る</div>
@@ -183,6 +211,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         projectId: context.query.id,
         projects: data.projects.nodes,
         userParticipants: data.userParticipants.nodes,
+        userFavorits: data.userFavorites.nodes,
       },
     };
   } catch (err) {
