@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { css } from "@emotion/react";
-import { Box, Container, IconButton } from "@material-ui/core";
+import { Container, Box, IconButton } from "@material-ui/core";
 import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
+import { useRouter } from "next/router";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 
@@ -54,6 +55,8 @@ type ProjectContainerProps = {
   languages?: LanguageInput[];
   startsAt?: string | null;
   endsAt?: string | null;
+  contribution?: string | null;
+  recruitmentNumbers?: number | null;
 };
 
 export const ProjectContainer = ({
@@ -65,7 +68,37 @@ export const ProjectContainer = ({
   languages = [],
   startsAt = null,
   endsAt = null,
+  contribution = null,
+  recruitmentNumbers = null,
 }: ProjectContainerProps): JSX.Element => {
+  const router = useRouter();
+
+  const projectClick = (): void => {
+    const languageNames: Array<string> = [];
+    languages.map((language) => {
+      languageNames.push(language.name);
+    });
+
+    router.push({
+      pathname: "/project/[name]",
+      // pathname: "../pages/index",
+      query: {
+        contribution: contribution,
+        name: name,
+        description: description,
+        // githubUrl: githubUrl,
+        recruitmentNumbers: recruitmentNumbers,
+        // toolLink: toolLink,
+        languages: languageNames,
+        // updatedAt: updatedAt,
+        // createdAt: createdAt,
+        startsAt: startsAt,
+        endsAt: endsAt,
+        // owner: owner.name,
+      },
+    });
+  };
+
   const [changeIcon, setChangeIcon] = useState(favorite);
 
   const [createFavoriteMutation] = useCreateFavoriteMutation();
@@ -92,7 +125,7 @@ export const ProjectContainer = ({
   // TODO descriptionを適当な文字数で切る
   return (
     <Container css={container}>
-      <Container css={projectStyle}>
+      <Container css={projectStyle} onClick={projectClick}>
         <p css={projectNameStyle}>{name}</p>
         <p css={projectDetailStyle}>{description}</p>
         <p css={projectLanguageStyle}>

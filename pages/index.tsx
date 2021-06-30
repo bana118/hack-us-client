@@ -26,8 +26,6 @@ const IndexPage = ({
   userFavorits,
   errors,
 }: IndexPageProps): JSX.Element => {
-  console.log(userFavorits);
-
   const isFavorite = (id: string | undefined) => {
     if (userFavorits?.length !== 0) {
       return userFavorits?.some((item) => item?.project.id === id);
@@ -70,6 +68,8 @@ const IndexPage = ({
                     languages={project?.languages}
                     startsAt={project?.startsAt}
                     endsAt={project?.endsAt}
+                    contribution={project?.contribution}
+                    recruitmentNumbers={project?.recruitmentNumbers}
                   />
                 </Grid>
               );
@@ -89,6 +89,8 @@ const IndexPage = ({
                     languages={project?.languages}
                     startsAt={project?.startsAt}
                     endsAt={project?.endsAt}
+                    contribution={project?.contribution}
+                    recruitmentNumbers={project?.recruitmentNumbers}
                   />
                 </Grid>
               );
@@ -108,6 +110,8 @@ const IndexPage = ({
                     languages={project?.languages}
                     startsAt={project?.startsAt}
                     endsAt={project?.endsAt}
+                    contribution={project?.contribution}
+                    recruitmentNumbers={project?.recruitmentNumbers}
                   />
                 </Grid>
               );
@@ -138,6 +142,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
       fetchPolicy: "no-cache",
     });
+    console.log(data);
     return {
       props: {
         uid: uid,

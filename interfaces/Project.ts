@@ -63,6 +63,39 @@ export const GET_PROJECTS = gql`
   }
 `;
 
+export const GET_MY_PROJECTS = gql`
+  query GetMyProjects($uid: String!) {
+    userParticipants(uid: $uid) {
+      nodes {
+        project {
+          id
+          name
+          owner {
+            uid
+          }
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+        }
+      }
+    }
+    userFavorites(uid: $uid) {
+      nodes {
+        project {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const CREATE_PROJECT = gql`
   mutation CreateProject(
     $name: String!
@@ -106,6 +139,22 @@ export const CREATE_PROJECT = gql`
         owner {
           id
           name
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_PARTICIPANT = gql`
+  mutation CreateParticipant($uid: String!, $projectId: ID!) {
+    createParticipant(input: { uid: $uid, projectId: $projectId }) {
+      participant {
+        id
+        user {
+          id
+        }
+        project {
+          id
         }
       }
     }
