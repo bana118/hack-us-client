@@ -9,6 +9,7 @@ import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
 import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
+import { SearchInput } from "../components/SearchInput";
 
 // TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
@@ -48,6 +49,7 @@ const IndexPage = ({
     <Layout>
       <MyHead title="Hack Us"></MyHead>
       <Box>
+        <SearchInput />
         <MyTabs
           labels={[
             "New Projects",
@@ -142,7 +144,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
       fetchPolicy: "no-cache",
     });
-    console.log(data);
     return {
       props: {
         uid: uid,

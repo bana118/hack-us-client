@@ -21,6 +21,7 @@ import { LoginDialog } from "./LoginDialog";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
 import Image from "next/image";
+import { themeColor } from "../utils/style-variables";
 
 type LayoutProps = {
   children?: ReactNode;
@@ -45,7 +46,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           },
         }}
       />
-      <AppBar position="static">
+      <AppBar position="static" css={{ backgroundColor: themeColor }}>
         <Toolbar>
           <div css={{ flexGrow: 1 }}>
             <Link href="/" passHref>

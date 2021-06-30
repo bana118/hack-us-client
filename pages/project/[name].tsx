@@ -64,7 +64,6 @@ const ProjectDetail = (): JSX.Element => {
     endsAt,
     recruitmentNumbers,
   } = router.query;
-  console.log(router.query);
 
   // avoid undefined error of map function
   const detail: ProjectDetailType = {
