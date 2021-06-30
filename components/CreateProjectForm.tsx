@@ -10,7 +10,11 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { LanguageInput, useCreateProjectMutation } from "../types/graphql";
+import {
+  LanguageInput,
+  useCreateParticipantMutation,
+  useCreateProjectMutation,
+} from "../types/graphql";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -111,6 +115,7 @@ export const CreateProjectForm = ({
   const [updatedTooltipOpen, setUpdatedTooltipOpen] = useState(false);
 
   const [createProjectMutation] = useCreateProjectMutation();
+  const [createParticipantMutation] = useCreateParticipantMutation();
 
   const createProject = async (data: InputsType) => {
     const languages: LanguageInput[] = [
@@ -119,7 +124,7 @@ export const CreateProjectForm = ({
       JSON.parse(data["language3"]),
     ];
     try {
-      await createProjectMutation({
+      const result = await createProjectMutation({
         variables: {
           name: data["name"],
           description: data["description"],
@@ -133,6 +138,17 @@ export const CreateProjectForm = ({
           ownerUid: user.uid,
         },
       });
+
+      const projectId = result.data?.createProject?.project?.id;
+
+      if (projectId !== undefined) {
+        await createParticipantMutation({
+          variables: {
+            uid: user.uid,
+            projectId: projectId,
+          },
+        });
+      }
       setUpdatedTooltipOpen(true);
       Router.push("/");
     } catch (err) {
