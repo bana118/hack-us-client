@@ -96,7 +96,7 @@ const ProjectDetail = ({
             {targetProject?.languages.map((language, index) => {
               return (
                 <ListItem css={paragraphStyle} key={index}>
-                  ・{language}
+                  ・{language.name}
                 </ListItem>
               );
             })}

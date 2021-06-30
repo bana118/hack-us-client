@@ -142,7 +142,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
       fetchPolicy: "no-cache",
     });
-    console.log(data);
     return {
       props: {
         uid: uid,
