@@ -118,11 +118,27 @@ export const CreateProjectForm = ({
   const [createParticipantMutation] = useCreateParticipantMutation();
 
   const createProject = async (data: InputsType) => {
-    const languages: LanguageInput[] = [
-      JSON.parse(data["language1"]),
-      JSON.parse(data["language2"]),
-      JSON.parse(data["language3"]),
-    ];
+    const language1: LanguageInput | null =
+      data["language1"] !== "" ? JSON.parse(data["language1"]) : null;
+    const language2: LanguageInput | null =
+      data["language2"] !== "" ? JSON.parse(data["language2"]) : null;
+    const language3: LanguageInput | null =
+      data["language3"] !== "" ? JSON.parse(data["language3"]) : null;
+
+    const languages: LanguageInput[] = [];
+
+    if (language1 != null) languages.push(language1);
+    if (
+      language2 != null &&
+      !languages.some((language) => language.name == language2.name)
+    )
+      languages.push(language2);
+    if (
+      language3 != null &&
+      !languages.some((language) => language.name == language3.name)
+    )
+      languages.push(language3);
+
     try {
       const result = await createProjectMutation({
         variables: {

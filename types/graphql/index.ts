@@ -511,8 +511,6 @@ export type UserEdge = {
 export type GetProjectsQueryVariables = Exact<{
   uid: Scalars['String'];
   projectsFirst: Scalars['Int'];
-  userParticipantsFirst: Scalars['Int'];
-  userFavoritsFirst: Scalars['Int'];
 }>;
 
 
@@ -598,6 +596,79 @@ export type GetMyProjectsQuery = (
         { __typename?: 'Project' }
         & Pick<Project, 'id'>
       ) }
+    )>>> }
+  ) }
+);
+
+export type SearchProjectsFirstQueryVariables = Exact<{
+  uid: Scalars['String'];
+  query: Scalars['String'];
+  first: Scalars['Int'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type SearchProjectsFirstQuery = (
+  { __typename?: 'Query' }
+  & { projects: (
+    { __typename?: 'ProjectConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'>
+    ), edges?: Maybe<Array<Maybe<(
+      { __typename?: 'ProjectEdge' }
+      & Pick<ProjectEdge, 'cursor'>
+      & { node?: Maybe<(
+        { __typename?: 'Project' }
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )> }
+      )> }
+    )>>> }
+  ), userFavorites: (
+    { __typename?: 'FavoriteConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Favorite' }
+      & Pick<Favorite, 'id'>
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )> }
+      ) }
+    )>>> }
+  ) }
+);
+
+export type SearchProjectsQueryVariables = Exact<{
+  query: Scalars['String'];
+  first: Scalars['Int'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type SearchProjectsQuery = (
+  { __typename?: 'Query' }
+  & { projects: (
+    { __typename?: 'ProjectConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'>
+    ), edges?: Maybe<Array<Maybe<(
+      { __typename?: 'ProjectEdge' }
+      & Pick<ProjectEdge, 'cursor'>
+      & { node?: Maybe<(
+        { __typename?: 'Project' }
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages: Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )> }
+      )> }
     )>>> }
   ) }
 );
@@ -773,7 +844,7 @@ export type UpdateUserMutation = (
 
 
 export const GetProjectsDocument = gql`
-    query GetProjects($uid: String!, $projectsFirst: Int!, $userParticipantsFirst: Int!, $userFavoritsFirst: Int!) {
+    query GetProjects($uid: String!, $projectsFirst: Int!) {
   projects(first: $projectsFirst) {
     nodes {
       id
@@ -794,7 +865,7 @@ export const GetProjectsDocument = gql`
       contribution
     }
   }
-  userParticipants(uid: $uid, first: $userParticipantsFirst) {
+  userParticipants(uid: $uid) {
     nodes {
       project {
         id
@@ -816,7 +887,7 @@ export const GetProjectsDocument = gql`
       }
     }
   }
-  userFavorites(uid: $uid, first: $userFavoritsFirst) {
+  userFavorites(uid: $uid) {
     nodes {
       id
       project {
@@ -856,8 +927,6 @@ export const GetProjectsDocument = gql`
  *   variables: {
  *      uid: // value for 'uid'
  *      projectsFirst: // value for 'projectsFirst'
- *      userParticipantsFirst: // value for 'userParticipantsFirst'
- *      userFavoritsFirst: // value for 'userFavoritsFirst'
  *   },
  * });
  */
@@ -932,6 +1001,144 @@ export function useGetMyProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetMyProjectsQueryHookResult = ReturnType<typeof useGetMyProjectsQuery>;
 export type GetMyProjectsLazyQueryHookResult = ReturnType<typeof useGetMyProjectsLazyQuery>;
 export type GetMyProjectsQueryResult = Apollo.QueryResult<GetMyProjectsQuery, GetMyProjectsQueryVariables>;
+export const SearchProjectsFirstDocument = gql`
+    query SearchProjectsFirst($uid: String!, $query: String!, $first: Int!, $after: String) {
+  projects(query: $query, first: $first, after: $after) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      endCursor
+      startCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+  userFavorites(uid: $uid) {
+    nodes {
+      id
+      project {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchProjectsFirstQuery__
+ *
+ * To run a query within a React component, call `useSearchProjectsFirstQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchProjectsFirstQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchProjectsFirstQuery({
+ *   variables: {
+ *      uid: // value for 'uid'
+ *      query: // value for 'query'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useSearchProjectsFirstQuery(baseOptions: Apollo.QueryHookOptions<SearchProjectsFirstQuery, SearchProjectsFirstQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchProjectsFirstQuery, SearchProjectsFirstQueryVariables>(SearchProjectsFirstDocument, options);
+      }
+export function useSearchProjectsFirstLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchProjectsFirstQuery, SearchProjectsFirstQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchProjectsFirstQuery, SearchProjectsFirstQueryVariables>(SearchProjectsFirstDocument, options);
+        }
+export type SearchProjectsFirstQueryHookResult = ReturnType<typeof useSearchProjectsFirstQuery>;
+export type SearchProjectsFirstLazyQueryHookResult = ReturnType<typeof useSearchProjectsFirstLazyQuery>;
+export type SearchProjectsFirstQueryResult = Apollo.QueryResult<SearchProjectsFirstQuery, SearchProjectsFirstQueryVariables>;
+export const SearchProjectsDocument = gql`
+    query SearchProjects($query: String!, $first: Int!, $after: String) {
+  projects(query: $query, first: $first, after: $after) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      endCursor
+      startCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchProjectsQuery__
+ *
+ * To run a query within a React component, call `useSearchProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchProjectsQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useSearchProjectsQuery(baseOptions: Apollo.QueryHookOptions<SearchProjectsQuery, SearchProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchProjectsQuery, SearchProjectsQueryVariables>(SearchProjectsDocument, options);
+      }
+export function useSearchProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchProjectsQuery, SearchProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchProjectsQuery, SearchProjectsQueryVariables>(SearchProjectsDocument, options);
+        }
+export type SearchProjectsQueryHookResult = ReturnType<typeof useSearchProjectsQuery>;
+export type SearchProjectsLazyQueryHookResult = ReturnType<typeof useSearchProjectsLazyQuery>;
+export type SearchProjectsQueryResult = Apollo.QueryResult<SearchProjectsQuery, SearchProjectsQueryVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($name: String!, $description: String, $githubUrl: String, $startsAt: ISO8601DateTime, $endsAt: ISO8601DateTime, $languages: [LanguageInput!], $recruitmentNumbers: Int, $toolLink: String, $contribution: String, $ownerUid: String!) {
   createProject(
