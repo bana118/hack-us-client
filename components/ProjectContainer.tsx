@@ -213,7 +213,6 @@ export const ProjectContainer = ({
           </IconButton>
         )}
       </Box>
-      <FavoriteButton css={buttonStyle} id={id} uid={uid} favorite={favorite} />
     </Container>
   );
 };
