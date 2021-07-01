@@ -1,10 +1,19 @@
-import { useState } from "react";
-import { css } from "@emotion/react";
-import { Container, Box, IconButton } from "@material-ui/core";
-import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
 import { useRouter } from "next/router";
+import React, { useState, useRef } from "react";
+import { css } from "@emotion/react";
+import {
+  Container,
+  Box,
+  IconButton,
+  Popover,
+  List,
+  ListItem,
+  ListItemText,
+} from "@material-ui/core";
+import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 
 const container = css`
   background-color: #ffffff;
@@ -49,7 +58,7 @@ const projectStatusStyle = css`
 type ProjectContainerProps = {
   id?: string;
   uid?: string;
-  favorite: boolean | undefined;
+  favorite?: boolean | undefined;
   name?: string;
   description?: string;
   languages?: LanguageInput[];
@@ -71,7 +80,20 @@ export const ProjectContainer = ({
   contribution = null,
   recruitmentNumbers = null,
 }: ProjectContainerProps): JSX.Element => {
+  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
+  const userButtonRef = useRef(null);
+
   const router = useRouter();
+  const currentpath: string = router.pathname;
+
+  const clickEdit = (): void => {
+    router.push({
+      pathname: "/edit-project",
+      query: {
+        id: id,
+      },
+    });
+  };
 
   const projectClick = (): void => {
     const languageNames: Array<string> = [];
@@ -139,7 +161,7 @@ export const ProjectContainer = ({
               );
             return (
               <span key={index} css={{ color: language.color }}>
-                {language.name},{" "}
+                {language.name}{" "}
               </span>
             );
           })}
@@ -152,9 +174,45 @@ export const ProjectContainer = ({
         )}
       </Container>
       <Box>
-        <IconButton onClick={clickFavorite}>
-          {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
-        </IconButton>
+        {currentpath === "/my-project" ? (
+          <React.Fragment>
+            <IconButton
+              ref={userButtonRef}
+              onClick={() => setUserPopoverOpen(true)}
+            >
+              <MoreHorizIcon />
+            </IconButton>
+            <Popover
+              open={userPopoverOpen}
+              anchorEl={userButtonRef.current}
+              onClose={() => setUserPopoverOpen(false)}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+            >
+              <List>
+                <ListItem button onClick={clickEdit}>
+                  <ListItemText primary="プロジェクトの編集" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemText
+                    style={{ color: "red" }}
+                    primary="プロジェクトの削除"
+                  />
+                </ListItem>
+              </List>
+            </Popover>
+          </React.Fragment>
+        ) : (
+          <IconButton onClick={clickFavorite}>
+            {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
+          </IconButton>
+        )}
       </Box>
     </Container>
   );
