@@ -1,6 +1,6 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
-import { CreateProjectForm } from "../components/CreateProjectForm";
+import { ProjectForm } from "../components/ProjectForm";
 import { css } from "@emotion/react";
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
@@ -25,7 +25,7 @@ const CreateProject = (): JSX.Element => {
         <React.Fragment>
           <MyHead title="プロジェクトの作成 - Hack Us"></MyHead>
           <h1 css={title}>プロジェクトの作成</h1>
-          <CreateProjectForm user={user} />
+          <ProjectForm user={user} />
         </React.Fragment>
       )}
     </Layout>

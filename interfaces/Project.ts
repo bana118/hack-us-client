@@ -130,12 +130,25 @@ export const GET_MY_PROJECTS = gql`
         }
       }
     }
-    userFavorites(uid: $uid) {
-      nodes {
-        project {
-          id
-        }
+  }
+`;
+
+export const GET_PROJECT = gql`
+  query GetProject($id: Int!) {
+    project(id: $id) {
+      id
+      name
+      description
+      githubUrl
+      startsAt
+      endsAt
+      languages {
+        name
+        color
       }
+      recruitmentNumbers
+      toolLink
+      contribution
     }
   }
 `;
@@ -280,6 +293,47 @@ export const CREATE_PROJECT = gql`
           id
           name
         }
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROJECT = gql`
+  mutation UpdateProject(
+    $id: ID!
+    $name: String
+    $description: String
+    $githubUrl: String
+    $startsAt: ISO8601DateTime
+    $endsAt: ISO8601DateTime
+    $languages: [LanguageInput!]
+    $recruitmentNumbers: Int
+    $toolLink: String
+    $contribution: String
+  ) {
+    updateProject(
+      input: {
+        id: $id
+        name: $name
+        description: $description
+        githubUrl: $githubUrl
+        startsAt: $startsAt
+        endsAt: $endsAt
+        languages: $languages
+        recruitmentNumbers: $recruitmentNumbers
+        toolLink: $toolLink
+        contribution: $contribution
+      }
+    ) {
+      project {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        recruitmentNumbers
+        toolLink
+        contribution
       }
     }
   }
