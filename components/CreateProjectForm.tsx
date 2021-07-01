@@ -158,10 +158,15 @@ export const CreateProjectForm = ({
       const projectId = result.data?.createProject?.project?.id;
 
       if (projectId !== undefined) {
+        const ownerApproved = true;
+        const userApproved = true;
+
         await createParticipantMutation({
           variables: {
             uid: user.uid,
             projectId: projectId,
+            ownerApproved: ownerApproved,
+            userApproved: userApproved,
           },
         });
       }

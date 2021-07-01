@@ -286,8 +286,20 @@ export const CREATE_PROJECT = gql`
 `;
 
 export const CREATE_PARTICIPANT = gql`
-  mutation CreateParticipant($uid: String!, $projectId: ID!) {
-    createParticipant(input: { uid: $uid, projectId: $projectId }) {
+  mutation CreateParticipant(
+    $uid: String!
+    $projectId: ID!
+    $ownerApproved: Boolean!
+    $userApproved: Boolean!
+  ) {
+    createParticipant(
+      input: {
+        uid: $uid
+        projectId: $projectId
+        ownerApproved: $ownerApproved
+        userApproved: $userApproved
+      }
+    ) {
       participant {
         id
         user {
@@ -296,6 +308,8 @@ export const CREATE_PARTICIPANT = gql`
         project {
           id
         }
+        ownerApproved
+        userApproved
       }
     }
   }

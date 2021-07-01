@@ -99,6 +99,8 @@ const ProjectDetail = ({
         variables: {
           uid: uid,
           projectId: projectId,
+          ownerApproved: null,
+          userApproved: true,
         },
       });
       console.log(result);
