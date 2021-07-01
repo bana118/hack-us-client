@@ -62,7 +62,7 @@ type ProjectDetailProps = {
   projectId?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
-  userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
+  userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
   projectParticipants?: GetProjectParticipantsQuery["projectParticipants"]["nodes"];
   errors?: string;
 };
@@ -72,7 +72,7 @@ const ProjectDetail = ({
   projectId = "",
   projects,
   userParticipants,
-  userFavorits,
+  userFavorites,
   projectParticipants,
   errors,
 }: ProjectDetailProps): JSX.Element => {
@@ -125,7 +125,7 @@ const ProjectDetail = ({
             css={buttonStyle}
             id={projectId}
             uid={uid}
-            favorite={isFavorite(projectId, userFavorits)}
+            favorite={isFavorite(projectId, userFavorites)}
           />
         </Container>
         <Link href="/">
@@ -185,7 +185,7 @@ const ProjectDetail = ({
             css={buttonStyle}
             id={projectId}
             uid={uid}
-            favorite={isFavorite(projectId, userFavorits)}
+            favorite={isFavorite(projectId, userFavorites)}
           />
         </Container>
         <Link href="/">
@@ -241,7 +241,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
     const projects = data.projects.nodes;
     const userParticipants = data.userParticipants.nodes;
-    const userFavorits = data.userFavorites.nodes;
+    const userFavorites = data.userFavorites.nodes;
 
     return {
       props: {
@@ -249,7 +249,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         projectId: context.query.id,
         projects: projects,
         userParticipants: userParticipants,
-        userFavorits: userFavorits,
+        userFavorites: userFavorites,
         projectParticipants: projectParticipants,
       },
     };

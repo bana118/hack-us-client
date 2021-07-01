@@ -189,6 +189,10 @@ export const SEARCH_PROJECTS = gql`
             name
             color
           }
+          owner {
+            uid
+            name
+          }
           recruitmentNumbers
           toolLink
           contribution
