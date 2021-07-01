@@ -1,4 +1,5 @@
 import Layout from "../../components/Layout";
+import { MyHead } from "../../components/MyHead";
 import { FavoriteButton } from "../../components/FavoriteButton";
 import { Container, List, ListItem, Link, Button } from "@material-ui/core";
 import { css } from "@emotion/react";
@@ -79,6 +80,7 @@ const ProjectDetail = ({
   if (errors) {
     return (
       <Layout>
+        <MyHead title="Error"></MyHead>
         <p>
           <span style={{ color: "red" }}>Error:</span> {errors}
         </p>
@@ -92,6 +94,7 @@ const ProjectDetail = ({
     return (
       //  not participant layout
       <Layout>
+        <MyHead title={targetProject?.name}></MyHead>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
           <Container>
@@ -137,6 +140,7 @@ const ProjectDetail = ({
     //  true participant layout
     return (
       <Layout>
+        <MyHead title={targetProject?.name}></MyHead>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
           <Container>
