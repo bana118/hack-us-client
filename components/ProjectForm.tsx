@@ -11,9 +11,11 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import {
+  GetProjectQuery,
   LanguageInput,
   useCreateParticipantMutation,
   useCreateProjectMutation,
+  useUpdateProjectMutation,
 } from "../types/graphql";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -22,8 +24,9 @@ import { css } from "@emotion/react";
 import { GetUserQuery } from "../types/graphql";
 import { LanguageColors } from "../utils/language-colors";
 
-type CreateProjectFormProps = {
+type ProjectFormProps = {
   user: GetUserQuery["user"];
+  project?: GetProjectQuery["project"];
 };
 
 type InputsType = {
@@ -71,23 +74,10 @@ const defaultDate = () => {
   const year = today.getFullYear();
   const month =
     today.getMonth() < 9 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
-  const date = today.getDate();
+  const date =
+    today.getDate() < 9 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
 
   return `${year}-${month}-${date}`;
-};
-
-const defaultValues: InputsType = {
-  name: "",
-  description: "",
-  githubUrl: "",
-  startsAt: defaultDate(),
-  endsAt: defaultDate(),
-  language1: "",
-  language2: "",
-  language3: "",
-  recruitmentNumbers: "1",
-  toolLink: "",
-  contribution: "",
 };
 
 const schema = yup.object().shape({
@@ -95,9 +85,47 @@ const schema = yup.object().shape({
   recruitmentNumbers: yup.number().min(1, "最低でも1人は募集してください"),
 });
 
-export const CreateProjectForm = ({
+export const ProjectForm = ({
   user,
-}: CreateProjectFormProps): JSX.Element => {
+  project,
+}: ProjectFormProps): JSX.Element => {
+  const defaultValues: InputsType = {
+    name: project !== undefined ? project.name : "",
+    description: project !== undefined ? project.description : "",
+    githubUrl: project !== undefined ? project.githubUrl : "",
+    startsAt:
+      project !== undefined ? project.startsAt.slice(0, 10) : defaultDate(),
+    endsAt: project !== undefined ? project.endsAt.slice(0, 10) : defaultDate(),
+    language1:
+      project !== undefined && project?.languages.length >= 1
+        ? JSON.stringify({
+            name: project.languages[0]["name"],
+            color: project.languages[0]["color"],
+          })
+        : "",
+    language2:
+      project !== undefined && project?.languages.length >= 2
+        ? JSON.stringify({
+            name: project.languages[1]["name"],
+            color: project.languages[1]["color"],
+          })
+        : "",
+    language3:
+      project !== undefined && project?.languages.length === 3
+        ? JSON.stringify({
+            name: project.languages[2]["name"],
+            color: project.languages[2]["color"],
+          })
+        : "",
+    recruitmentNumbers:
+      project?.recruitmentNumbers !== undefined &&
+      project?.recruitmentNumbers !== null
+        ? project.recruitmentNumbers.toString()
+        : "1",
+    toolLink: project !== undefined ? project.toolLink : "",
+    contribution: project !== undefined ? project.contribution : "",
+  };
+
   const {
     control,
     handleSubmit,
@@ -116,43 +144,66 @@ export const CreateProjectForm = ({
 
   const [createProjectMutation] = useCreateProjectMutation();
   const [createParticipantMutation] = useCreateParticipantMutation();
+  const [updateProjectMutation] = useUpdateProjectMutation();
 
   const createProject = async (data: InputsType) => {
     const languages: LanguageInput[] = [
-      JSON.parse(data["language1"]),
-      JSON.parse(data["language2"]),
-      JSON.parse(data["language3"]),
+      JSON.parse(data["language1"] || "null"),
+      JSON.parse(data["language2"] || "null"),
+      JSON.parse(data["language3"] || "null"),
     ];
+
     try {
-      const result = await createProjectMutation({
-        variables: {
-          name: data["name"],
-          description: data["description"],
-          githubUrl: data["githubUrl"],
-          startsAt: data["startsAt"],
-          endsAt: data["endsAt"],
-          languages: languages,
-          recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
-          toolLink: data["toolLink"],
-          contribution: data["contribution"],
-          ownerUid: user.uid,
-        },
-      });
-
-      const projectId = result.data?.createProject?.project?.id;
-
-      if (projectId !== undefined) {
-        await createParticipantMutation({
+      if (Router.pathname === "/create-project") {
+        const result = await createProjectMutation({
           variables: {
-            uid: user.uid,
-            projectId: projectId,
+            name: data["name"],
+            description: data["description"],
+            githubUrl: data["githubUrl"],
+            startsAt: data["startsAt"],
+            endsAt: data["endsAt"],
+            languages: languages,
+            recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
+            toolLink: data["toolLink"],
+            contribution: data["contribution"],
+            ownerUid: user.uid,
+          },
+        });
+
+        const projectId = result.data?.createProject?.project?.id;
+
+        if (projectId !== undefined) {
+          await createParticipantMutation({
+            variables: {
+              uid: user.uid,
+              projectId: projectId,
+            },
+          });
+        }
+      } else if (
+        Router.pathname === "/edit-project" &&
+        project?.id !== undefined
+      ) {
+        await updateProjectMutation({
+          variables: {
+            id: project.id,
+            name: data["name"],
+            description: data["description"],
+            githubUrl: data["githubUrl"],
+            startsAt: data["startsAt"],
+            endsAt: data["endsAt"],
+            languages: languages,
+            recruitmentNumbers: parseInt(data["recruitmentNumbers"], 10),
+            toolLink: data["toolLink"],
+            contribution: data["contribution"],
           },
         });
       }
+
       setUpdatedTooltipOpen(true);
+      // TODO プロジェクト詳細ページに遷移
       Router.push("/");
     } catch (err) {
-      console.log(err);
       setUnexpectedError();
     }
   };
@@ -165,6 +216,7 @@ export const CreateProjectForm = ({
           <Controller
             name="name"
             control={control}
+            defaultValue={defaultValues.name}
             render={({ field }) => (
               <TextField
                 fullWidth
@@ -181,6 +233,7 @@ export const CreateProjectForm = ({
           <Controller
             name="description"
             control={control}
+            defaultValue={defaultValues.description}
             render={({ field }) => (
               <TextField
                 fullWidth
@@ -198,6 +251,7 @@ export const CreateProjectForm = ({
           <Controller
             name="githubUrl"
             control={control}
+            defaultValue={defaultValues.githubUrl}
             render={({ field }) => (
               <TextField fullWidth variant="standard" {...field} />
             )}
@@ -209,6 +263,7 @@ export const CreateProjectForm = ({
             <Controller
               name="startsAt"
               control={control}
+              defaultValue={defaultValues.startsAt}
               render={({ field }) => (
                 <TextField
                   type="date"
@@ -224,6 +279,7 @@ export const CreateProjectForm = ({
             <Controller
               name="endsAt"
               control={control}
+              defaultValue={defaultValues.endsAt}
               render={({ field }) => (
                 <TextField
                   type="date"
@@ -319,13 +375,21 @@ export const CreateProjectForm = ({
         </Box>
         <Box width={300} sx={{ mx: "auto" }} mb={2.5}>
           <h2 css={subTitle}>Discord or Slackのリンク</h2>
-          <TextField fullWidth variant="standard" />
+          <Controller
+            name="toolLink"
+            control={control}
+            defaultValue={defaultValues.toolLink}
+            render={({ field }) => (
+              <TextField fullWidth variant="standard" {...field} />
+            )}
+          />
         </Box>
         <Box width={300} sx={{ mx: "auto" }} mb={12.5}>
           <h2 css={subTitle}>コントリビュートの方法</h2>
           <Controller
             name="contribution"
             control={control}
+            defaultValue={defaultValues.contribution}
             render={({ field }) => (
               <TextField fullWidth variant="standard" {...field} />
             )}
@@ -333,14 +397,16 @@ export const CreateProjectForm = ({
         </Box>
         <Box css={subTitle} width={300} sx={{ mx: "auto" }} mb={5}>
           <Tooltip
-            title="作成しました！"
+            title={project === undefined ? "作成しました！" : "編集しました！"}
             open={updatedTooltipOpen}
             onClose={() => {
               setUpdatedTooltipOpen(false);
             }}
           >
             <Button css={button} type="submit" variant="contained">
-              プロジェクトを作成する
+              {project === undefined
+                ? "プロジェクトを作成する"
+                : "プロジェクトを編集する"}
             </Button>
           </Tooltip>
         </Box>
