@@ -179,8 +179,6 @@ export default ProjectDetail;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
-  console.log("log: ", context.query);
-  console.log("hello");
 
   try {
     const { data } = await apolloClient.query<
@@ -191,6 +189,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: {
         uid: uid,
         projectsFirst: 8,
+        recommendsLanguageFirst: 5,
+        recommendsProjectFirst: 3,
       },
       fetchPolicy: "no-cache",
     });
