@@ -226,7 +226,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     ? context.query.id[0]
     : context.query.id;
   const projectParticipants = await getProjectParticipants(projectId);
-  console.log("participant", projectParticipants);
 
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
@@ -240,6 +239,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: {
         uid: uid,
         projectsFirst: 8,
+        recommendsLanguageFirst: 5,
+        recommendsProjectFirst: 3,
       },
       fetchPolicy: "no-cache",
     });

@@ -78,8 +78,6 @@ export const ProjectContainer = ({
   languages = [],
   startsAt = null,
   endsAt = null,
-  contribution = null,
-  recruitmentNumbers = null,
 }: ProjectContainerProps): JSX.Element => {
   // TODO 開発ステータスの追加
   // TODO descriptionを適当な文字数で切る

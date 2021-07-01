@@ -1,4 +1,4 @@
-import type { AppProps } from "next/app";
+import { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { useState, useEffect } from "react";
 import firebase from "firebase/app";

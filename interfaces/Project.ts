@@ -12,7 +12,12 @@ export const isFavorite = (
 };
 
 export const GET_PROJECTS = gql`
-  query GetProjects($uid: String!, $projectsFirst: Int!) {
+  query GetProjects(
+    $uid: String!
+    $projectsFirst: Int!
+    $recommendsLanguageFirst: Int!
+    $recommendsProjectFirst: Int!
+  ) {
     projects(first: $projectsFirst) {
       nodes {
         id
@@ -27,6 +32,27 @@ export const GET_PROJECTS = gql`
         owner {
           uid
           name
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+    recommends(
+      uid: $uid
+      languageFirst: $recommendsLanguageFirst
+      projectFirst: $recommendsProjectFirst
+    ) {
+      language
+      projects {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
         }
         recruitmentNumbers
         toolLink
