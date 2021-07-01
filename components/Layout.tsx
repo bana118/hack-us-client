@@ -21,12 +21,15 @@ import { LoginDialog } from "./LoginDialog";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
 import Image from "next/image";
+import { themeColor } from "../utils/style-variables";
+import { SearchInput } from "./SearchInput";
 
 type LayoutProps = {
+  showSearch?: boolean;
   children?: ReactNode;
 };
 
-const Layout = ({ children }: LayoutProps): JSX.Element => {
+const Layout = ({ showSearch = true, children }: LayoutProps): JSX.Element => {
   const { user } = useContext(AuthContext);
   const userButtonRef = useRef(null);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -45,7 +48,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
           },
         }}
       />
-      <AppBar position="static">
+      <AppBar position="static" css={{ backgroundColor: themeColor }}>
         <Toolbar>
           <div css={{ flexGrow: 1 }}>
             <Link href="/" passHref>
@@ -58,6 +61,8 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
               </Typography>
             </Link>
           </div>
+
+          {showSearch && <SearchInput />}
 
           {user === null && (
             <Button color="inherit" onClick={() => setLoginDialogOpen(true)}>
