@@ -143,6 +143,10 @@ export const SEARCH_PROJECTS_FIRST = gql`
           recruitmentNumbers
           toolLink
           contribution
+          owner {
+            uid
+            name
+          }
         }
       }
     }
@@ -162,6 +166,10 @@ export const SEARCH_PROJECTS_FIRST = gql`
           recruitmentNumbers
           toolLink
           contribution
+          owner {
+            uid
+            name
+          }
         }
       }
     }
