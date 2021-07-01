@@ -114,9 +114,10 @@ export default SearchProjectPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { query } = context.query;
-  if (query == null || Array.isArray(query)) {
+  if (Array.isArray(query)) {
     return { props: { errors: "Invalid URL" } };
   } else {
+    const word = query || "";
     try {
       const cookies = nookies.get(context);
       const uid = cookies[uidKeyName];
@@ -127,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         query: SEARCH_PROJECTS_FIRST,
         variables: {
           uid: uid,
-          query: query,
+          query: word,
           first: 20,
         },
         fetchPolicy: "no-cache",
@@ -135,7 +136,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(data.projects);
       return {
         props: {
-          query: query,
+          query: word,
           firstProjects: data.projects,
           userFavorites: data.userFavorites.nodes,
         },
