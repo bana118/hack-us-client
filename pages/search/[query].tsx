@@ -1,4 +1,6 @@
 import Layout from "../../components/Layout";
+import { MyHead } from "../../components/MyHead";
+import { SearchInput } from "../../components/SearchInput";
 import { GetServerSideProps } from "next";
 import { SEARCH_PROJECTS_FIRST, isFavorite } from "../../interfaces/Project";
 import {
@@ -75,6 +77,7 @@ const SearchProjectPage = ({
   if (errors || !firstProjects) {
     return (
       <Layout>
+        <MyHead title="Error"></MyHead>
         <p>
           <span style={{ color: "red" }}>Error:</span> {errors}
         </p>
@@ -83,6 +86,8 @@ const SearchProjectPage = ({
   }
   return (
     <Layout>
+      <MyHead title={`「${query}」の検索結果`}></MyHead>
+      <SearchInput />
       <h1>「{query}」の検索結果</h1>
       {projects && user && (
         <Grid container>
@@ -114,10 +119,9 @@ export default SearchProjectPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { query } = context.query;
-  if (Array.isArray(query)) {
+  if (query == null || Array.isArray(query)) {
     return { props: { errors: "Invalid URL" } };
   } else {
-    const word = query || "";
     try {
       const cookies = nookies.get(context);
       const uid = cookies[uidKeyName];
@@ -128,15 +132,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         query: SEARCH_PROJECTS_FIRST,
         variables: {
           uid: uid,
-          query: word,
+          query: query,
           first: 20,
         },
         fetchPolicy: "no-cache",
       });
-      console.log(data.projects);
+
       return {
         props: {
-          query: word,
+          query: query,
           firstProjects: data.projects,
           userFavorites: data.userFavorites.nodes,
         },

@@ -2,7 +2,6 @@ import { InputAdornment, TextField, IconButton } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { themeColor } from "../utils/style-variables";
 import { useForm, Controller } from "react-hook-form";
-import Router from "next/dist/client/router";
 
 type InputsType = {
   query: string;
@@ -11,7 +10,9 @@ type InputsType = {
 export const SearchInput = (): JSX.Element => {
   const { control, handleSubmit } = useForm<InputsType>();
   const searchProject = (data: InputsType) => {
-    Router.push(`/search/${data["query"]}`);
+    if (data["query"] != null) {
+      location.href = `/search/${data["query"]}`;
+    }
   };
   return (
     <div
@@ -26,6 +27,7 @@ export const SearchInput = (): JSX.Element => {
         <Controller
           name="query"
           control={control}
+          defaultValue={""}
           render={({ field }) => (
             <TextField
               placeholder="Search Project"
