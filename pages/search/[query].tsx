@@ -92,7 +92,6 @@ const SearchProjectPage = ({
                 <ProjectContainer
                   id={project?.node?.id}
                   uid={user.uid}
-                  // TODO favorite情報の取り方
                   favorite={isFavorite(project?.node?.id, userFavorites)}
                   name={project?.node?.name}
                   description={project?.node?.description}
