@@ -10,7 +10,10 @@ import { GET_PROJECTS } from "../../interfaces/Project";
 import {
   GetProjectsQuery,
   GetProjectsQueryVariables,
+  GetProjectParticipantsQuery,
+  GetProjectParticipantsQueryVariables,
 } from "../../types/graphql";
+import { GET_PROJECT_PARTICIPANTS } from "../../interfaces/User";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
@@ -60,15 +63,17 @@ type ProjectDetailProps = {
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
   userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
+  projectParticipants?: GetProjectParticipantsQuery["projectParticipants"]["nodes"];
   errors?: string;
 };
 
 const ProjectDetail = ({
   uid,
-  projectId,
+  projectId = "",
   projects,
   userParticipants,
   userFavorits,
+  projectParticipants,
   errors,
 }: ProjectDetailProps): JSX.Element => {
   if (errors) {
@@ -153,7 +158,24 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>Discordのリンク</h2>
             <p css={paragraphStyle}>{targetProject?.toolLink}</p>
             <h2 css={subTitleStyle}>参加者</h2>
-            <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p>
+            {/* <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p> */}
+            <List>
+              {projectParticipants?.map((participant, index) => {
+                if (participant?.user.name === targetProject?.owner.name) {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{participant?.user.name} (OWNER)
+                    </ListItem>
+                  );
+                } else {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{participant?.user.name}
+                    </ListItem>
+                  );
+                }
+              })}
+            </List>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
               {targetProject?.languages.map((language, index) => {
@@ -184,11 +206,34 @@ const ProjectDetail = ({
 
 export default ProjectDetail;
 
+const getProjectParticipants = async (projectId = "") => {
+  try {
+    const { data } = await apolloClient.query<
+      GetProjectParticipantsQuery,
+      GetProjectParticipantsQueryVariables
+    >({
+      query: GET_PROJECT_PARTICIPANTS,
+      variables: {
+        projectId: projectId,
+      },
+      fetchPolicy: "no-cache",
+    });
+
+    return data.projectParticipants.nodes;
+  } catch (err) {
+    return { props: { errors: err.message } };
+  }
+};
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const projectId = Array.isArray(context.query.id)
+    ? context.query.id[0]
+    : context.query.id;
+  const projectParticipants = await getProjectParticipants(projectId);
+  console.log("participant", projectParticipants);
+
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
-  console.log("log: ", context.query);
-  console.log("hello");
 
   try {
     const { data } = await apolloClient.query<
@@ -204,15 +249,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
       fetchPolicy: "no-cache",
     });
-    console.log(data);
-    console.log(data.projects.nodes);
+    const projects = data.projects.nodes;
+    const userParticipants = data.userParticipants.nodes;
+    const userFavorits = data.userFavorites.nodes;
+
     return {
       props: {
         uid: uid,
         projectId: context.query.id,
-        projects: data.projects.nodes,
-        userParticipants: data.userParticipants.nodes,
-        userFavorits: data.userFavorites.nodes,
+        projects: projects,
+        userParticipants: userParticipants,
+        userFavorits: userFavorits,
+        projectParticipants: projectParticipants,
       },
     };
   } catch (err) {
