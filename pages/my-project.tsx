@@ -18,7 +18,6 @@ import {
 type IndexPageProps = {
   uid?: string;
   userParticipants?: GetMyProjectsQuery["userParticipants"]["nodes"];
-  userFavorits?: GetMyProjectsQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
@@ -29,18 +28,10 @@ const title = css`
 const IndexPage = ({
   uid,
   userParticipants,
-  userFavorits,
+
   errors,
 }: IndexPageProps): JSX.Element => {
-  const isFavorite = (id: string | undefined) => {
-    if (userFavorits?.length !== 0) {
-      return userFavorits?.some((item) => item?.project.id === id);
-    }
-
-    return false;
-  };
-
-  if (errors || !userParticipants || !userFavorits) {
+  if (errors || !userParticipants) {
     return (
       <Layout>
         <p>
@@ -64,7 +55,6 @@ const IndexPage = ({
                     <ProjectContainer
                       id={x?.project?.id}
                       uid={uid}
-                      favorite={isFavorite(x?.project?.id)}
                       name={x?.project.name}
                       description={x?.project.description}
                       languages={x?.project?.languages}
@@ -101,7 +91,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         uid: uid,
         userParticipants: data.userParticipants.nodes,
-        userFavorits: data.userFavorites.nodes,
       },
     };
   } catch (err) {
