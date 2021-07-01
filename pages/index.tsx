@@ -9,9 +9,7 @@ import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
 import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
-import { SearchInput } from "../components/SearchInput";
 
-// TODO サーバーからプロジェクトを取得できたらそこから型を指定する
 type IndexPageProps = {
   uid?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
@@ -41,7 +39,6 @@ const IndexPage = ({
     <Layout>
       <MyHead title="Hack Us"></MyHead>
       <Box>
-        <SearchInput />
         <MyTabs
           labels={[
             "New Projects",

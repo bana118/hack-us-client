@@ -85,7 +85,7 @@ const SearchProjectPage = ({
     );
   }
   return (
-    <Layout>
+    <Layout showSearch={false}>
       <MyHead title={`「${query}」の検索結果`}></MyHead>
       <SearchInput />
       <h1>「{query}」の検索結果</h1>
