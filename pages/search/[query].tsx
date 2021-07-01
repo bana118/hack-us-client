@@ -24,7 +24,8 @@ const SearchProjectPage = ({
   errors,
 }: SearchProjectPageProps): JSX.Element => {
   const { user } = useContext(AuthContext);
-  const [projects, setProjects] = useState(firstProjects);
+  const [projects, setProjects] = useState(firstProjects?.edges);
+  const [pageInfo, setPageInfo] = useState(firstProjects?.pageInfo);
   const [requireLoad, setRequireLoad] = useState(false);
   const [loadProjects, { data }] = useSearchProjectsLazyQuery();
 
@@ -44,25 +45,27 @@ const SearchProjectPage = ({
   }, []);
 
   useEffect(() => {
-    if (requireLoad && projects?.pageInfo.hasNextPage) {
+    if (requireLoad && pageInfo?.hasNextPage) {
       loadProjects({
         variables: {
           query: query || "",
           first: 20,
-          after: projects?.pageInfo.endCursor,
+          after: pageInfo.endCursor,
         },
       });
     }
-    // projects, queryの変化のときは実行しない
+    // pageInfo, queryの変化のときは実行しない
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requireLoad]);
 
   useEffect(() => {
-    if (data != null) {
-      setProjects(data.projects);
+    if (data != null && projects != null) {
+      setProjects(data.projects.edges?.concat(projects));
+      setPageInfo(data.projects.pageInfo);
     }
-
     setRequireLoad(false);
+    // projectsの変化の時は実行しない
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   if (errors || !firstProjects) {
@@ -77,9 +80,9 @@ const SearchProjectPage = ({
   return (
     <Layout>
       <h1>「{query}」の検索結果</h1>
-      {projects?.edges && user && (
+      {projects && user && (
         <Grid container>
-          {projects?.edges.map((project, index) => {
+          {projects.map((project, index) => {
             return (
               <Grid item xs={12} md={6} lg={4} key={index}>
                 <ProjectContainer
