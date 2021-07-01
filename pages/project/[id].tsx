@@ -2,6 +2,7 @@ import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 import { FavoriteButton } from "../../components/FavoriteButton";
 import { Container, List, ListItem, Link, Button } from "@material-ui/core";
+import { useRouter } from "next/router";
 import { css } from "@emotion/react";
 import { GetServerSideProps } from "next";
 import { apolloClient } from "../../utils/apollo-client";
@@ -15,6 +16,7 @@ import {
   GetProjectParticipantsQueryVariables,
 } from "../../types/graphql";
 import { GET_PROJECT_PARTICIPANTS } from "../../interfaces/User";
+import { useCreateParticipantMutation } from "../../types/graphql";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
@@ -69,7 +71,7 @@ type ProjectDetailProps = {
 };
 
 const ProjectDetail = ({
-  uid,
+  uid = "",
   projectId = "",
   projects,
   userParticipants,
@@ -77,6 +79,9 @@ const ProjectDetail = ({
   projectParticipants,
   errors,
 }: ProjectDetailProps): JSX.Element => {
+  const [createParticipantMutation] = useCreateParticipantMutation();
+  const router = useRouter();
+
   if (errors) {
     return (
       <Layout>
@@ -87,6 +92,24 @@ const ProjectDetail = ({
       </Layout>
     );
   }
+
+  const ClickApplyButton = async () => {
+    try {
+      const result = await createParticipantMutation({
+        variables: {
+          uid: uid,
+          projectId: projectId,
+        },
+      });
+      console.log(result);
+      router.push({
+        pathname: "/project/[id]",
+        query: { id: projectId },
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const targetProject = projects?.find((v) => v?.id === projectId);
 
@@ -120,7 +143,12 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>コントリビュートの方法</h2>
             <p css={paragraphStyle}>{targetProject?.contribution}</p>
 
-            <Button css={button} type="submit" variant="contained">
+            <Button
+              css={button}
+              type="submit"
+              variant="contained"
+              onClick={ClickApplyButton}
+            >
               プロジェクトに応募する
             </Button>
           </Container>
