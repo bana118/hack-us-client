@@ -114,6 +114,7 @@ const ProjectDetail = ({
   };
 
   const targetProject = projects?.find((v) => v?.id === projectId);
+  console.log(targetProject?.owner);
 
   if (!userParticipants?.find((v) => v?.project.id == projectId)) {
     return (
@@ -186,14 +187,11 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>参加者</h2>
             {/* <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p> */}
             <List>
+              <ListItem css={paragraphStyle}>
+                ・{targetProject?.owner.name} (OWNER)
+              </ListItem>
               {projectParticipants?.map((participant, index) => {
-                if (participant?.user.name === targetProject?.owner.name) {
-                  return (
-                    <ListItem css={paragraphStyle} key={index}>
-                      ・{participant?.user.name} (OWNER)
-                    </ListItem>
-                  );
-                } else {
+                if (participant?.user.uid !== targetProject?.owner.uid) {
                   return (
                     <ListItem css={paragraphStyle} key={index}>
                       ・{participant?.user.name}
