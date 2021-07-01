@@ -9,10 +9,12 @@ import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
 import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
+import Link from "next/link";
 
 type IndexPageProps = {
   uid?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
+  recommends?: GetProjectsQuery["recommends"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
   userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
   errors?: string;
@@ -21,15 +23,23 @@ type IndexPageProps = {
 const IndexPage = ({
   uid,
   projects,
+  recommends,
   userParticipants,
   userFavorites,
   errors,
 }: IndexPageProps): JSX.Element => {
-  if (errors || !projects || !userParticipants || !userFavorites) {
+  if (
+    errors ||
+    !projects ||
+    !recommends ||
+    !userParticipants ||
+    !userFavorites
+  ) {
     return (
       <Layout>
         <p>
-          <span style={{ color: "red" }}>Error:</span> {errors}
+          <span style={{ color: "red" }}>Error:</span>{" "}
+          {errors || "Unexpected Error"}
         </p>
       </Layout>
     );
@@ -42,6 +52,7 @@ const IndexPage = ({
         <MyTabs
           labels={[
             "New Projects",
+            "Recommend Projects",
             "Favorite Projects",
             "Participating Projects",
           ]}
@@ -62,6 +73,40 @@ const IndexPage = ({
                     contribution={project?.contribution}
                     recruitmentNumbers={project?.recruitmentNumbers}
                   />
+                </Grid>
+              );
+            })}
+          </Grid>
+          <Grid container className="recommend-projects">
+            {recommends.map((recommend, index) => {
+              return (
+                <Grid key={index} container direction="column">
+                  <Grid item>
+                    <h2>{recommend.language}</h2>
+                    <Link href={`/search/${recommend.language}`}>
+                      <a>more</a>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    {recommend.projects.map((project, index) => {
+                      return (
+                        <Grid item xs={12} md={6} lg={4} key={index}>
+                          <ProjectContainer
+                            id={project?.id}
+                            uid={uid}
+                            favorite={isFavorite(project?.id, userFavorites)}
+                            name={project?.name}
+                            description={project?.description}
+                            languages={project?.languages}
+                            startsAt={project?.startsAt}
+                            endsAt={project?.endsAt}
+                            contribution={project?.contribution}
+                            recruitmentNumbers={project?.recruitmentNumbers}
+                          />
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
                 </Grid>
               );
             })}
@@ -128,6 +173,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: {
         uid: uid,
         projectsFirst: 8,
+        recommendsLanguageFirst: 5,
+        recommendsProjectFirst: 3,
       },
       fetchPolicy: "no-cache",
     });
@@ -135,6 +182,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         uid: uid,
         projects: data.projects.nodes,
+        recommends: data.recommends,
         userParticipants: data.userParticipants.nodes,
         userFavorites: data.userFavorites.nodes,
       },
