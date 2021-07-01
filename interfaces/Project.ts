@@ -29,6 +29,10 @@ export const GET_PROJECTS = gql`
           name
           color
         }
+        owner {
+          uid
+          name
+        }
         recruitmentNumbers
         toolLink
         contribution
@@ -67,6 +71,10 @@ export const GET_PROJECTS = gql`
             name
             color
           }
+          owner {
+            uid
+            name
+          }
           recruitmentNumbers
           toolLink
           contribution
@@ -85,6 +93,10 @@ export const GET_PROJECTS = gql`
           languages {
             name
             color
+          }
+          owner {
+            uid
+            name
           }
           recruitmentNumbers
           toolLink
@@ -157,6 +169,10 @@ export const SEARCH_PROJECTS_FIRST = gql`
           recruitmentNumbers
           toolLink
           contribution
+          owner {
+            uid
+            name
+          }
         }
       }
     }
@@ -176,6 +192,10 @@ export const SEARCH_PROJECTS_FIRST = gql`
           recruitmentNumbers
           toolLink
           contribution
+          owner {
+            uid
+            name
+          }
         }
       }
     }
@@ -202,6 +222,10 @@ export const SEARCH_PROJECTS = gql`
           languages {
             name
             color
+          }
+          owner {
+            uid
+            name
           }
           recruitmentNumbers
           toolLink

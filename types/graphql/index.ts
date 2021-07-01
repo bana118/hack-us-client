@@ -540,7 +540,10 @@ export type GetProjectsQuery = (
       & { languages: Array<(
         { __typename?: 'Language' }
         & Pick<Language, 'name' | 'color'>
-      )> }
+      )>, owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'uid' | 'name'>
+      ) }
     )>>> }
   ), recommends: Array<(
     { __typename?: 'Recommend' }
@@ -563,7 +566,10 @@ export type GetProjectsQuery = (
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )> }
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
       ) }
     )>>> }
   ), userFavorites: (
@@ -577,7 +583,10 @@ export type GetProjectsQuery = (
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )> }
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
       ) }
     )>>> }
   ) }
@@ -642,7 +651,10 @@ export type SearchProjectsFirstQuery = (
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )> }
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
       )> }
     )>>> }
   ), userFavorites: (
@@ -656,7 +668,10 @@ export type SearchProjectsFirstQuery = (
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )> }
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
       ) }
     )>>> }
   ) }
@@ -685,7 +700,10 @@ export type SearchProjectsQuery = (
         & { languages: Array<(
           { __typename?: 'Language' }
           & Pick<Language, 'name' | 'color'>
-        )> }
+        )>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
       )> }
     )>>> }
   ) }
@@ -802,6 +820,29 @@ export type GetUserQuery = (
   ) }
 );
 
+export type GetProjectParticipantsQueryVariables = Exact<{
+  projectId: Scalars['ID'];
+}>;
+
+
+export type GetProjectParticipantsQuery = (
+  { __typename?: 'Query' }
+  & { projectParticipants: (
+    { __typename?: 'ParticipantConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Participant' }
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
+        & { contributions: Array<(
+          { __typename?: 'Contribution' }
+          & Pick<Contribution, 'language' | 'color' | 'count'>
+        )> }
+      ) }
+    )>>> }
+  ) }
+);
+
 export type CreateUserMutationVariables = Exact<{
   uid: Scalars['String'];
   githubId: Scalars['String'];
@@ -851,6 +892,10 @@ export const GetProjectsDocument = gql`
         name
         color
       }
+      owner {
+        uid
+        name
+      }
       recruitmentNumbers
       toolLink
       contribution
@@ -889,6 +934,10 @@ export const GetProjectsDocument = gql`
           name
           color
         }
+        owner {
+          uid
+          name
+        }
         recruitmentNumbers
         toolLink
         contribution
@@ -907,6 +956,10 @@ export const GetProjectsDocument = gql`
         languages {
           name
           color
+        }
+        owner {
+          uid
+          name
         }
         recruitmentNumbers
         toolLink
@@ -1031,6 +1084,10 @@ export const SearchProjectsFirstDocument = gql`
         recruitmentNumbers
         toolLink
         contribution
+        owner {
+          uid
+          name
+        }
       }
     }
   }
@@ -1050,6 +1107,10 @@ export const SearchProjectsFirstDocument = gql`
         recruitmentNumbers
         toolLink
         contribution
+        owner {
+          uid
+          name
+        }
       }
     }
   }
@@ -1106,6 +1167,10 @@ export const SearchProjectsDocument = gql`
         languages {
           name
           color
+        }
+        owner {
+          uid
+          name
         }
         recruitmentNumbers
         toolLink
@@ -1373,6 +1438,55 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const GetProjectParticipantsDocument = gql`
+    query GetProjectParticipants($projectId: ID!) {
+  projectParticipants(projectId: $projectId) {
+    nodes {
+      user {
+        id
+        name
+        uid
+        description
+        githubId
+        githubIconUrl
+        contributions {
+          language
+          color
+          count
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectParticipantsQuery__
+ *
+ * To run a query within a React component, call `useGetProjectParticipantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectParticipantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectParticipantsQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useGetProjectParticipantsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectParticipantsQuery, GetProjectParticipantsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectParticipantsQuery, GetProjectParticipantsQueryVariables>(GetProjectParticipantsDocument, options);
+      }
+export function useGetProjectParticipantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectParticipantsQuery, GetProjectParticipantsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectParticipantsQuery, GetProjectParticipantsQueryVariables>(GetProjectParticipantsDocument, options);
+        }
+export type GetProjectParticipantsQueryHookResult = ReturnType<typeof useGetProjectParticipantsQuery>;
+export type GetProjectParticipantsLazyQueryHookResult = ReturnType<typeof useGetProjectParticipantsLazyQuery>;
+export type GetProjectParticipantsQueryResult = Apollo.QueryResult<GetProjectParticipantsQuery, GetProjectParticipantsQueryVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($uid: String!, $githubId: String!) {
   createUser(input: {uid: $uid, githubId: $githubId}) {

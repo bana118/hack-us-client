@@ -1,4 +1,5 @@
 import Layout from "../../components/Layout";
+import { MyHead } from "../../components/MyHead";
 import { FavoriteButton } from "../../components/FavoriteButton";
 import { Container, List, ListItem, Link, Button } from "@material-ui/core";
 import { css } from "@emotion/react";
@@ -10,7 +11,10 @@ import { GET_PROJECTS, isFavorite } from "../../interfaces/Project";
 import {
   GetProjectsQuery,
   GetProjectsQueryVariables,
+  GetProjectParticipantsQuery,
+  GetProjectParticipantsQueryVariables,
 } from "../../types/graphql";
+import { GET_PROJECT_PARTICIPANTS } from "../../interfaces/User";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
@@ -60,20 +64,23 @@ type ProjectDetailProps = {
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
   userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
+  projectParticipants?: GetProjectParticipantsQuery["projectParticipants"]["nodes"];
   errors?: string;
 };
 
 const ProjectDetail = ({
   uid,
-  projectId,
+  projectId = "",
   projects,
   userParticipants,
   userFavorites,
+  projectParticipants,
   errors,
 }: ProjectDetailProps): JSX.Element => {
   if (errors) {
     return (
       <Layout>
+        <MyHead title="Error"></MyHead>
         <p>
           <span style={{ color: "red" }}>Error:</span> {errors}
         </p>
@@ -87,6 +94,7 @@ const ProjectDetail = ({
     return (
       //  not participant layout
       <Layout>
+        <MyHead title={targetProject?.name}></MyHead>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
           <Container>
@@ -132,6 +140,7 @@ const ProjectDetail = ({
     //  true participant layout
     return (
       <Layout>
+        <MyHead title={targetProject?.name}></MyHead>
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
           <Container>
@@ -145,7 +154,24 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>Discordのリンク</h2>
             <p css={paragraphStyle}>{targetProject?.toolLink}</p>
             <h2 css={subTitleStyle}>参加者</h2>
-            <p css={paragraphStyle}>いない</p>
+            {/* <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p> */}
+            <List>
+              {projectParticipants?.map((participant, index) => {
+                if (participant?.user.name === targetProject?.owner.name) {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{participant?.user.name} (OWNER)
+                    </ListItem>
+                  );
+                } else {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{participant?.user.name}
+                    </ListItem>
+                  );
+                }
+              })}
+            </List>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
               {targetProject?.languages.map((language, index) => {
@@ -176,7 +202,32 @@ const ProjectDetail = ({
 
 export default ProjectDetail;
 
+const getProjectParticipants = async (projectId = "") => {
+  try {
+    const { data } = await apolloClient.query<
+      GetProjectParticipantsQuery,
+      GetProjectParticipantsQueryVariables
+    >({
+      query: GET_PROJECT_PARTICIPANTS,
+      variables: {
+        projectId: projectId,
+      },
+      fetchPolicy: "no-cache",
+    });
+
+    return data.projectParticipants.nodes;
+  } catch (err) {
+    return { props: { errors: err.message } };
+  }
+};
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const projectId = Array.isArray(context.query.id)
+    ? context.query.id[0]
+    : context.query.id;
+  const projectParticipants = await getProjectParticipants(projectId);
+  console.log("participant", projectParticipants);
+
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
 
@@ -194,14 +245,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
       fetchPolicy: "no-cache",
     });
-    console.log(data);
+    const projects = data.projects.nodes;
+    const userParticipants = data.userParticipants.nodes;
+    const userFavorites = data.userFavorites.nodes;
+
     return {
       props: {
         uid: uid,
         projectId: context.query.id,
-        projects: data.projects.nodes,
-        userParticipants: data.userParticipants.nodes,
-        userFavorites: data.userFavorites.nodes,
+        projects: projects,
+        userParticipants: userParticipants,
+        userFavorites: userFavorites,
+        projectParticipants: projectParticipants,
       },
     };
   } catch (err) {
