@@ -2,6 +2,7 @@ import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 import { FavoriteButton } from "../../components/FavoriteButton";
 import { Container, List, ListItem, Link, Button } from "@material-ui/core";
+import { useRouter } from "next/router";
 import { css } from "@emotion/react";
 import { GetServerSideProps } from "next";
 import { apolloClient } from "../../utils/apollo-client";
@@ -15,6 +16,7 @@ import {
   GetProjectParticipantsQueryVariables,
 } from "../../types/graphql";
 import { GET_PROJECT_PARTICIPANTS } from "../../interfaces/User";
+import { useCreateParticipantMutation } from "../../types/graphql";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
@@ -69,7 +71,7 @@ type ProjectDetailProps = {
 };
 
 const ProjectDetail = ({
-  uid,
+  uid = "",
   projectId = "",
   projects,
   userParticipants,
@@ -77,6 +79,9 @@ const ProjectDetail = ({
   projectParticipants,
   errors,
 }: ProjectDetailProps): JSX.Element => {
+  const [createParticipantMutation] = useCreateParticipantMutation();
+  const router = useRouter();
+
   if (errors) {
     return (
       <Layout>
@@ -88,7 +93,28 @@ const ProjectDetail = ({
     );
   }
 
+  const ClickApplyButton = async () => {
+    try {
+      const result = await createParticipantMutation({
+        variables: {
+          uid: uid,
+          projectId: projectId,
+          ownerApproved: null,
+          userApproved: true,
+        },
+      });
+      console.log(result);
+      router.push({
+        pathname: "/project/[id]",
+        query: { id: projectId },
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const targetProject = projects?.find((v) => v?.id === projectId);
+  console.log(targetProject?.owner);
 
   if (!userParticipants?.find((v) => v?.project.id == projectId)) {
     return (
@@ -120,7 +146,12 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>コントリビュートの方法</h2>
             <p css={paragraphStyle}>{targetProject?.contribution}</p>
 
-            <Button css={button} type="submit" variant="contained">
+            <Button
+              css={button}
+              type="submit"
+              variant="contained"
+              onClick={ClickApplyButton}
+            >
               プロジェクトに応募する
             </Button>
           </Container>
@@ -156,14 +187,11 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>参加者</h2>
             {/* <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p> */}
             <List>
+              <ListItem css={paragraphStyle}>
+                ・{targetProject?.owner.name} (OWNER)
+              </ListItem>
               {projectParticipants?.map((participant, index) => {
-                if (participant?.user.name === targetProject?.owner.name) {
-                  return (
-                    <ListItem css={paragraphStyle} key={index}>
-                      ・{participant?.user.name} (OWNER)
-                    </ListItem>
-                  );
-                } else {
+                if (participant?.user.uid !== targetProject?.owner.uid) {
                   return (
                     <ListItem css={paragraphStyle} key={index}>
                       ・{participant?.user.name}
@@ -226,6 +254,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     ? context.query.id[0]
     : context.query.id;
   const projectParticipants = await getProjectParticipants(projectId);
+  console.log(projectParticipants);
 
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];

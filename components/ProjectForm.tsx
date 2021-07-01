@@ -177,6 +177,8 @@ export const ProjectForm = ({
             variables: {
               uid: user.uid,
               projectId: projectId,
+              ownerApproved: true,
+              userApproved: true,
             },
           });
         }
