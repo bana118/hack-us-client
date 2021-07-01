@@ -30,6 +30,28 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_PROJECT_PARTICIPANTS = gql`
+  query GetProjectParticipants($projectId: ID!) {
+    projectParticipants(projectId: $projectId) {
+      nodes {
+        user {
+          id
+          name
+          uid
+          description
+          githubId
+          githubIconUrl
+          contributions {
+            language
+            color
+            count
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const CREATE_USER = gql`
   mutation CreateUser($uid: String!, $githubId: String!) {
     createUser(input: { uid: $uid, githubId: $githubId }) {

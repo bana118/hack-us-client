@@ -1,14 +1,50 @@
 import { gql } from "@apollo/client";
+import { GetProjectsQuery } from "../types/graphql";
+
+export const isFavorite = (
+  id: string | undefined,
+  userFavorites: GetProjectsQuery["userFavorites"]["nodes"]
+): boolean => {
+  if (userFavorites?.length !== 0) {
+    return userFavorites?.some((item) => item?.project.id === id) || false;
+  }
+  return false;
+};
 
 export const GET_PROJECTS = gql`
   query GetProjects(
     $uid: String!
     $projectsFirst: Int!
-    $userParticipantsFirst: Int!
-    $userFavoritsFirst: Int!
+    $recommendsLanguageFirst: Int!
+    $recommendsProjectFirst: Int!
   ) {
     projects(first: $projectsFirst) {
       nodes {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        owner {
+          uid
+          name
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+    recommends(
+      uid: $uid
+      languageFirst: $recommendsLanguageFirst
+      projectFirst: $recommendsProjectFirst
+    ) {
+      language
+      projects {
         id
         name
         description
@@ -23,7 +59,7 @@ export const GET_PROJECTS = gql`
         contribution
       }
     }
-    userParticipants(uid: $uid, first: $userParticipantsFirst) {
+    userParticipants(uid: $uid) {
       nodes {
         project {
           id
@@ -35,13 +71,17 @@ export const GET_PROJECTS = gql`
             name
             color
           }
+          owner {
+            uid
+            name
+          }
           recruitmentNumbers
           toolLink
           contribution
         }
       }
     }
-    userFavorites(uid: $uid, first: $userFavoritsFirst) {
+    userFavorites(uid: $uid) {
       nodes {
         id
         project {
@@ -53,6 +93,10 @@ export const GET_PROJECTS = gql`
           languages {
             name
             color
+          }
+          owner {
+            uid
+            name
           }
           recruitmentNumbers
           toolLink
@@ -105,6 +149,102 @@ export const GET_PROJECT = gql`
       recruitmentNumbers
       toolLink
       contribution
+    }
+  }
+`;
+
+export const SEARCH_PROJECTS_FIRST = gql`
+  query SearchProjectsFirst(
+    $uid: String!
+    $query: String!
+    $first: Int!
+    $after: String
+  ) {
+    projects(query: $query, first: $first, after: $after) {
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        endCursor
+        startCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            uid
+            name
+          }
+        }
+      }
+    }
+    userFavorites(uid: $uid) {
+      nodes {
+        id
+        project {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            uid
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const SEARCH_PROJECTS = gql`
+  query SearchProjects($query: String!, $first: Int!, $after: String) {
+    projects(query: $query, first: $first, after: $after) {
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        endCursor
+        startCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          owner {
+            uid
+            name
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+        }
+      }
     }
   }
 `;

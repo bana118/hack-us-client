@@ -4,11 +4,12 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import { css } from "@emotion/react";
 import { Children } from "react";
+import { themeColor } from "../utils/style-variables";
 
-const tabStyle = css`
-  background-color: #1976d2;
-  color: #ffffff;
-`;
+const tabStyle = css({
+  backgroundColor: themeColor,
+  color: "white",
+});
 
 type TabPanelProps = {
   value: number;
