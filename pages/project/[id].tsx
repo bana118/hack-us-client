@@ -205,6 +205,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       fetchPolicy: "no-cache",
     });
     console.log(data);
+    console.log(data.projects.nodes);
     return {
       props: {
         uid: uid,
