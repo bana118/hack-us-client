@@ -6,7 +6,7 @@ import { GetServerSideProps } from "next";
 import { apolloClient } from "../../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../../utils/cookie-key-names";
-import { GET_PROJECTS } from "../../interfaces/Project";
+import { GET_PROJECTS, isFavorite } from "../../interfaces/Project";
 import {
   GetProjectsQuery,
   GetProjectsQueryVariables,
@@ -59,7 +59,7 @@ type ProjectDetailProps = {
   projectId?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
-  userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
+  userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
@@ -68,7 +68,7 @@ const ProjectDetail = ({
   projectId,
   projects,
   userParticipants,
-  userFavorits,
+  userFavorites,
   errors,
 }: ProjectDetailProps): JSX.Element => {
   if (errors) {
@@ -80,14 +80,6 @@ const ProjectDetail = ({
       </Layout>
     );
   }
-
-  const isFavorite = (id: string | undefined) => {
-    if (userFavorits?.length !== 0) {
-      return userFavorits?.some((item) => item?.project.id === id);
-    }
-
-    return false;
-  };
 
   const targetProject = projects?.find((v) => v?.id === projectId);
 
@@ -128,7 +120,7 @@ const ProjectDetail = ({
             css={buttonStyle}
             id={projectId}
             uid={uid}
-            favorite={isFavorite(projectId)}
+            favorite={isFavorite(projectId, userFavorites)}
           />
         </Container>
         <Link href="/">
@@ -171,7 +163,7 @@ const ProjectDetail = ({
             css={buttonStyle}
             id={projectId}
             uid={uid}
-            favorite={isFavorite(projectId)}
+            favorite={isFavorite(projectId, userFavorites)}
           />
         </Container>
         <Link href="/">
@@ -199,8 +191,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: {
         uid: uid,
         projectsFirst: 8,
-        userParticipantsFirst: 8,
-        userFavoritsFirst: 8,
       },
       fetchPolicy: "no-cache",
     });
@@ -211,7 +201,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         projectId: context.query.id,
         projects: data.projects.nodes,
         userParticipants: data.userParticipants.nodes,
-        userFavorits: data.userFavorites.nodes,
+        userFavorites: data.userFavorites.nodes,
       },
     };
   } catch (err) {

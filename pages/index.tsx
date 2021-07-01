@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
 import { ProjectContainer } from "../components/ProjectContainer";
-import { GET_PROJECTS } from "../interfaces/Project";
+import { GET_PROJECTS, isFavorite } from "../interfaces/Project";
 import { GetServerSideProps } from "next";
 import { Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
@@ -16,7 +16,7 @@ type IndexPageProps = {
   uid?: string;
   projects?: GetProjectsQuery["projects"]["nodes"];
   userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
-  userFavorits?: GetProjectsQuery["userFavorites"]["nodes"];
+  userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
@@ -24,19 +24,10 @@ const IndexPage = ({
   uid,
   projects,
   userParticipants,
-  userFavorits,
+  userFavorites,
   errors,
 }: IndexPageProps): JSX.Element => {
-  // TODO favorite情報を正しく取る
-  const isFavorite = (id: string | undefined) => {
-    if (userFavorits?.length !== 0) {
-      return userFavorits?.some((item) => item?.project.id === id);
-    }
-
-    return false;
-  };
-
-  if (errors || !projects || !userParticipants || !userFavorits) {
+  if (errors || !projects || !userParticipants || !userFavorites) {
     return (
       <Layout>
         <p>
@@ -65,7 +56,7 @@ const IndexPage = ({
                   <ProjectContainer
                     id={project?.id}
                     uid={uid}
-                    favorite={isFavorite(project?.id)}
+                    favorite={isFavorite(project?.id, userFavorites)}
                     name={project?.name}
                     description={project?.description}
                     languages={project?.languages}
@@ -79,7 +70,7 @@ const IndexPage = ({
             })}
           </Grid>
           <Grid container className="favorite-projects">
-            {userFavorits.map((userFavorite, index) => {
+            {userFavorites.map((userFavorite, index) => {
               const project = userFavorite?.project;
               return (
                 <Grid item xs={12} md={6} lg={4} key={index}>
@@ -107,7 +98,7 @@ const IndexPage = ({
                   <ProjectContainer
                     id={project?.id}
                     uid={uid}
-                    favorite={isFavorite(project?.id)}
+                    favorite={isFavorite(project?.id, userFavorites)}
                     name={project?.name}
                     description={project?.description}
                     languages={project?.languages}
@@ -140,8 +131,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       variables: {
         uid: uid,
         projectsFirst: 8,
-        userParticipantsFirst: 8,
-        userFavoritsFirst: 8,
       },
       fetchPolicy: "no-cache",
     });
@@ -150,7 +139,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         uid: uid,
         projects: data.projects.nodes,
         userParticipants: data.userParticipants.nodes,
-        userFavorits: data.userFavorites.nodes,
+        userFavorites: data.userFavorites.nodes,
       },
     };
   } catch (err) {

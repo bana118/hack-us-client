@@ -1,9 +1,9 @@
 import Layout from "../../components/Layout";
 import { GetServerSideProps } from "next";
-import { SEARCH_PROJECTS } from "../../interfaces/Project";
+import { SEARCH_PROJECTS_FIRST, isFavorite } from "../../interfaces/Project";
 import {
-  SearchProjectsQuery,
-  SearchProjectsQueryVariables,
+  SearchProjectsFirstQuery,
+  SearchProjectsFirstQueryVariables,
   useSearchProjectsLazyQuery,
 } from "../../types/graphql";
 import { useState, useEffect, useContext } from "react";
@@ -11,16 +11,20 @@ import { Grid } from "@material-ui/core";
 import { ProjectContainer } from "../../components/ProjectContainer";
 import { AuthContext } from "../../context/AuthContext";
 import { apolloClient } from "../../utils/apollo-client";
+import nookies from "nookies";
+import { uidKeyName } from "../../utils/cookie-key-names";
 
 type SearchProjectPageProps = {
   query?: string;
-  firstProjects?: SearchProjectsQuery["projects"];
+  firstProjects?: SearchProjectsFirstQuery["projects"];
+  userFavorites?: SearchProjectsFirstQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
 const SearchProjectPage = ({
   query,
   firstProjects,
+  userFavorites,
   errors,
 }: SearchProjectPageProps): JSX.Element => {
   const { user } = useContext(AuthContext);
@@ -89,7 +93,7 @@ const SearchProjectPage = ({
                   id={project?.node?.id}
                   uid={user.uid}
                   // TODO favorite情報の取り方
-                  favorite={false}
+                  favorite={isFavorite(project?.node?.id, userFavorites)}
                   name={project?.node?.name}
                   description={project?.node?.description}
                   languages={project?.node?.languages}
@@ -115,12 +119,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: { errors: "Invalid URL" } };
   } else {
     try {
+      const cookies = nookies.get(context);
+      const uid = cookies[uidKeyName];
       const { data } = await apolloClient.query<
-        SearchProjectsQuery,
-        SearchProjectsQueryVariables
+        SearchProjectsFirstQuery,
+        SearchProjectsFirstQueryVariables
       >({
-        query: SEARCH_PROJECTS,
+        query: SEARCH_PROJECTS_FIRST,
         variables: {
+          uid: uid,
           query: query,
           first: 20,
         },
@@ -131,6 +138,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           query: query,
           firstProjects: data.projects,
+          userFavorites: data.userFavorites.nodes,
         },
       };
     } catch (err) {
