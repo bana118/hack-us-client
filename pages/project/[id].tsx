@@ -153,7 +153,7 @@ const ProjectDetail = ({
             <h2 css={subTitleStyle}>Discordのリンク</h2>
             <p css={paragraphStyle}>{targetProject?.toolLink}</p>
             <h2 css={subTitleStyle}>参加者</h2>
-            <p css={paragraphStyle}>いない</p>
+            <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
               {targetProject?.languages.map((language, index) => {
