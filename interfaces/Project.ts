@@ -96,6 +96,36 @@ export const GET_MY_PROJECTS = gql`
   }
 `;
 
+export const SEARCH_PROJECTS = gql`
+  query SearchProjects($query: String!, $first: Int!, $after: String) {
+    projects(query: $query, first: $first, after: $after) {
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        endCursor
+        startCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+        }
+      }
+    }
+  }
+`;
+
 export const CREATE_PROJECT = gql`
   mutation CreateProject(
     $name: String!
