@@ -11,7 +11,10 @@ import {
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import { useCreateFavoriteMutation } from "../types/graphql";
+import {
+  useCreateFavoriteMutation,
+  useDeleteFavoriteMutation,
+} from "../types/graphql";
 
 type FavoriteButtonProps = {
   id?: string;
@@ -32,6 +35,7 @@ export const FavoriteButton = ({
   const currentpath: string = router.pathname;
 
   const [createFavoriteMutation] = useCreateFavoriteMutation();
+  const [deleteFavoriteMutation] = useDeleteFavoriteMutation();
 
   const clickEdit = (): void => {
     router.push({
@@ -56,7 +60,17 @@ export const FavoriteButton = ({
         return;
       }
     } else {
-      // TODO deleteFavoriteMutationの実装
+      try {
+        await deleteFavoriteMutation({
+          variables: {
+            uid: uid,
+            projectId: id,
+          },
+        });
+        setChangeIcon(false);
+      } catch {
+        return;
+      }
     }
   };
 

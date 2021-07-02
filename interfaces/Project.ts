@@ -385,18 +385,18 @@ export const CREATE_FAVORITE = gql`
   }
 `;
 
-// export const DELETE_FAVORITE = gql`
-//   mutation DeleteFavorite($id: ID!) {
-//     deleteFavorite(input: { id: $id }) {
-//       favorite {
-//         id
-//         user {
-//           id
-//         }
-//         project {
-//           id
-//         }
-//       }
-//     }
-//   }
-// `;
+export const DELETE_FAVORITE = gql`
+  mutation DeleteFavorite($uid: String!, $projectId: ID!) {
+    deleteFavorite(input: { uid: $uid, projectId: $projectId }) {
+      favorite {
+        id
+        user {
+          id
+        }
+        project {
+          id
+        }
+      }
+    }
+  }
+`;
