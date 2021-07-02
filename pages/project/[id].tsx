@@ -1,7 +1,7 @@
 import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 import { FavoriteButton } from "../../components/FavoriteButton";
-import { Container, List, ListItem, Link, Button } from "@material-ui/core";
+import { Container, List, ListItem, Button } from "@material-ui/core";
 import { useRouter } from "next/router";
 import { css } from "@emotion/react";
 import { GetServerSideProps } from "next";
@@ -24,6 +24,7 @@ import {
   textLinkblue,
   border,
 } from "../../utils/style-variables";
+import Link from "next/link";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
@@ -112,7 +113,8 @@ const ProjectDetail = ({
         variables: {
           uid: uid,
           projectId: projectId,
-          ownerApproved: null,
+          // TODO ownerApproved はfalseにして承認待ちにする
+          ownerApproved: true,
           userApproved: true,
         },
       });
@@ -145,13 +147,14 @@ const ProjectDetail = ({
             <p css={paragraphStyle}>{targetProject?.description}</p>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
-              {targetProject?.languages.map((language, index) => {
-                return (
-                  <ListItem css={paragraphStyle} key={index}>
-                    ・{language.name}
-                  </ListItem>
-                );
-              })}
+              {targetProject?.languages &&
+                targetProject?.languages.map((language, index) => {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{language.name}
+                    </ListItem>
+                  );
+                })}
             </List>
             <h2 css={subTitleStyle}>募集人数</h2>
             <p css={paragraphStyle}>{targetProject?.recruitmentNumbers}</p>
@@ -200,13 +203,20 @@ const ProjectDetail = ({
             {/* <p css={paragraphStyle}>・{targetProject?.owner.name} (OWNER)</p> */}
             <List>
               <ListItem css={paragraphStyle}>
-                ・{targetProject?.owner.name} (OWNER)
+                ・
+                <Link href={`/user/${targetProject?.owner.uid}`}>
+                  <a>{targetProject?.owner.name}</a>
+                </Link>
+                (OWNER)
               </ListItem>
               {projectParticipants?.map((participant, index) => {
                 if (participant?.user.uid !== targetProject?.owner.uid) {
                   return (
                     <ListItem css={paragraphStyle} key={index}>
-                      ・{participant?.user.name}
+                      ・
+                      <Link href={`/user/${participant?.user.name}`}>
+                        <a>{participant?.user.name}</a>
+                      </Link>
                     </ListItem>
                   );
                 }
@@ -214,13 +224,14 @@ const ProjectDetail = ({
             </List>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
-              {targetProject?.languages.map((language, index) => {
-                return (
-                  <ListItem css={paragraphStyle} key={index}>
-                    ・{language.name}
-                  </ListItem>
-                );
-              })}
+              {targetProject?.languages &&
+                targetProject?.languages.map((language, index) => {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{language.name}
+                    </ListItem>
+                  );
+                })}
             </List>
             <h2 css={subTitleStyle}>コントリビュートの方法</h2>
             <p css={paragraphStyle}>{targetProject?.contribution}</p>

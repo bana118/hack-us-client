@@ -60,7 +60,7 @@ type ProjectContainerProps = {
   favorite?: boolean | undefined;
   name?: string;
   description?: string;
-  languages?: LanguageInput[];
+  languages?: LanguageInput[] | null;
   startsAt?: string | null;
   endsAt?: string | null;
   contribution?: string | null;
@@ -92,24 +92,25 @@ export const ProjectContainer = ({
           <p css={projectDetailStyle}>{description}</p>
           <p css={projectLanguageStyle}>
             言語:{" "}
-            {languages.map((language, index) => {
-              if (index == languages.length - 1)
+            {languages &&
+              languages.map((language, index) => {
+                if (index == languages.length - 1)
+                  return (
+                    <span key={index} css={{ color: language.color }}>
+                      {language.name}
+                    </span>
+                  );
                 return (
                   <span key={index} css={{ color: language.color }}>
-                    {language.name}
+                    {language.name},{" "}
                   </span>
                 );
-              return (
-                <span key={index} css={{ color: language.color }}>
-                  {language.name},{" "}
-                </span>
-              );
-              return (
-                <span key={index} css={{ color: language.color }}>
-                  {language.name}{" "}
-                </span>
-              );
-            })}
+                return (
+                  <span key={index} css={{ color: language.color }}>
+                    {language.name}{" "}
+                  </span>
+                );
+              })}
           </p>
           {startsAt && endsAt && (
             <p css={projectStatusStyle}>

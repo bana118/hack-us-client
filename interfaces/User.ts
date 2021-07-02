@@ -26,6 +26,56 @@ export const GET_USER = gql`
         color
         count
       }
+      projects {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_ME_AND_USER = gql`
+  query GetMeAndUser($myUid: String!, $uid: String!) {
+    me: user(uid: $myUid) {
+      id
+      name
+      uid
+      description
+      githubId
+      githubIconUrl
+      contributions {
+        language
+        color
+        count
+      }
+      projects {
+        id
+        name
+      }
+    }
+    user(uid: $uid) {
+      id
+      name
+      uid
+      description
+      githubId
+      githubIconUrl
+      contributions {
+        language
+        color
+        count
+      }
+      projects {
+        id
+        name
+      }
+    }
+    userParticipants(uid: $uid) {
+      nodes {
+        project {
+          id
+        }
+      }
     }
   }
 `;
