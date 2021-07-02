@@ -11,16 +11,18 @@ export const ContributionPieChart = ({
   const mainContributions =
     contributions != null ? contributions.slice(0, 5) : [];
   const totalContributions =
-    contributions != null
+    contributions != null && contributions.length > 0
       ? contributions
           .map((info) => info.count)
           .reduce((total, current) => total + current)
       : 0;
-  const otherContributions =
-    totalContributions -
-    mainContributions
-      .map((info) => info.count)
-      .reduce((total, current) => total + current);
+  const totalMainContributions =
+    mainContributions.length > 0
+      ? mainContributions
+          .map((info) => info.count)
+          .reduce((total, current) => total + current)
+      : 0;
+  const otherContributions = totalContributions - totalMainContributions;
 
   if (otherContributions > 0) {
     mainContributions.push({
