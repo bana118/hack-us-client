@@ -8,14 +8,17 @@ import { GetServerSideProps } from "next";
 import { apolloClient } from "../../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../../utils/cookie-key-names";
-import { GET_PROJECTS, isFavorite } from "../../interfaces/Project";
 import {
-  GetProjectsQuery,
-  GetProjectsQueryVariables,
-  GetProjectParticipantsQuery,
-  GetProjectParticipantsQueryVariables,
+  GET_PROJECT_AND_PARTICIPANT_AND_FAVORITE,
+  isFavorite,
+} from "../../interfaces/Project";
+import {
+  GetRecommendUsersQuery,
+  GetRecommendUsersQueryVariables,
+  GetProjectAndParticipantAndFavoriteQuery,
+  GetProjectAndParticipantAndFavoriteQueryVariables,
 } from "../../types/graphql";
-import { GET_PROJECT_PARTICIPANTS } from "../../interfaces/User";
+import { GET_RECOMMEND_USERS } from "../../interfaces/User";
 import { useCreateParticipantMutation } from "../../types/graphql";
 import {
   themeMain,
@@ -25,6 +28,7 @@ import {
   border,
 } from "../../utils/style-variables";
 import Link from "next/link";
+import React from "react";
 
 const projectDetailStyle = css`
   background-color: #ffffff;
@@ -76,21 +80,21 @@ const buttonStyle = css``;
 
 type ProjectDetailProps = {
   uid?: string;
-  projectId?: string;
-  projects?: GetProjectsQuery["projects"]["nodes"];
-  userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
-  userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
-  projectParticipants?: GetProjectParticipantsQuery["projectParticipants"]["nodes"];
+  project?: GetProjectAndParticipantAndFavoriteQuery["project"];
+  userParticipants?: GetProjectAndParticipantAndFavoriteQuery["userParticipants"]["nodes"];
+  userFavorites?: GetProjectAndParticipantAndFavoriteQuery["userFavorites"]["nodes"];
+  projectParticipants?: GetProjectAndParticipantAndFavoriteQuery["projectParticipants"]["nodes"];
+  recommendUsers?: GetRecommendUsersQuery;
   errors?: string;
 };
 
 const ProjectDetail = ({
   uid = "",
-  projectId = "",
-  projects,
+  project,
   userParticipants,
   userFavorites,
   projectParticipants,
+  recommendUsers,
   errors,
 }: ProjectDetailProps): JSX.Element => {
   const [createParticipantMutation] = useCreateParticipantMutation();
@@ -112,7 +116,7 @@ const ProjectDetail = ({
       const result = await createParticipantMutation({
         variables: {
           uid: uid,
-          projectId: projectId,
+          projectId: project?.id || "",
           // TODO ownerApproved はfalseにして承認待ちにする
           ownerApproved: true,
           userApproved: true,
@@ -121,16 +125,55 @@ const ProjectDetail = ({
       console.log(result);
       router.push({
         pathname: "/project/[id]",
-        query: { id: projectId },
+        query: { id: project?.id },
       });
     } catch (e) {
       console.log(e);
     }
   };
 
-  const targetProject = projects?.find((v) => v?.id === projectId);
+  const targetProject = project;
+  const isOwner = targetProject?.owner.uid === uid;
 
-  if (!userParticipants?.find((v) => v?.project.id == projectId)) {
+  const recommendUserList: {
+    uid: string | undefined;
+    name: string | undefined;
+  }[] = [];
+  if (recommendUsers?.language1.nodes != null) {
+    for (const user of recommendUsers.language1.nodes) {
+      if (
+        user?.uid != null &&
+        targetProject?.owner.uid !== user?.uid &&
+        !recommendUserList.some((u) => u.uid === user?.uid)
+      ) {
+        recommendUserList.push({ uid: user?.uid, name: user?.name });
+      }
+    }
+  }
+  if (recommendUsers?.language2.nodes != null) {
+    for (const user of recommendUsers.language2.nodes) {
+      if (
+        user?.uid != null &&
+        targetProject?.owner.uid !== user?.uid &&
+        !recommendUserList.some((u) => u.uid === user?.uid)
+      ) {
+        recommendUserList.push({ uid: user?.uid, name: user?.name });
+      }
+    }
+  }
+  if (recommendUsers?.language3.nodes != null) {
+    for (const user of recommendUsers.language3.nodes) {
+      if (
+        user?.uid != null &&
+        targetProject?.owner.uid !== user?.uid &&
+        !recommendUserList.some((u) => u.uid === user?.uid)
+      ) {
+        recommendUserList.push({ uid: user?.uid, name: user?.name });
+      }
+    }
+  }
+
+  if (!userParticipants?.find((v) => v?.project.id == project?.id)) {
     return (
       //  not participant layout
       <Layout>
@@ -169,15 +212,15 @@ const ProjectDetail = ({
             >
               プロジェクトに応募する
             </Button>
-            <Link href="/">
+            <Link href="/" passHref>
               <div css={linkTitle}>&#65124; ホームに戻る</div>
             </Link>
           </Container>
           <FavoriteButton
             css={buttonStyle}
-            id={projectId}
+            id={project?.id}
             uid={uid}
-            favorite={isFavorite(projectId, userFavorites)}
+            favorite={isFavorite(project?.id, userFavorites)}
           />
         </Container>
       </Layout>
@@ -234,16 +277,33 @@ const ProjectDetail = ({
                 })}
             </List>
             <h2 css={subTitleStyle}>コントリビュートの方法</h2>
+            {isOwner && (
+              <React.Fragment>
+                <h2 css={subTitleStyle}>おすすめのユーザー</h2>
+                <List>
+                  {recommendUserList.map((user, index) => {
+                    return (
+                      <ListItem css={paragraphStyle} key={index}>
+                        ・
+                        <Link href={`/user/${user?.uid}`}>
+                          <a>{user?.name}</a>
+                        </Link>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </React.Fragment>
+            )}
             <p css={paragraphStyle}>{targetProject?.contribution}</p>
-            <Link href="/">
+            <Link href="/" passHref>
               <div css={linkTitle}>&#65124; ホームに戻る</div>
             </Link>
           </Container>
           <FavoriteButton
             css={buttonStyle}
-            id={projectId}
+            id={project?.id}
             uid={uid}
-            favorite={isFavorite(projectId, userFavorites)}
+            favorite={isFavorite(project?.id, userFavorites)}
           />
         </Container>
       </Layout>
@@ -253,61 +313,67 @@ const ProjectDetail = ({
 
 export default ProjectDetail;
 
-const getProjectParticipants = async (projectId = "") => {
-  try {
-    const { data } = await apolloClient.query<
-      GetProjectParticipantsQuery,
-      GetProjectParticipantsQueryVariables
-    >({
-      query: GET_PROJECT_PARTICIPANTS,
-      variables: {
-        projectId: projectId,
-      },
-      fetchPolicy: "no-cache",
-    });
-
-    return data.projectParticipants.nodes;
-  } catch (err) {
-    return { props: { errors: err.message } };
-  }
+const getRecommendUsers = async (
+  language1: string | null,
+  language2: string | null,
+  language3: string | null
+) => {
+  const { data } = await apolloClient.query<
+    GetRecommendUsersQuery,
+    GetRecommendUsersQueryVariables
+  >({
+    query: GET_RECOMMEND_USERS,
+    variables: {
+      first: 3,
+      language1: language1,
+      language2: language2,
+      language3: language3,
+    },
+    fetchPolicy: "no-cache",
+  });
+  return data;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const projectId = Array.isArray(context.query.id)
-    ? context.query.id[0]
-    : context.query.id;
-  const projectParticipants = await getProjectParticipants(projectId);
-  console.log(projectParticipants);
+  const { id } = context.query;
+  if (id == null || Array.isArray(id)) {
+    return { props: { errors: "Invalid URL" } };
+  }
+  const projectId = id;
 
   const cookies = nookies.get(context);
   const uid = cookies[uidKeyName];
 
   try {
     const { data } = await apolloClient.query<
-      GetProjectsQuery,
-      GetProjectsQueryVariables
+      GetProjectAndParticipantAndFavoriteQuery,
+      GetProjectAndParticipantAndFavoriteQueryVariables
     >({
-      query: GET_PROJECTS,
+      query: GET_PROJECT_AND_PARTICIPANT_AND_FAVORITE,
       variables: {
+        id: projectId,
         uid: uid,
-        projectsFirst: 8,
-        recommendsLanguageFirst: 5,
-        recommendsProjectFirst: 3,
       },
       fetchPolicy: "no-cache",
     });
-    const projects = data.projects.nodes;
+    const project = data.project;
     const userParticipants = data.userParticipants.nodes;
     const userFavorites = data.userFavorites.nodes;
+    const projectParticipants = data.projectParticipants.nodes;
+    const recommendUsers = await getRecommendUsers(
+      project?.languages != null ? project.languages[0].name : null,
+      project?.languages != null ? project.languages[1].name : null,
+      project?.languages != null ? project.languages[2].name : null
+    );
 
     return {
       props: {
         uid: uid,
-        projectId: context.query.id,
-        projects: projects,
+        project: project,
         userParticipants: userParticipants,
         userFavorites: userFavorites,
         projectParticipants: projectParticipants,
+        recommendUsers: recommendUsers,
       },
     };
   } catch (err) {

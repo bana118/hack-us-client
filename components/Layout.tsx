@@ -146,17 +146,7 @@ const Layout = ({ showSearch = true, children }: LayoutProps): JSX.Element => {
             spacing={6}
           >
             <Grid item xs={12} md="auto">
-              <Link href="/">
-                <a>トップページ</a>
-              </Link>
-            </Grid>
-            <Grid item xs={12} md="auto">
-              <Link href="/privacy">
-                <a>プライバシーポリシー</a>
-              </Link>
-            </Grid>
-            <Grid item xs={12} md="auto">
-              <a href="github.com/bana118/hack-us-client">Github</a>
+              <a href="https://github.com/bana118/hack-us-client">Github</a>
             </Grid>
           </Grid>
         </footer>

@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       >({
         query: GET_PROJECT,
         variables: {
-          id: parseInt(id as string, 10),
+          id: id as string,
         },
         fetchPolicy: "no-cache",
       });

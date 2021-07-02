@@ -349,7 +349,7 @@ export type QueryParticipantArgs = {
 
 
 export type QueryProjectArgs = {
-  id: Scalars['Int'];
+  id: Scalars['ID'];
 };
 
 
@@ -625,7 +625,7 @@ export type GetMyProjectsQuery = (
 );
 
 export type GetProjectQueryVariables = Exact<{
-  id: Scalars['Int'];
+  id: Scalars['ID'];
 }>;
 
 
@@ -638,6 +638,73 @@ export type GetProjectQuery = (
       { __typename?: 'Language' }
       & Pick<Language, 'name' | 'color'>
     )>> }
+  ) }
+);
+
+export type GetProjectAndParticipantAndFavoriteQueryVariables = Exact<{
+  id: Scalars['ID'];
+  uid: Scalars['String'];
+}>;
+
+
+export type GetProjectAndParticipantAndFavoriteQuery = (
+  { __typename?: 'Query' }
+  & { project: (
+    { __typename?: 'Project' }
+    & Pick<Project, 'id' | 'name' | 'description' | 'githubUrl' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+    & { languages?: Maybe<Array<(
+      { __typename?: 'Language' }
+      & Pick<Language, 'name' | 'color'>
+    )>>, owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'uid' | 'name'>
+    ) }
+  ), projectParticipants: (
+    { __typename?: 'ParticipantConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Participant' }
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
+        & { contributions?: Maybe<Array<(
+          { __typename?: 'Contribution' }
+          & Pick<Contribution, 'language' | 'color' | 'count'>
+        )>> }
+      ) }
+    )>>> }
+  ), userParticipants: (
+    { __typename?: 'ParticipantConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Participant' }
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages?: Maybe<Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )>>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
+      ) }
+    )>>> }
+  ), userFavorites: (
+    { __typename?: 'FavoriteConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Favorite' }
+      & Pick<Favorite, 'id'>
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+        & { languages?: Maybe<Array<(
+          { __typename?: 'Language' }
+          & Pick<Language, 'name' | 'color'>
+        )>>, owner: (
+          { __typename?: 'User' }
+          & Pick<User, 'uid' | 'name'>
+        ) }
+      ) }
+    )>>> }
   ) }
 );
 
@@ -854,16 +921,33 @@ export type DeleteFavoriteMutation = (
   )> }
 );
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetRecommendUsersQueryVariables = Exact<{
+  first: Scalars['Int'];
+  language1?: Maybe<Scalars['String']>;
+  language2?: Maybe<Scalars['String']>;
+  language3?: Maybe<Scalars['String']>;
+}>;
 
 
-export type GetUsersQuery = (
+export type GetRecommendUsersQuery = (
   { __typename?: 'Query' }
-  & { users: (
+  & { language1: (
     { __typename?: 'UserConnection' }
     & { nodes?: Maybe<Array<Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'name' | 'uid'>
+      & Pick<User, 'id' | 'name' | 'uid' | 'githubIconUrl'>
+    )>>> }
+  ), language2: (
+    { __typename?: 'UserConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'uid' | 'githubIconUrl'>
+    )>>> }
+  ), language3: (
+    { __typename?: 'UserConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'uid' | 'githubIconUrl'>
     )>>> }
   ) }
 );
@@ -1162,7 +1246,7 @@ export type GetMyProjectsQueryHookResult = ReturnType<typeof useGetMyProjectsQue
 export type GetMyProjectsLazyQueryHookResult = ReturnType<typeof useGetMyProjectsLazyQuery>;
 export type GetMyProjectsQueryResult = Apollo.QueryResult<GetMyProjectsQuery, GetMyProjectsQueryVariables>;
 export const GetProjectDocument = gql`
-    query GetProject($id: Int!) {
+    query GetProject($id: ID!) {
   project(id: $id) {
     id
     name
@@ -1208,6 +1292,120 @@ export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
 export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
 export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
+export const GetProjectAndParticipantAndFavoriteDocument = gql`
+    query GetProjectAndParticipantAndFavorite($id: ID!, $uid: String!) {
+  project(id: $id) {
+    id
+    name
+    description
+    githubUrl
+    startsAt
+    endsAt
+    languages {
+      name
+      color
+    }
+    owner {
+      uid
+      name
+    }
+    recruitmentNumbers
+    toolLink
+    contribution
+  }
+  projectParticipants(projectId: $id) {
+    nodes {
+      user {
+        id
+        name
+        uid
+        description
+        githubId
+        githubIconUrl
+        contributions {
+          language
+          color
+          count
+        }
+      }
+    }
+  }
+  userParticipants(uid: $uid) {
+    nodes {
+      project {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        owner {
+          uid
+          name
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+  userFavorites(uid: $uid) {
+    nodes {
+      id
+      project {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        owner {
+          uid
+          name
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectAndParticipantAndFavoriteQuery__
+ *
+ * To run a query within a React component, call `useGetProjectAndParticipantAndFavoriteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectAndParticipantAndFavoriteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectAndParticipantAndFavoriteQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      uid: // value for 'uid'
+ *   },
+ * });
+ */
+export function useGetProjectAndParticipantAndFavoriteQuery(baseOptions: Apollo.QueryHookOptions<GetProjectAndParticipantAndFavoriteQuery, GetProjectAndParticipantAndFavoriteQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectAndParticipantAndFavoriteQuery, GetProjectAndParticipantAndFavoriteQueryVariables>(GetProjectAndParticipantAndFavoriteDocument, options);
+      }
+export function useGetProjectAndParticipantAndFavoriteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectAndParticipantAndFavoriteQuery, GetProjectAndParticipantAndFavoriteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectAndParticipantAndFavoriteQuery, GetProjectAndParticipantAndFavoriteQueryVariables>(GetProjectAndParticipantAndFavoriteDocument, options);
+        }
+export type GetProjectAndParticipantAndFavoriteQueryHookResult = ReturnType<typeof useGetProjectAndParticipantAndFavoriteQuery>;
+export type GetProjectAndParticipantAndFavoriteLazyQueryHookResult = ReturnType<typeof useGetProjectAndParticipantAndFavoriteLazyQuery>;
+export type GetProjectAndParticipantAndFavoriteQueryResult = Apollo.QueryResult<GetProjectAndParticipantAndFavoriteQuery, GetProjectAndParticipantAndFavoriteQueryVariables>;
 export const SearchProjectsFirstDocument = gql`
     query SearchProjectsFirst($uid: String!, $query: String!, $first: Int!, $after: String) {
   projects(query: $query, first: $first, after: $after) {
@@ -1604,44 +1802,65 @@ export function useDeleteFavoriteMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteFavoriteMutationHookResult = ReturnType<typeof useDeleteFavoriteMutation>;
 export type DeleteFavoriteMutationResult = Apollo.MutationResult<DeleteFavoriteMutation>;
 export type DeleteFavoriteMutationOptions = Apollo.BaseMutationOptions<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>;
-export const GetUsersDocument = gql`
-    query GetUsers {
-  users {
+export const GetRecommendUsersDocument = gql`
+    query GetRecommendUsers($first: Int!, $language1: String, $language2: String, $language3: String) {
+  language1: users(language: $language1, first: $first) {
     nodes {
       id
       name
       uid
+      githubIconUrl
+    }
+  }
+  language2: users(language: $language2, first: $first) {
+    nodes {
+      id
+      name
+      uid
+      githubIconUrl
+    }
+  }
+  language3: users(language: $language3, first: $first) {
+    nodes {
+      id
+      name
+      uid
+      githubIconUrl
     }
   }
 }
     `;
 
 /**
- * __useGetUsersQuery__
+ * __useGetRecommendUsersQuery__
  *
- * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetRecommendUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRecommendUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUsersQuery({
+ * const { data, loading, error } = useGetRecommendUsersQuery({
  *   variables: {
+ *      first: // value for 'first'
+ *      language1: // value for 'language1'
+ *      language2: // value for 'language2'
+ *      language3: // value for 'language3'
  *   },
  * });
  */
-export function useGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+export function useGetRecommendUsersQuery(baseOptions: Apollo.QueryHookOptions<GetRecommendUsersQuery, GetRecommendUsersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+        return Apollo.useQuery<GetRecommendUsersQuery, GetRecommendUsersQueryVariables>(GetRecommendUsersDocument, options);
       }
-export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+export function useGetRecommendUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRecommendUsersQuery, GetRecommendUsersQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+          return Apollo.useLazyQuery<GetRecommendUsersQuery, GetRecommendUsersQueryVariables>(GetRecommendUsersDocument, options);
         }
-export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
-export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
-export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export type GetRecommendUsersQueryHookResult = ReturnType<typeof useGetRecommendUsersQuery>;
+export type GetRecommendUsersLazyQueryHookResult = ReturnType<typeof useGetRecommendUsersLazyQuery>;
+export type GetRecommendUsersQueryResult = Apollo.QueryResult<GetRecommendUsersQuery, GetRecommendUsersQueryVariables>;
 export const GetUserDocument = gql`
     query GetUser($uid: String!) {
   user(uid: $uid) {

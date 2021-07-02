@@ -134,7 +134,7 @@ export const GET_MY_PROJECTS = gql`
 `;
 
 export const GET_PROJECT = gql`
-  query GetProject($id: Int!) {
+  query GetProject($id: ID!) {
     project(id: $id) {
       id
       name
@@ -149,6 +149,92 @@ export const GET_PROJECT = gql`
       recruitmentNumbers
       toolLink
       contribution
+    }
+  }
+`;
+
+export const GET_PROJECT_AND_PARTICIPANT_AND_FAVORITE = gql`
+  query GetProjectAndParticipantAndFavorite($id: ID!, $uid: String!) {
+    project(id: $id) {
+      id
+      name
+      description
+      githubUrl
+      startsAt
+      endsAt
+      languages {
+        name
+        color
+      }
+      owner {
+        uid
+        name
+      }
+      recruitmentNumbers
+      toolLink
+      contribution
+    }
+    projectParticipants(projectId: $id) {
+      nodes {
+        user {
+          id
+          name
+          uid
+          description
+          githubId
+          githubIconUrl
+          contributions {
+            language
+            color
+            count
+          }
+        }
+      }
+    }
+    userParticipants(uid: $uid) {
+      nodes {
+        project {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          owner {
+            uid
+            name
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+        }
+      }
+    }
+    userFavorites(uid: $uid) {
+      nodes {
+        id
+        project {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          owner {
+            uid
+            name
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+        }
+      }
     }
   }
 `;
