@@ -1,24 +1,35 @@
 import Layout from "../components/Layout";
 import { MyHead } from "../components/MyHead";
 import { ProjectContainer } from "../components/ProjectContainer";
-import { GET_PROJECTS, isFavorite } from "../interfaces/Project";
+import {
+  GET_PROJECTS,
+  GET_PROJECTS_WITH_RECOMMENDS,
+  isFavorite,
+} from "../interfaces/Project";
 import { GetServerSideProps } from "next";
 import { Box, Grid } from "@material-ui/core";
 import MyTabs from "../components/MyTabs";
 import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
-import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
+import {
+  GetProjectsQuery,
+  GetProjectsQueryVariables,
+  GetProjectsWithRecommendsQuery,
+  GetProjectsWithRecommendsQueryVariables,
+} from "../types/graphql";
 import Link from "next/link";
 import { css } from "@emotion/react";
 import { textLinkblue } from "../utils/style-variables";
 
 type IndexPageProps = {
   uid?: string;
-  projects?: GetProjectsQuery["projects"]["nodes"];
-  recommends?: GetProjectsQuery["recommends"];
-  userParticipants?: GetProjectsQuery["userParticipants"]["nodes"];
-  userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
+  projects?:
+    | GetProjectsWithRecommendsQuery["projects"]["nodes"]
+    | GetProjectsQuery["projects"]["nodes"];
+  recommends?: GetProjectsWithRecommendsQuery["recommends"];
+  userParticipants?: GetProjectsWithRecommendsQuery["userParticipants"]["nodes"];
+  userFavorites?: GetProjectsWithRecommendsQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
@@ -204,28 +215,50 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const cookies = nookies.get(context);
     const uid = cookies[uidKeyName];
-    const { data } = await apolloClient.query<
-      GetProjectsQuery,
-      GetProjectsQueryVariables
-    >({
-      query: GET_PROJECTS,
-      variables: {
-        uid: uid,
-        projectsFirst: 8,
-        recommendsLanguageFirst: 5,
-        recommendsProjectFirst: 3,
-      },
-      fetchPolicy: "no-cache",
-    });
-    return {
-      props: {
-        uid: uid,
-        projects: data.projects.nodes,
-        recommends: data.recommends,
-        userParticipants: data.userParticipants.nodes,
-        userFavorites: data.userFavorites.nodes,
-      },
-    };
+    if (uid === "") {
+      const { data } = await apolloClient.query<
+        GetProjectsQuery,
+        GetProjectsQueryVariables
+      >({
+        query: GET_PROJECTS,
+        variables: {
+          first: 8,
+        },
+        fetchPolicy: "no-cache",
+      });
+      return {
+        props: {
+          uid: uid,
+          projects: data.projects.nodes,
+          recommends: [],
+          userParticipants: [],
+          userFavorites: [],
+        },
+      };
+    } else {
+      const { data } = await apolloClient.query<
+        GetProjectsWithRecommendsQuery,
+        GetProjectsWithRecommendsQueryVariables
+      >({
+        query: GET_PROJECTS_WITH_RECOMMENDS,
+        variables: {
+          uid: uid,
+          projectsFirst: 8,
+          recommendsLanguageFirst: 5,
+          recommendsProjectFirst: 3,
+        },
+        fetchPolicy: "no-cache",
+      });
+      return {
+        props: {
+          uid: uid,
+          projects: data.projects.nodes,
+          recommends: data.recommends,
+          userParticipants: data.userParticipants.nodes,
+          userFavorites: data.userFavorites.nodes,
+        },
+      };
+    }
   } catch (err) {
     return { props: { errors: err.message } };
   }

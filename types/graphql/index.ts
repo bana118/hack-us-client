@@ -529,6 +529,29 @@ export type UserEdge = {
 };
 
 export type GetProjectsQueryVariables = Exact<{
+  first: Scalars['Int'];
+}>;
+
+
+export type GetProjectsQuery = (
+  { __typename?: 'Query' }
+  & { projects: (
+    { __typename?: 'ProjectConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Project' }
+      & Pick<Project, 'id' | 'name' | 'description' | 'startsAt' | 'endsAt' | 'recruitmentNumbers' | 'toolLink' | 'contribution'>
+      & { languages?: Maybe<Array<(
+        { __typename?: 'Language' }
+        & Pick<Language, 'name' | 'color'>
+      )>>, owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'uid' | 'name'>
+      ) }
+    )>>> }
+  ) }
+);
+
+export type GetProjectsWithRecommendsQueryVariables = Exact<{
   uid: Scalars['String'];
   projectsFirst: Scalars['Int'];
   recommendsLanguageFirst: Scalars['Int'];
@@ -536,7 +559,7 @@ export type GetProjectsQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectsQuery = (
+export type GetProjectsWithRecommendsQuery = (
   { __typename?: 'Query' }
   & { projects: (
     { __typename?: 'ProjectConnection' }
@@ -1072,7 +1095,59 @@ export type UpdateUserMutation = (
 
 
 export const GetProjectsDocument = gql`
-    query GetProjects($uid: String!, $projectsFirst: Int!, $recommendsLanguageFirst: Int!, $recommendsProjectFirst: Int!) {
+    query GetProjects($first: Int!) {
+  projects(first: $first) {
+    nodes {
+      id
+      name
+      description
+      startsAt
+      endsAt
+      languages {
+        name
+        color
+      }
+      owner {
+        uid
+        name
+      }
+      recruitmentNumbers
+      toolLink
+      contribution
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectsQuery__
+ *
+ * To run a query within a React component, call `useGetProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useGetProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+      }
+export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+        }
+export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
+export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
+export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetProjectsWithRecommendsDocument = gql`
+    query GetProjectsWithRecommends($uid: String!, $projectsFirst: Int!, $recommendsLanguageFirst: Int!, $recommendsProjectFirst: Int!) {
   projects(first: $projectsFirst) {
     nodes {
       id
@@ -1163,16 +1238,16 @@ export const GetProjectsDocument = gql`
     `;
 
 /**
- * __useGetProjectsQuery__
+ * __useGetProjectsWithRecommendsQuery__
  *
- * To run a query within a React component, call `useGetProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetProjectsWithRecommendsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsWithRecommendsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetProjectsQuery({
+ * const { data, loading, error } = useGetProjectsWithRecommendsQuery({
  *   variables: {
  *      uid: // value for 'uid'
  *      projectsFirst: // value for 'projectsFirst'
@@ -1181,17 +1256,17 @@ export const GetProjectsDocument = gql`
  *   },
  * });
  */
-export function useGetProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+export function useGetProjectsWithRecommendsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsWithRecommendsQuery, GetProjectsWithRecommendsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+        return Apollo.useQuery<GetProjectsWithRecommendsQuery, GetProjectsWithRecommendsQueryVariables>(GetProjectsWithRecommendsDocument, options);
       }
-export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+export function useGetProjectsWithRecommendsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsWithRecommendsQuery, GetProjectsWithRecommendsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+          return Apollo.useLazyQuery<GetProjectsWithRecommendsQuery, GetProjectsWithRecommendsQueryVariables>(GetProjectsWithRecommendsDocument, options);
         }
-export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
-export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
-export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export type GetProjectsWithRecommendsQueryHookResult = ReturnType<typeof useGetProjectsWithRecommendsQuery>;
+export type GetProjectsWithRecommendsLazyQueryHookResult = ReturnType<typeof useGetProjectsWithRecommendsLazyQuery>;
+export type GetProjectsWithRecommendsQueryResult = Apollo.QueryResult<GetProjectsWithRecommendsQuery, GetProjectsWithRecommendsQueryVariables>;
 export const GetMyProjectsDocument = gql`
     query GetMyProjects($uid: String!) {
   userParticipants(uid: $uid) {

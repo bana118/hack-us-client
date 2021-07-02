@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
-import { GetProjectsQuery } from "../types/graphql";
+import { GetProjectsWithRecommendsQuery } from "../types/graphql";
 
 export const isFavorite = (
   id: string | undefined,
-  userFavorites: GetProjectsQuery["userFavorites"]["nodes"]
+  userFavorites: GetProjectsWithRecommendsQuery["userFavorites"]["nodes"]
 ): boolean => {
   if (userFavorites?.length !== 0) {
     return userFavorites?.some((item) => item?.project.id === id) || false;
@@ -12,7 +12,32 @@ export const isFavorite = (
 };
 
 export const GET_PROJECTS = gql`
-  query GetProjects(
+  query GetProjects($first: Int!) {
+    projects(first: $first) {
+      nodes {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        owner {
+          uid
+          name
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+`;
+
+export const GET_PROJECTS_WITH_RECOMMENDS = gql`
+  query GetProjectsWithRecommends(
     $uid: String!
     $projectsFirst: Int!
     $recommendsLanguageFirst: Int!
