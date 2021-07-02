@@ -25,6 +25,7 @@ const projectStyle = css`
 `;
 
 const projectNameStyle = css`
+  text-transform: none;
   font-size: 20px;
   font-weight: bold;
   margin-top: 0;
@@ -33,6 +34,7 @@ const projectNameStyle = css`
 `;
 
 const projectDetailStyle = css`
+  text-transform: none;
   font-size: 14px;
   margin-top: 0;
   margin-bottom: 3px;
@@ -40,6 +42,7 @@ const projectDetailStyle = css`
 `;
 
 const projectLanguageStyle = css`
+  text-transform: none;
   font-size: 14px;
   font-weight: bold;
   margin-top: 0;
@@ -48,6 +51,7 @@ const projectLanguageStyle = css`
 `;
 
 const projectStatusStyle = css`
+  text-transform: none;
   font-size: 14px;
   margin: 0px;
   margin-right: auto;

@@ -60,7 +60,7 @@ const MyTabs = ({ labels, children }: MyTabsProps): JSX.Element => {
               fontSize: 22,
               color: value === index ? textBlack : textLightgrey,
               fontWeight: "bold",
-              textTransform: "capitalize",
+              textTransform: "none",
             }}
           ></Tab>
         ))}
