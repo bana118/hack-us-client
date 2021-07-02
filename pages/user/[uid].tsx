@@ -15,11 +15,17 @@ import { uidKeyName } from "../../utils/cookie-key-names";
 type userPageProps = {
   me?: GetMeAndUserQuery["me"];
   user?: GetMeAndUserQuery["user"];
+  userParticipants?: GetMeAndUserQuery["userParticipants"]["nodes"];
   errors?: string;
 };
 
-const userPage = ({ me, user, errors }: userPageProps): JSX.Element => {
-  if (errors || !me || !user) {
+const userPage = ({
+  me,
+  user,
+  userParticipants,
+  errors,
+}: userPageProps): JSX.Element => {
+  if (errors || !me || !user || !userParticipants) {
     return (
       <Layout>
         <MyHead title="Error"></MyHead>
@@ -37,7 +43,11 @@ const userPage = ({ me, user, errors }: userPageProps): JSX.Element => {
       {user != null && (
         <Layout>
           <MyHead title={`${user.name}のプロフィール`} />
-          <UserContainer me={me} user={user} />
+          <UserContainer
+            me={me}
+            user={user}
+            userParticipants={userParticipants}
+          />
         </Layout>
       )}
     </React.Fragment>
@@ -70,6 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           me: data.me,
           user: data.user,
+          userParticipants: data.userParticipants.nodes,
         },
       };
     } catch (err) {

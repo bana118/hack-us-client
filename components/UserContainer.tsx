@@ -6,19 +6,54 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { GetMeAndUserQuery } from "../types/graphql";
+import {
+  GetMeAndUserQuery,
+  useCreateParticipantMutation,
+} from "../types/graphql";
 import { ContributionPieChart } from "./ContributionPieChart";
 import Image from "next/image";
+import { useState } from "react";
 
 type UserContaienrProps = {
   me: GetMeAndUserQuery["me"];
   user: GetMeAndUserQuery["user"];
+  userParticipants: GetMeAndUserQuery["userParticipants"]["nodes"];
 };
 
 export const UserContainer = ({
   me,
   user,
+  userParticipants,
 }: UserContaienrProps): JSX.Element => {
+  const [createParticipantMutation] = useCreateParticipantMutation();
+  const [scoutProjectId, setScoutProjectId] = useState("");
+  const [participantProjectIds, setParticipantProjectIds] = useState(
+    userParticipants != null
+      ? userParticipants.map((userParticipant) => userParticipant?.project.id)
+      : []
+  );
+  const availableScout = (projectId: string): boolean => {
+    if (projectId === "") return false;
+    return !participantProjectIds.some((id) => id === projectId);
+  };
+  const scout = async () => {
+    if (scoutProjectId === "") return;
+    try {
+      await createParticipantMutation({
+        variables: {
+          uid: user.uid,
+          projectId: scoutProjectId,
+          // TODO userApproved はfalseにして承認待ちにする
+          ownerApproved: true,
+          userApproved: true,
+        },
+      });
+      setParticipantProjectIds([scoutProjectId, ...participantProjectIds]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Grid container direction="column" alignItems="center" spacing={2}>
       <Grid item>
@@ -51,8 +86,14 @@ export const UserContainer = ({
         <p>自己紹介: {user.description}</p>
       </Grid>
       <Grid item>
+        <h2>自分のプロジェクトにスカウト</h2>
         プロジェクト:{" "}
-        <Select variant="standard">
+        <Select
+          variant="standard"
+          onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
+            setScoutProjectId(event.target.value as string)
+          }
+        >
           <MenuItem value=""></MenuItem>
           {me?.projects &&
             me.projects.map((project, index) => {
@@ -64,9 +105,16 @@ export const UserContainer = ({
             })}
         </Select>
         に
-        <Button type="submit" variant="contained">
-          スカウトする！
-        </Button>
+        {scoutProjectId !== "" && availableScout(scoutProjectId) && (
+          <Button type="submit" variant="contained" onClick={scout}>
+            スカウトする！
+          </Button>
+        )}
+        {scoutProjectId !== "" && !availableScout(scoutProjectId) && (
+          <Button type="submit" variant="contained" onClick={scout} disabled>
+            参加済みです
+          </Button>
+        )}
       </Grid>
     </Grid>
   );
