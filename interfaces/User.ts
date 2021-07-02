@@ -26,6 +26,10 @@ export const GET_USER = gql`
         color
         count
       }
+      projects {
+        id
+        name
+      }
     }
   }
 `;
