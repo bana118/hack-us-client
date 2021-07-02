@@ -1,4 +1,11 @@
-import { Grid, Avatar, Link, Button } from "@material-ui/core";
+import {
+  Grid,
+  Avatar,
+  Link,
+  Button,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
 import { GetMeAndUserQuery } from "../types/graphql";
 import { ContributionPieChart } from "./ContributionPieChart";
 import Image from "next/image";
@@ -44,6 +51,19 @@ export const UserContainer = ({
         <p>自己紹介: {user.description}</p>
       </Grid>
       <Grid item>
+        プロジェクト:{" "}
+        <Select variant="standard">
+          <MenuItem value=""></MenuItem>
+          {me?.projects &&
+            me.projects.map((project, index) => {
+              return (
+                <MenuItem key={index} value={project.id}>
+                  {project.name}
+                </MenuItem>
+              );
+            })}
+        </Select>
+        に
         <Button type="submit" variant="contained">
           スカウトする！
         </Button>
