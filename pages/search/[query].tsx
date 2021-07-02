@@ -15,6 +15,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { apolloClient } from "../../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../../utils/cookie-key-names";
+import { css } from "@emotion/react";
 
 type SearchProjectPageProps = {
   query?: string;
@@ -22,6 +23,21 @@ type SearchProjectPageProps = {
   userFavorites?: SearchProjectsFirstQuery["userFavorites"]["nodes"];
   errors?: string;
 };
+
+const container = css`
+  padding: 30px 130px;
+`;
+
+const title = css`
+  font-size: 28px;
+  font-weight: bold;
+`;
+
+const gridFlex = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
 
 const SearchProjectPage = ({
   query,
@@ -86,31 +102,40 @@ const SearchProjectPage = ({
   }
   return (
     <Layout showSearch={false}>
-      <MyHead title={`「${query}」の検索結果`}></MyHead>
+      <MyHead title={`「${query}」の検索結果 - Hack Us`} />
       <SearchInput />
-      <h1>「{query}」の検索結果</h1>
-      {projects && user && (
-        <Grid container>
-          {projects.map((project, index) => {
-            return (
-              <Grid item xs={12} md={6} lg={4} key={index}>
-                <ProjectContainer
-                  id={project?.node?.id}
-                  uid={user.uid}
-                  favorite={isFavorite(project?.node?.id, userFavorites)}
-                  name={project?.node?.name}
-                  description={project?.node?.description}
-                  languages={project?.node?.languages}
-                  startsAt={project?.node?.startsAt}
-                  endsAt={project?.node?.endsAt}
-                  contribution={project?.node?.contribution}
-                  recruitmentNumbers={project?.node?.recruitmentNumbers}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-      )}
+      <Grid container css={container}>
+        <h1 css={title}>「{query}」の検索結果</h1>
+        {projects && user && (
+          <Grid container css={gridFlex}>
+            {projects.map((project, index) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  key={index}
+                  css={{ margin: 30 }}
+                >
+                  <ProjectContainer
+                    id={project?.node?.id}
+                    uid={user.uid}
+                    favorite={isFavorite(project?.node?.id, userFavorites)}
+                    name={project?.node?.name}
+                    description={project?.node?.description}
+                    languages={project?.node?.languages}
+                    startsAt={project?.node?.startsAt}
+                    endsAt={project?.node?.endsAt}
+                    contribution={project?.node?.contribution}
+                    recruitmentNumbers={project?.node?.recruitmentNumbers}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
+      </Grid>
     </Layout>
   );
 };

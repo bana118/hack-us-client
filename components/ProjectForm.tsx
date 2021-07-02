@@ -23,6 +23,7 @@ import * as yup from "yup";
 import { css } from "@emotion/react";
 import { GetUserQuery } from "../types/graphql";
 import { LanguageColors } from "../utils/language-colors";
+import { themeMain, textLinkblue } from "../utils/style-variables";
 
 type ProjectFormProps = {
   user: GetUserQuery["user"];
@@ -45,6 +46,7 @@ type InputsType = {
 
 const container = css({
   backgroundColor: "#ffffff",
+  margin: "30px 0",
   padding: "40px 30px",
   borderRadius: "10px",
 });
@@ -59,13 +61,14 @@ const languageWidth = css({
 });
 
 const button = css({
+  backgroundColor: themeMain,
   borderRadius: "100px",
   height: "64px",
 });
 
 const linkTitle = css({
   fontSize: "14px",
-  color: "#3e74e8",
+  color: textLinkblue,
   cursor: "pointer",
 });
 

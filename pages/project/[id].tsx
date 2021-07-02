@@ -17,6 +17,13 @@ import {
 } from "../../types/graphql";
 import { GET_PROJECT_PARTICIPANTS } from "../../interfaces/User";
 import { useCreateParticipantMutation } from "../../types/graphql";
+import {
+  themeMain,
+  textBlack,
+  textGrey,
+  textLinkblue,
+  border,
+} from "../../utils/style-variables";
 import Link from "next/link";
 
 const projectDetailStyle = css`
@@ -24,32 +31,44 @@ const projectDetailStyle = css`
   width: 80vw;
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
-  padding-bottom: 20px;
+  padding: 30px;
   display: flex;
   flex-flow: row;
+  border-radius: 10px;
 `;
 
 const titleStyle = css`
-  margin-left: 3vw;
+  margin-left: 130px;
 `;
 
 const subTitleStyle = css`
-  font-size: 20px;
+  font-size: 28px;
+  color: ${textBlack};
   font-weight: bold;
-  padding-top: 20px;
-  padding-left: 20px;
+  padding: 20px;
+  padding-bottom: 10px;
   margin: 0;
+  border-bottom: 1px solid ${border};
 `;
 
 const paragraphStyle = css`
+  font-size: 14px;
+  color: ${textGrey};
   padding-left: 40px;
+`;
+
+const linkTitle = css`
+  font-size: 14px;
+  color: ${textLinkblue};
+  cursor: pointer;
+  margin: 30px 0;
 `;
 
 const button = css`
   border-radius: 100px;
+  background-color: ${themeMain};
   height: 64px;
-  margin-left: 40%;
-  margin-right: 40%;
+  margin: 60px 40%;
   min-width: 200px;
 `;
 
@@ -80,7 +99,7 @@ const ProjectDetail = ({
   if (errors) {
     return (
       <Layout>
-        <MyHead title="Error"></MyHead>
+        <MyHead title="Error" />
         <p>
           <span style={{ color: "red" }}>Error:</span> {errors}
         </p>
@@ -110,13 +129,12 @@ const ProjectDetail = ({
   };
 
   const targetProject = projects?.find((v) => v?.id === projectId);
-  console.log(targetProject?.owner);
 
   if (!userParticipants?.find((v) => v?.project.id == projectId)) {
     return (
       //  not participant layout
       <Layout>
-        <MyHead title={targetProject?.name}></MyHead>
+        <MyHead title={`${targetProject?.name} - Hack Us`} />
         <h1 css={titleStyle}>Detail Project</h1>
         <Container css={projectDetailStyle}>
           <Container>
@@ -151,6 +169,9 @@ const ProjectDetail = ({
             >
               プロジェクトに応募する
             </Button>
+            <Link href="/">
+              <div css={linkTitle}>&#65124; ホームに戻る</div>
+            </Link>
           </Container>
           <FavoriteButton
             css={buttonStyle}
@@ -159,9 +180,6 @@ const ProjectDetail = ({
             favorite={isFavorite(projectId, userFavorites)}
           />
         </Container>
-        <Link href="/" passHref>
-          <a>&#65124; ホームに戻る</a>
-        </Link>
       </Layout>
     );
   } else {
@@ -217,6 +235,9 @@ const ProjectDetail = ({
             </List>
             <h2 css={subTitleStyle}>コントリビュートの方法</h2>
             <p css={paragraphStyle}>{targetProject?.contribution}</p>
+            <Link href="/">
+              <div css={linkTitle}>&#65124; ホームに戻る</div>
+            </Link>
           </Container>
           <FavoriteButton
             css={buttonStyle}
@@ -225,9 +246,6 @@ const ProjectDetail = ({
             favorite={isFavorite(projectId, userFavorites)}
           />
         </Container>
-        <Link href="/">
-          <a>&#65124; ホームに戻る</a>
-        </Link>
       </Layout>
     );
   }

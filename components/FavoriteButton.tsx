@@ -1,7 +1,16 @@
-import { useState } from "react";
-import { Box, IconButton } from "@material-ui/core";
+import React, { useState, useRef } from "react";
+import { useRouter } from "next/router";
+import {
+  Box,
+  IconButton,
+  Popover,
+  List,
+  ListItem,
+  ListItemText,
+} from "@material-ui/core";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import { useCreateFavoriteMutation } from "../types/graphql";
 
 type FavoriteButtonProps = {
@@ -16,7 +25,22 @@ export const FavoriteButton = ({
   favorite = false,
 }: FavoriteButtonProps): JSX.Element => {
   const [changeIcon, setChangeIcon] = useState(favorite);
+  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
+  const userButtonRef = useRef(null);
+
+  const router = useRouter();
+  const currentpath: string = router.pathname;
+
   const [createFavoriteMutation] = useCreateFavoriteMutation();
+
+  const clickEdit = (): void => {
+    router.push({
+      pathname: "/edit-project",
+      query: {
+        id: id,
+      },
+    });
+  };
 
   const clickFavorite = async () => {
     if (!favorite) {
@@ -28,8 +52,8 @@ export const FavoriteButton = ({
           },
         });
         setChangeIcon(true);
-      } catch (e) {
-        console.log(e);
+      } catch {
+        return;
       }
     } else {
       // TODO deleteFavoriteMutationの実装
@@ -38,9 +62,45 @@ export const FavoriteButton = ({
 
   return (
     <Box>
-      <IconButton onClick={clickFavorite}>
-        {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
-      </IconButton>
+      {currentpath === "/my-project" ? (
+        <React.Fragment>
+          <IconButton
+            ref={userButtonRef}
+            onClick={() => setUserPopoverOpen(true)}
+          >
+            <MoreHorizIcon />
+          </IconButton>
+          <Popover
+            open={userPopoverOpen}
+            anchorEl={userButtonRef.current}
+            onClose={() => setUserPopoverOpen(false)}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <List>
+              <ListItem button onClick={clickEdit}>
+                <ListItemText primary="プロジェクトの編集" />
+              </ListItem>
+              {/* <ListItem button>
+                <ListItemText
+                  style={{ color: "red" }}
+                  primary="プロジェクトの削除"
+                />
+              </ListItem> */}
+            </List>
+          </Popover>
+        </React.Fragment>
+      ) : (
+        <IconButton onClick={clickFavorite}>
+          {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
+        </IconButton>
+      )}
     </Box>
   );
 };

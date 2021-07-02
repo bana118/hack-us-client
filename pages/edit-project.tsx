@@ -9,9 +9,15 @@ import Router from "next/router";
 import { apolloClient } from "../utils/apollo-client";
 import { GetProjectQuery, GetProjectQueryVariables } from "../types/graphql";
 import { GET_PROJECT } from "../interfaces/Project";
+import { Grid } from "@material-ui/core";
+
+const container = css`
+  padding: 30px 130px;
+`;
 
 const title = css`
-  margin: 30px;
+  font-size: 28px;
+  font-weight: bold;
 `;
 
 type Props = {
@@ -31,9 +37,11 @@ const EditProject = (props: Props): JSX.Element => {
     <Layout>
       {user != null && (
         <React.Fragment>
-          <MyHead title="プロジェクトの編集 - Hack Us"></MyHead>
-          <h1 css={title}>プロジェクトの編集</h1>
-          <ProjectForm user={user} project={props.project} />
+          <MyHead title="プロジェクトの編集 - Hack Us" />
+          <Grid container css={container}>
+            <h1 css={title}>プロジェクトの編集</h1>
+            <ProjectForm user={user} project={props.project} />
+          </Grid>
         </React.Fragment>
       )}
     </Layout>
