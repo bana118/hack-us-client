@@ -1,6 +1,5 @@
 import { InputAdornment, TextField, IconButton } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import { themeColor } from "../utils/style-variables";
 import { useForm, Controller } from "react-hook-form";
 
 type InputsType = {
@@ -18,9 +17,9 @@ export const SearchInput = (): JSX.Element => {
     <div
       css={{
         color: "white",
-        backgroundColor: themeColor,
         textAlign: "center",
         paddingBottom: "5px",
+        marginRight: "30px",
       }}
     >
       <form onSubmit={handleSubmit(searchProject)}>

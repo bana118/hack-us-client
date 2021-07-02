@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import { css } from "@emotion/react";
 import { Children } from "react";
-import { themeColor } from "../utils/style-variables";
-
-const tabStyle = css({
-  backgroundColor: themeColor,
-  color: "white",
-});
+import { textBlack, textLightgrey } from "../utils/style-variables";
 
 type TabPanelProps = {
   value: number;
@@ -56,17 +50,31 @@ const MyTabs = ({ labels, children }: MyTabsProps): JSX.Element => {
         }}
         textColor="inherit"
         centered
-        css={tabStyle}
+        css={{ backgroundColor: "#FFFFFF" }}
       >
         {labels.map((label, index) => (
-          <Tab label={label} key={index}></Tab>
+          <Tab
+            label={label}
+            key={index}
+            css={{
+              fontSize: 22,
+              color: value === index ? textBlack : textLightgrey,
+              fontWeight: "bold",
+              textTransform: "capitalize",
+            }}
+          ></Tab>
         ))}
       </Tabs>
 
-      <Box mx={5}>
+      <Box mx={12.5} p={0}>
         {Children.map(children, (child, index) => {
           return (
-            <TabPanel value={value} index={index} key={index}>
+            <TabPanel
+              value={value}
+              index={index}
+              key={index}
+              css={{ padding: "0px" }}
+            >
               <h1>{labels[index]}</h1>
               {child}
             </TabPanel>

@@ -10,6 +10,8 @@ import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
 import { GetProjectsQuery, GetProjectsQueryVariables } from "../types/graphql";
 import Link from "next/link";
+import { css } from "@emotion/react";
+import { textLinkblue } from "../utils/style-variables";
 
 type IndexPageProps = {
   uid?: string;
@@ -19,6 +21,12 @@ type IndexPageProps = {
   userFavorites?: GetProjectsQuery["userFavorites"]["nodes"];
   errors?: string;
 };
+
+const gridFlex = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
 
 const IndexPage = ({
   uid,
@@ -47,7 +55,7 @@ const IndexPage = ({
 
   return (
     <Layout>
-      <MyHead title="Hack Us"></MyHead>
+      <MyHead title="Hack Us" />
       <Box>
         <MyTabs
           labels={[
@@ -57,10 +65,17 @@ const IndexPage = ({
             "Participating Projects",
           ]}
         >
-          <Grid container className="new-projects">
+          <Grid container className="new-projects" css={gridFlex}>
             {projects.map((project, index) => {
               return (
-                <Grid item xs={12} md={6} lg={4} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  key={index}
+                  css={{ margin: "30px 60px" }}
+                >
                   <ProjectContainer
                     id={project?.id}
                     uid={uid}
@@ -77,20 +92,30 @@ const IndexPage = ({
               );
             })}
           </Grid>
-          <Grid container className="recommend-projects">
+          <Grid container className="recommend-projects" css={gridFlex}>
             {recommends.map((recommend, index) => {
               return (
                 <Grid key={index} container direction="column">
                   <Grid item>
                     <h2>{recommend.language}</h2>
-                    <Link href={`/search/${recommend.language}`}>
+                    <Link
+                      href={`/search/${recommend.language}`}
+                      css={{ color: textLinkblue }}
+                    >
                       <a>more</a>
                     </Link>
                   </Grid>
                   <Grid item>
                     {recommend.projects.map((project, index) => {
                       return (
-                        <Grid item xs={12} md={6} lg={4} key={index}>
+                        <Grid
+                          item
+                          xs={12}
+                          md={6}
+                          lg={4}
+                          key={index}
+                          css={{ margin: "30px 60px" }}
+                        >
                           <ProjectContainer
                             id={project?.id}
                             uid={uid}
@@ -111,11 +136,18 @@ const IndexPage = ({
               );
             })}
           </Grid>
-          <Grid container className="favorite-projects">
+          <Grid container className="favorite-projects" css={gridFlex}>
             {userFavorites.map((userFavorite, index) => {
               const project = userFavorite?.project;
               return (
-                <Grid item xs={12} md={6} lg={4} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  key={index}
+                  css={{ margin: "30px 60px" }}
+                >
                   <ProjectContainer
                     id={project?.id}
                     uid={uid}
@@ -132,11 +164,18 @@ const IndexPage = ({
               );
             })}
           </Grid>
-          <Grid container className="participanting-projects">
+          <Grid container className="participanting-projects" css={gridFlex}>
             {userParticipants.map((userParticipant, index) => {
               const project = userParticipant?.project;
               return (
-                <Grid item xs={12} md={6} lg={4} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  key={index}
+                  css={{ margin: "30px 60px" }}
+                >
                   <ProjectContainer
                     id={project?.id}
                     uid={uid}

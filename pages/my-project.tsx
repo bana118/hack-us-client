@@ -5,7 +5,7 @@ import { ProjectContainer } from "../components/ProjectContainer";
 import { GET_MY_PROJECTS } from "../interfaces/Project";
 import { GetServerSideProps } from "next";
 import { css } from "@emotion/react";
-import { Box, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { apolloClient } from "../utils/apollo-client";
 import nookies from "nookies";
 import { uidKeyName } from "../utils/cookie-key-names";
@@ -21,8 +21,19 @@ type IndexPageProps = {
   errors?: string;
 };
 
+const container = css`
+  padding: 30px 130px;
+`;
+
 const title = css`
-  margin: 30px;
+  font-size: 28px;
+  font-weight: bold;
+`;
+
+const gridFlex = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `;
 
 const IndexPage = ({
@@ -44,14 +55,21 @@ const IndexPage = ({
   return (
     <Layout>
       <React.Fragment>
-        <MyHead title="プロジェクトの管理 - Hack Us"></MyHead>
-        <h1 css={title}>プロジェクトの管理</h1>
-        <Box>
-          <Grid container>
+        <MyHead title="プロジェクトの管理 - Hack Us" />
+        <Grid container css={container}>
+          <h1 css={title}>プロジェクトの管理</h1>
+          <Grid container css={gridFlex}>
             {userParticipants.map((x, index) => {
               if (x?.project?.owner.uid === uid)
                 return (
-                  <Grid item xs={12} md={6} lg={4} key={index}>
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    lg={4}
+                    key={index}
+                    css={{ margin: "30px 60px" }}
+                  >
                     <ProjectContainer
                       id={x?.project?.id}
                       uid={uid}
@@ -65,7 +83,7 @@ const IndexPage = ({
                 );
             })}
           </Grid>
-        </Box>
+        </Grid>
       </React.Fragment>
     </Layout>
   );

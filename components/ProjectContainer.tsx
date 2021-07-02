@@ -1,21 +1,7 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useState, useRef } from "react";
 import { css } from "@emotion/react";
-import {
-  Container,
-  Box,
-  Button,
-  IconButton,
-  Popover,
-  List,
-  ListItem,
-  ListItemText,
-} from "@material-ui/core";
-import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
-import StarIcon from "@material-ui/icons/Star";
-import StarOutlineIcon from "@material-ui/icons/StarOutline";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import { Container, Button } from "@material-ui/core";
+import { LanguageInput } from "../types/graphql";
 import { FavoriteButton } from "./FavoriteButton";
 
 const container = css`
@@ -23,7 +9,6 @@ const container = css`
   width: 400px;
   height: 150px;
   box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
-  margin-bottom: 20px;
   display: flex;
   flex-flow: row;
 `;
@@ -34,6 +19,9 @@ const projectStyle = css`
   width: 100%;
   flex-flow: column;
   color: #000000;
+  &:hover {
+    background-color: transparent;
+  }
 `;
 
 const projectNameStyle = css`
@@ -66,10 +54,6 @@ const projectStatusStyle = css`
   margin-right: auto;
 `;
 
-const buttonStyle = css`
-  margin-left: auto;
-`;
-
 type ProjectContainerProps = {
   id?: string;
   uid?: string;
@@ -93,43 +77,6 @@ export const ProjectContainer = ({
   startsAt = null,
   endsAt = null,
 }: ProjectContainerProps): JSX.Element => {
-  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
-  const userButtonRef = useRef(null);
-
-  const router = useRouter();
-  const currentpath: string = router.pathname;
-
-  const clickEdit = (): void => {
-    router.push({
-      pathname: "/edit-project",
-      query: {
-        id: id,
-      },
-    });
-  };
-
-  const [changeIcon, setChangeIcon] = useState(favorite);
-
-  const [createFavoriteMutation] = useCreateFavoriteMutation();
-
-  const clickFavorite = async () => {
-    if (!favorite) {
-      try {
-        await createFavoriteMutation({
-          variables: {
-            uid: uid,
-            projectId: id,
-          },
-        });
-        setChangeIcon(true);
-      } catch (e) {
-        console.log(e);
-      }
-    } else {
-      // TODO deleteFavoriteMutationの実装
-    }
-  };
-
   // TODO 開発ステータスの追加
   // TODO descriptionを適当な文字数で切る
   return (
@@ -172,47 +119,7 @@ export const ProjectContainer = ({
           )}
         </Button>
       </Link>
-      <Box>
-        {currentpath === "/my-project" ? (
-          <React.Fragment>
-            <IconButton
-              ref={userButtonRef}
-              onClick={() => setUserPopoverOpen(true)}
-            >
-              <MoreHorizIcon />
-            </IconButton>
-            <Popover
-              open={userPopoverOpen}
-              anchorEl={userButtonRef.current}
-              onClose={() => setUserPopoverOpen(false)}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-              }}
-            >
-              <List>
-                <ListItem button onClick={clickEdit}>
-                  <ListItemText primary="プロジェクトの編集" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText
-                    style={{ color: "red" }}
-                    primary="プロジェクトの削除"
-                  />
-                </ListItem>
-              </List>
-            </Popover>
-          </React.Fragment>
-        ) : (
-          <IconButton onClick={clickFavorite}>
-            {changeIcon ? <StarIcon /> : <StarOutlineIcon />}
-          </IconButton>
-        )}
-      </Box>
+      <FavoriteButton id={id} uid={uid} favorite={favorite} />
     </Container>
   );
 };

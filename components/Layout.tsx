@@ -1,5 +1,6 @@
 import React, { ReactNode, useContext, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   AppBar,
   Button,
@@ -20,8 +21,7 @@ import { Global } from "@emotion/react";
 import { LoginDialog } from "./LoginDialog";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../utils/firebase";
-import Image from "next/image";
-import { themeColor } from "../utils/style-variables";
+import { background, themeMain, textGrey } from "../utils/style-variables";
 import { SearchInput } from "./SearchInput";
 
 type LayoutProps = {
@@ -44,20 +44,32 @@ const Layout = ({ showSearch = true, children }: LayoutProps): JSX.Element => {
               ","
             ),
             margin: 0,
-            backgroundColor: "#F5F5F5",
+            backgroundColor: background,
           },
         }}
       />
-      <AppBar position="static" css={{ backgroundColor: themeColor }}>
-        <Toolbar>
+      <AppBar
+        position="static"
+        css={{
+          backgroundColor: "#ffffff",
+          padding: "0px 100px",
+          boxShadow: "none",
+        }}
+      >
+        <Toolbar css={{ padding: 0 }}>
           <div css={{ flexGrow: 1 }}>
             <Link href="/" passHref>
               <Typography
                 variant="h5"
                 component="a"
-                css={{ textDecoration: "none", color: "inherit" }}
+                css={{ textDecoration: "none" }}
               >
-                Hack Us
+                <Image
+                  src="/HackUs.svg"
+                  alt="HackUs Logo"
+                  width={250}
+                  height={100}
+                />
               </Typography>
             </Link>
           </div>
@@ -65,7 +77,10 @@ const Layout = ({ showSearch = true, children }: LayoutProps): JSX.Element => {
           {showSearch && <SearchInput />}
 
           {user === null && (
-            <Button color="inherit" onClick={() => setLoginDialogOpen(true)}>
+            <Button
+              css={{ color: textGrey, fontWeight: "bold", fontSize: 14 }}
+              onClick={() => setLoginDialogOpen(true)}
+            >
               Login
             </Button>
           )}
@@ -75,13 +90,15 @@ const Layout = ({ showSearch = true, children }: LayoutProps): JSX.Element => {
                 ref={userButtonRef}
                 onClick={() => setUserPopoverOpen(true)}
               >
-                <Avatar>
-                  <Image
-                    src={user.githubIconUrl}
-                    alt="Github Icon"
-                    layout="fill"
-                  />
-                </Avatar>
+                <Box borderRadius={50} border={1} borderColor={themeMain}>
+                  <Avatar>
+                    <Image
+                      src={user.githubIconUrl}
+                      alt="Github Icon"
+                      layout="fill"
+                    />
+                  </Avatar>
+                </Box>
               </IconButton>
               <Popover
                 open={userPopoverOpen}
