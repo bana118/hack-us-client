@@ -64,6 +64,9 @@ export const ProfileForm = ({ user }: ProfileFormProps): JSX.Element => {
     <form onSubmit={handleSubmit(updateProfile)}>
       <Grid container direction="column" alignItems="center" spacing={2}>
         <Grid item>
+          <h1>あなたのプロフィール</h1>
+        </Grid>
+        <Grid item>
           <Avatar
             css={{
               width: 120,

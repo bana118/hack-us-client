@@ -11,6 +11,9 @@ export const UserContainer = ({ user }: UserContaienrProps): JSX.Element => {
   return (
     <Grid container direction="column" alignItems="center" spacing={2}>
       <Grid item>
+        <h1>{user.name}のプロフィール</h1>
+      </Grid>
+      <Grid item>
         <Avatar
           css={{
             width: 120,
@@ -32,9 +35,6 @@ export const UserContainer = ({ user }: UserContaienrProps): JSX.Element => {
         <p>言語別コントリビューション</p>
         {/* TODO SSR時のChart表示に関するWarningがでる */}
         <ContributionPieChart contributions={user.contributions} />
-      </Grid>
-      <Grid item>
-        <h1>{user.name}</h1>
       </Grid>
       <Grid item>
         <p>自己紹介: {user.description}</p>
