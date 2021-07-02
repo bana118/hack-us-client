@@ -361,9 +361,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const userFavorites = data.userFavorites.nodes;
     const projectParticipants = data.projectParticipants.nodes;
     const recommendUsers = await getRecommendUsers(
-      project?.languages != null ? project.languages[0].name : null,
-      project?.languages != null ? project.languages[1].name : null,
-      project?.languages != null ? project.languages[2].name : null
+      project?.languages != null && project?.languages[0]
+        ? project.languages[0].name
+        : null,
+      project?.languages != null && project?.languages[1]
+        ? project.languages[1].name
+        : null,
+      project?.languages != null && project?.languages[2]
+        ? project.languages[2].name
+        : null
     );
 
     return {
