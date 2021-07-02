@@ -830,6 +830,30 @@ export type CreateFavoriteMutation = (
   )> }
 );
 
+export type DeleteFavoriteMutationVariables = Exact<{
+  uid: Scalars['String'];
+  projectId: Scalars['ID'];
+}>;
+
+
+export type DeleteFavoriteMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteFavorite?: Maybe<(
+    { __typename?: 'DeleteFavoritePayload' }
+    & { favorite: (
+      { __typename?: 'Favorite' }
+      & Pick<Favorite, 'id'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id'>
+      ), project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id'>
+      ) }
+    ) }
+  )> }
+);
+
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1538,6 +1562,48 @@ export function useCreateFavoriteMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateFavoriteMutationHookResult = ReturnType<typeof useCreateFavoriteMutation>;
 export type CreateFavoriteMutationResult = Apollo.MutationResult<CreateFavoriteMutation>;
 export type CreateFavoriteMutationOptions = Apollo.BaseMutationOptions<CreateFavoriteMutation, CreateFavoriteMutationVariables>;
+export const DeleteFavoriteDocument = gql`
+    mutation DeleteFavorite($uid: String!, $projectId: ID!) {
+  deleteFavorite(input: {uid: $uid, projectId: $projectId}) {
+    favorite {
+      id
+      user {
+        id
+      }
+      project {
+        id
+      }
+    }
+  }
+}
+    `;
+export type DeleteFavoriteMutationFn = Apollo.MutationFunction<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>;
+
+/**
+ * __useDeleteFavoriteMutation__
+ *
+ * To run a mutation, you first call `useDeleteFavoriteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteFavoriteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteFavoriteMutation, { data, loading, error }] = useDeleteFavoriteMutation({
+ *   variables: {
+ *      uid: // value for 'uid'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useDeleteFavoriteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>(DeleteFavoriteDocument, options);
+      }
+export type DeleteFavoriteMutationHookResult = ReturnType<typeof useDeleteFavoriteMutation>;
+export type DeleteFavoriteMutationResult = Apollo.MutationResult<DeleteFavoriteMutation>;
+export type DeleteFavoriteMutationOptions = Apollo.BaseMutationOptions<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>;
 export const GetUsersDocument = gql`
     query GetUsers {
   users {
