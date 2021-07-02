@@ -135,6 +135,44 @@ const ProjectDetail = ({
   const targetProject = project;
   const isOwner = targetProject?.owner.uid === uid;
 
+  const recommendUserList: {
+    uid: string | undefined;
+    name: string | undefined;
+  }[] = [];
+  if (recommendUsers?.language1.nodes != null) {
+    for (const user of recommendUsers.language1.nodes) {
+      if (
+        user?.uid != null &&
+        targetProject?.owner.uid !== user?.uid &&
+        !recommendUserList.some((u) => u.uid === user?.uid)
+      ) {
+        recommendUserList.push({ uid: user?.uid, name: user?.name });
+      }
+    }
+  }
+  if (recommendUsers?.language2.nodes != null) {
+    for (const user of recommendUsers.language2.nodes) {
+      if (
+        user?.uid != null &&
+        targetProject?.owner.uid !== user?.uid &&
+        !recommendUserList.some((u) => u.uid === user?.uid)
+      ) {
+        recommendUserList.push({ uid: user?.uid, name: user?.name });
+      }
+    }
+  }
+  if (recommendUsers?.language3.nodes != null) {
+    for (const user of recommendUsers.language3.nodes) {
+      if (
+        user?.uid != null &&
+        targetProject?.owner.uid !== user?.uid &&
+        !recommendUserList.some((u) => u.uid === user?.uid)
+      ) {
+        recommendUserList.push({ uid: user?.uid, name: user?.name });
+      }
+    }
+  }
+
   if (!userParticipants?.find((v) => v?.project.id == project?.id)) {
     return (
       //  not participant layout
@@ -243,45 +281,16 @@ const ProjectDetail = ({
               <React.Fragment>
                 <h2 css={subTitleStyle}>おすすめのユーザー</h2>
                 <List>
-                  {project?.languages &&
-                    project.languages[0] &&
-                    recommendUsers?.language1?.nodes &&
-                    recommendUsers.language1.nodes.map((user, index) => {
-                      return (
-                        <ListItem css={paragraphStyle} key={index}>
-                          ・
-                          <Link href={`/user/${user?.uid}`}>
-                            <a>{user?.name}</a>
-                          </Link>
-                        </ListItem>
-                      );
-                    })}
-                  {project?.languages &&
-                    project.languages[1] &&
-                    recommendUsers?.language2?.nodes &&
-                    recommendUsers.language2.nodes.map((user, index) => {
-                      return (
-                        <ListItem css={paragraphStyle} key={index}>
-                          ・
-                          <Link href={`/user/${user?.uid}`}>
-                            <a>{user?.name}</a>
-                          </Link>
-                        </ListItem>
-                      );
-                    })}
-                  {project?.languages &&
-                    project.languages[2] &&
-                    recommendUsers?.language3?.nodes &&
-                    recommendUsers.language3.nodes.map((user, index) => {
-                      return (
-                        <ListItem css={paragraphStyle} key={index}>
-                          ・
-                          <Link href={`/user/${user?.uid}`}>
-                            <a>{user?.name}</a>
-                          </Link>
-                        </ListItem>
-                      );
-                    })}
+                  {recommendUserList.map((user, index) => {
+                    return (
+                      <ListItem css={paragraphStyle} key={index}>
+                        ・
+                        <Link href={`/user/${user?.uid}`}>
+                          <a>{user?.name}</a>
+                        </Link>
+                      </ListItem>
+                    );
+                  })}
                 </List>
               </React.Fragment>
             )}
