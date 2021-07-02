@@ -1,12 +1,34 @@
 import { gql } from "@apollo/client";
 
-export const GET_USERS = gql`
-  query GetUsers {
-    users {
+export const GET_RECOMMEND_USERS = gql`
+  query GetRecommendUsers(
+    $first: Int!
+    $language1: String
+    $language2: String
+    $language3: String
+  ) {
+    language1: users(language: $language1, first: $first) {
       nodes {
         id
         name
         uid
+        githubIconUrl
+      }
+    }
+    language2: users(language: $language2, first: $first) {
+      nodes {
+        id
+        name
+        uid
+        githubIconUrl
+      }
+    }
+    language3: users(language: $language3, first: $first) {
+      nodes {
+        id
+        name
+        uid
+        githubIconUrl
       }
     }
   }
