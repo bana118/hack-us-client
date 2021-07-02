@@ -157,7 +157,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } else {
     try {
       const cookies = nookies.get(context);
-      const uid = cookies[uidKeyName];
+      const uid = cookies[uidKeyName] || "";
       if (uid === "") {
         const { data } = await apolloClient.query<
           SearchProjectsFirstQuery,

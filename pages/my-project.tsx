@@ -94,7 +94,7 @@ export default IndexPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const cookies = nookies.get(context);
-    const uid = cookies[uidKeyName];
+    const uid = cookies[uidKeyName] || "";
     const { data } = await apolloClient.query<
       GetMyProjectsQuery,
       GetMyProjectsQueryVariables

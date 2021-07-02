@@ -342,7 +342,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const projectId = id;
 
   const cookies = nookies.get(context);
-  const uid = cookies[uidKeyName];
+  const uid = cookies[uidKeyName] || "";
 
   try {
     const { data } = await apolloClient.query<

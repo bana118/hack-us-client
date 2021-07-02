@@ -53,6 +53,13 @@ export const GET_USER = gql`
         name
       }
     }
+    userParticipants(uid: $uid) {
+      nodes {
+        project {
+          id
+        }
+      }
+    }
   }
 `;
 

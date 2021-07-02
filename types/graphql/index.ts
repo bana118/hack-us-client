@@ -1024,6 +1024,15 @@ export type GetUserQuery = (
       { __typename?: 'Project' }
       & Pick<Project, 'id' | 'name'>
     )>> }
+  ), userParticipants: (
+    { __typename?: 'ParticipantConnection' }
+    & { nodes?: Maybe<Array<Maybe<(
+      { __typename?: 'Participant' }
+      & { project: (
+        { __typename?: 'Project' }
+        & Pick<Project, 'id'>
+      ) }
+    )>>> }
   ) }
 );
 
@@ -2048,6 +2057,13 @@ export const GetUserDocument = gql`
     projects {
       id
       name
+    }
+  }
+  userParticipants(uid: $uid) {
+    nodes {
+      project {
+        id
+      }
     }
   }
 }
