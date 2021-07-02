@@ -16,7 +16,6 @@ import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import { FavoriteButton } from "./FavoriteButton";
 
 const container = css`
   background-color: #ffffff;
@@ -64,10 +63,6 @@ const projectStatusStyle = css`
   margin: 0px;
   margin-right: auto;
   margin-right: auto;
-`;
-
-const buttonStyle = css`
-  margin-left: auto;
 `;
 
 type ProjectContainerProps = {
