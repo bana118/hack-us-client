@@ -16,7 +16,6 @@ import { LanguageInput, useCreateFavoriteMutation } from "../types/graphql";
 import StarIcon from "@material-ui/icons/Star";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import { FavoriteButton } from "./FavoriteButton";
 
 const container = css`
   background-color: #ffffff;
@@ -66,17 +65,13 @@ const projectStatusStyle = css`
   margin-right: auto;
 `;
 
-const buttonStyle = css`
-  margin-left: auto;
-`;
-
 type ProjectContainerProps = {
   id?: string;
   uid?: string;
   favorite?: boolean | undefined;
   name?: string;
   description?: string;
-  languages?: LanguageInput[];
+  languages?: LanguageInput[] | null;
   startsAt?: string | null;
   endsAt?: string | null;
   contribution?: string | null;
@@ -145,24 +140,25 @@ export const ProjectContainer = ({
           <p css={projectDetailStyle}>{description}</p>
           <p css={projectLanguageStyle}>
             言語:{" "}
-            {languages.map((language, index) => {
-              if (index == languages.length - 1)
+            {languages &&
+              languages.map((language, index) => {
+                if (index == languages.length - 1)
+                  return (
+                    <span key={index} css={{ color: language.color }}>
+                      {language.name}
+                    </span>
+                  );
                 return (
                   <span key={index} css={{ color: language.color }}>
-                    {language.name}
+                    {language.name},{" "}
                   </span>
                 );
-              return (
-                <span key={index} css={{ color: language.color }}>
-                  {language.name},{" "}
-                </span>
-              );
-              return (
-                <span key={index} css={{ color: language.color }}>
-                  {language.name}{" "}
-                </span>
-              );
-            })}
+                return (
+                  <span key={index} css={{ color: language.color }}>
+                    {language.name}{" "}
+                  </span>
+                );
+              })}
           </p>
           {startsAt && endsAt && (
             <p css={projectStatusStyle}>

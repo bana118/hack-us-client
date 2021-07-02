@@ -19,7 +19,6 @@ const ProfilePage = (): JSX.Element => {
       {user != null && (
         <Layout>
           <MyHead title="ユーザーページ" />
-          <h1>ユーザーページ</h1>
           <ProfileForm user={user} />
         </Layout>
       )}

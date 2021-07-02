@@ -8,10 +8,14 @@ export type ContributionPieChartProps = {
 export const ContributionPieChart = ({
   contributions,
 }: ContributionPieChartProps): JSX.Element => {
-  const mainContributions = contributions.slice(0, 5);
-  const totalContributions = contributions
-    .map((info) => info.count)
-    .reduce((total, current) => total + current);
+  const mainContributions =
+    contributions != null ? contributions.slice(0, 5) : [];
+  const totalContributions =
+    contributions != null
+      ? contributions
+          .map((info) => info.count)
+          .reduce((total, current) => total + current)
+      : 0;
   const otherContributions =
     totalContributions -
     mainContributions
