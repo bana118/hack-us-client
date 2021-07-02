@@ -85,37 +85,39 @@ export const UserContainer = ({
       <Grid item>
         <p>自己紹介: {user.description}</p>
       </Grid>
-      <Grid item>
-        <h2>自分のプロジェクトにスカウト</h2>
-        プロジェクト:{" "}
-        <Select
-          variant="standard"
-          onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
-            setScoutProjectId(event.target.value as string)
-          }
-        >
-          <MenuItem value=""></MenuItem>
-          {me?.projects &&
-            me.projects.map((project, index) => {
-              return (
-                <MenuItem key={index} value={project.id}>
-                  {project.name}
-                </MenuItem>
-              );
-            })}
-        </Select>
-        に
-        {scoutProjectId !== "" && availableScout(scoutProjectId) && (
-          <Button type="submit" variant="contained" onClick={scout}>
-            スカウトする！
-          </Button>
-        )}
-        {scoutProjectId !== "" && !availableScout(scoutProjectId) && (
-          <Button type="submit" variant="contained" onClick={scout} disabled>
-            参加済みです
-          </Button>
-        )}
-      </Grid>
+      {me.uid !== user.uid && (
+        <Grid item>
+          <h2>自分のプロジェクトにスカウト</h2>
+          プロジェクト:{" "}
+          <Select
+            variant="standard"
+            onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
+              setScoutProjectId(event.target.value as string)
+            }
+          >
+            <MenuItem value=""></MenuItem>
+            {me?.projects &&
+              me.projects.map((project, index) => {
+                return (
+                  <MenuItem key={index} value={project.id}>
+                    {project.name}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+          に
+          {scoutProjectId !== "" && availableScout(scoutProjectId) && (
+            <Button type="submit" variant="contained" onClick={scout}>
+              スカウトする！
+            </Button>
+          )}
+          {scoutProjectId !== "" && !availableScout(scoutProjectId) && (
+            <Button type="submit" variant="contained" onClick={scout} disabled>
+              参加済みです
+            </Button>
+          )}
+        </Grid>
+      )}
     </Grid>
   );
 };
