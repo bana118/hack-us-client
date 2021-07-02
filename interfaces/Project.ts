@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
-import { GetProjectsQuery } from "../types/graphql";
+import { GetProjectsWithRecommendsQuery } from "../types/graphql";
 
 export const isFavorite = (
   id: string | undefined,
-  userFavorites: GetProjectsQuery["userFavorites"]["nodes"]
+  userFavorites: GetProjectsWithRecommendsQuery["userFavorites"]["nodes"]
 ): boolean => {
   if (userFavorites?.length !== 0) {
     return userFavorites?.some((item) => item?.project.id === id) || false;
@@ -12,7 +12,32 @@ export const isFavorite = (
 };
 
 export const GET_PROJECTS = gql`
-  query GetProjects(
+  query GetProjects($first: Int!) {
+    projects(first: $first) {
+      nodes {
+        id
+        name
+        description
+        startsAt
+        endsAt
+        languages {
+          name
+          color
+        }
+        owner {
+          uid
+          name
+        }
+        recruitmentNumbers
+        toolLink
+        contribution
+      }
+    }
+  }
+`;
+
+export const GET_PROJECTS_WITH_RECOMMENDS = gql`
+  query GetProjectsWithRecommends(
     $uid: String!
     $projectsFirst: Int!
     $recommendsLanguageFirst: Int!
@@ -240,7 +265,41 @@ export const GET_PROJECT_AND_PARTICIPANT_AND_FAVORITE = gql`
 `;
 
 export const SEARCH_PROJECTS_FIRST = gql`
-  query SearchProjectsFirst(
+  query SearchProjectsFirst($query: String!, $first: Int!, $after: String) {
+    projects(query: $query, first: $first, after: $after) {
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        endCursor
+        startCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            uid
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const SEARCH_PROJECTS_FIRST_WITH_FAVORITES = gql`
+  query SearchProjectsFirstWithFavorites(
     $uid: String!
     $query: String!
     $first: Int!

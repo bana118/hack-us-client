@@ -2,10 +2,16 @@ import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 import { SearchInput } from "../../components/SearchInput";
 import { GetServerSideProps } from "next";
-import { SEARCH_PROJECTS_FIRST, isFavorite } from "../../interfaces/Project";
+import {
+  SEARCH_PROJECTS_FIRST_WITH_FAVORITES,
+  isFavorite,
+  SEARCH_PROJECTS_FIRST,
+} from "../../interfaces/Project";
 import {
   SearchProjectsFirstQuery,
   SearchProjectsFirstQueryVariables,
+  SearchProjectsFirstWithFavoritesQuery,
+  SearchProjectsFirstWithFavoritesQueryVariables,
   useSearchProjectsLazyQuery,
 } from "../../types/graphql";
 import { useState, useEffect, useContext } from "react";
@@ -19,8 +25,10 @@ import { css } from "@emotion/react";
 
 type SearchProjectPageProps = {
   query?: string;
-  firstProjects?: SearchProjectsFirstQuery["projects"];
-  userFavorites?: SearchProjectsFirstQuery["userFavorites"]["nodes"];
+  firstProjects?:
+    | SearchProjectsFirstWithFavoritesQuery["projects"]
+    | SearchProjectsFirstQuery["projects"];
+  userFavorites?: SearchProjectsFirstWithFavoritesQuery["userFavorites"]["nodes"];
   errors?: string;
 };
 
@@ -106,7 +114,7 @@ const SearchProjectPage = ({
       <SearchInput />
       <Grid container css={container}>
         <h1 css={title}>「{query}」の検索結果</h1>
-        {projects && user && (
+        {projects && (
           <Grid container css={gridFlex}>
             {projects.map((project, index) => {
               return (
@@ -120,7 +128,7 @@ const SearchProjectPage = ({
                 >
                   <ProjectContainer
                     id={project?.node?.id}
-                    uid={user.uid}
+                    uid={user?.uid}
                     favorite={isFavorite(project?.node?.id, userFavorites)}
                     name={project?.node?.name}
                     description={project?.node?.description}
@@ -149,27 +157,49 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } else {
     try {
       const cookies = nookies.get(context);
-      const uid = cookies[uidKeyName];
-      const { data } = await apolloClient.query<
-        SearchProjectsFirstQuery,
-        SearchProjectsFirstQueryVariables
-      >({
-        query: SEARCH_PROJECTS_FIRST,
-        variables: {
-          uid: uid,
-          query: query,
-          first: 20,
-        },
-        fetchPolicy: "no-cache",
-      });
+      const uid = cookies[uidKeyName] || "";
+      if (uid === "") {
+        const { data } = await apolloClient.query<
+          SearchProjectsFirstQuery,
+          SearchProjectsFirstQueryVariables
+        >({
+          query: SEARCH_PROJECTS_FIRST,
+          variables: {
+            query: query,
+            first: 20,
+          },
+          fetchPolicy: "no-cache",
+        });
 
-      return {
-        props: {
-          query: query,
-          firstProjects: data.projects,
-          userFavorites: data.userFavorites.nodes,
-        },
-      };
+        return {
+          props: {
+            query: query,
+            firstProjects: data.projects,
+            userFavorites: [],
+          },
+        };
+      } else {
+        const { data } = await apolloClient.query<
+          SearchProjectsFirstWithFavoritesQuery,
+          SearchProjectsFirstWithFavoritesQueryVariables
+        >({
+          query: SEARCH_PROJECTS_FIRST_WITH_FAVORITES,
+          variables: {
+            uid: uid,
+            query: query,
+            first: 20,
+          },
+          fetchPolicy: "no-cache",
+        });
+
+        return {
+          props: {
+            query: query,
+            firstProjects: data.projects,
+            userFavorites: data.userFavorites.nodes,
+          },
+        };
+      }
     } catch (err) {
       return { props: { errors: err.message } };
     }

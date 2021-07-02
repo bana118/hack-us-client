@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 type UserContaienrProps = {
-  me: GetMeAndUserQuery["me"];
+  me: GetMeAndUserQuery["me"] | null;
   user: GetMeAndUserQuery["user"];
   userParticipants: GetMeAndUserQuery["userParticipants"]["nodes"];
 };
@@ -85,7 +85,7 @@ export const UserContainer = ({
       <Grid item>
         <p>自己紹介: {user.description}</p>
       </Grid>
-      {me.uid !== user.uid && (
+      {me && me.uid !== user.uid && (
         <Grid item>
           <h2>自分のプロジェクトにスカウト</h2>
           プロジェクト:{" "}
