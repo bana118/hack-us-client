@@ -1,13 +1,17 @@
 import { Grid, Avatar, Link } from "@material-ui/core";
-import { GetUserQuery } from "../types/graphql";
+import { GetMeAndUserQuery } from "../types/graphql";
 import { ContributionPieChart } from "./ContributionPieChart";
 import Image from "next/image";
 
 type UserContaienrProps = {
-  user: GetUserQuery["user"];
+  me: GetMeAndUserQuery["me"];
+  user: GetMeAndUserQuery["user"];
 };
 
-export const UserContainer = ({ user }: UserContaienrProps): JSX.Element => {
+export const UserContainer = ({
+  me,
+  user,
+}: UserContaienrProps): JSX.Element => {
   return (
     <Grid container direction="column" alignItems="center" spacing={2}>
       <Grid item>

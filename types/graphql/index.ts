@@ -864,6 +864,37 @@ export type GetUserQuery = (
   ) }
 );
 
+export type GetMeAndUserQueryVariables = Exact<{
+  myUid: Scalars['String'];
+  uid: Scalars['String'];
+}>;
+
+
+export type GetMeAndUserQuery = (
+  { __typename?: 'Query' }
+  & { me: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
+    & { contributions?: Maybe<Array<(
+      { __typename?: 'Contribution' }
+      & Pick<Contribution, 'language' | 'color' | 'count'>
+    )>>, projects?: Maybe<Array<(
+      { __typename?: 'Project' }
+      & Pick<Project, 'id' | 'name'>
+    )>> }
+  ), user: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name' | 'uid' | 'description' | 'githubId' | 'githubIconUrl'>
+    & { contributions?: Maybe<Array<(
+      { __typename?: 'Contribution' }
+      & Pick<Contribution, 'language' | 'color' | 'count'>
+    )>>, projects?: Maybe<Array<(
+      { __typename?: 'Project' }
+      & Pick<Project, 'id' | 'name'>
+    )>> }
+  ) }
+);
+
 export type GetProjectParticipantsQueryVariables = Exact<{
   projectId: Scalars['ID'];
 }>;
@@ -1585,6 +1616,73 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const GetMeAndUserDocument = gql`
+    query GetMeAndUser($myUid: String!, $uid: String!) {
+  me: user(uid: $myUid) {
+    id
+    name
+    uid
+    description
+    githubId
+    githubIconUrl
+    contributions {
+      language
+      color
+      count
+    }
+    projects {
+      id
+      name
+    }
+  }
+  user(uid: $uid) {
+    id
+    name
+    uid
+    description
+    githubId
+    githubIconUrl
+    contributions {
+      language
+      color
+      count
+    }
+    projects {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMeAndUserQuery__
+ *
+ * To run a query within a React component, call `useGetMeAndUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMeAndUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMeAndUserQuery({
+ *   variables: {
+ *      myUid: // value for 'myUid'
+ *      uid: // value for 'uid'
+ *   },
+ * });
+ */
+export function useGetMeAndUserQuery(baseOptions: Apollo.QueryHookOptions<GetMeAndUserQuery, GetMeAndUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMeAndUserQuery, GetMeAndUserQueryVariables>(GetMeAndUserDocument, options);
+      }
+export function useGetMeAndUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeAndUserQuery, GetMeAndUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMeAndUserQuery, GetMeAndUserQueryVariables>(GetMeAndUserDocument, options);
+        }
+export type GetMeAndUserQueryHookResult = ReturnType<typeof useGetMeAndUserQuery>;
+export type GetMeAndUserLazyQueryHookResult = ReturnType<typeof useGetMeAndUserLazyQuery>;
+export type GetMeAndUserQueryResult = Apollo.QueryResult<GetMeAndUserQuery, GetMeAndUserQueryVariables>;
 export const GetProjectParticipantsDocument = gql`
     query GetProjectParticipants($projectId: ID!) {
   projectParticipants(projectId: $projectId) {

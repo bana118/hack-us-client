@@ -94,7 +94,8 @@ const ProjectDetail = ({
         variables: {
           uid: uid,
           projectId: projectId,
-          ownerApproved: null,
+          // TODO ownerApproved はfalseにして承認待ちにする
+          ownerApproved: true,
           userApproved: true,
         },
       });
@@ -128,13 +129,14 @@ const ProjectDetail = ({
             <p css={paragraphStyle}>{targetProject?.description}</p>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
-              {targetProject?.languages.map((language, index) => {
-                return (
-                  <ListItem css={paragraphStyle} key={index}>
-                    ・{language.name}
-                  </ListItem>
-                );
-              })}
+              {targetProject?.languages &&
+                targetProject?.languages.map((language, index) => {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{language.name}
+                    </ListItem>
+                  );
+                })}
             </List>
             <h2 css={subTitleStyle}>募集人数</h2>
             <p css={paragraphStyle}>{targetProject?.recruitmentNumbers}</p>
@@ -204,13 +206,14 @@ const ProjectDetail = ({
             </List>
             <h2 css={subTitleStyle}>使用言語</h2>
             <List>
-              {targetProject?.languages.map((language, index) => {
-                return (
-                  <ListItem css={paragraphStyle} key={index}>
-                    ・{language.name}
-                  </ListItem>
-                );
-              })}
+              {targetProject?.languages &&
+                targetProject?.languages.map((language, index) => {
+                  return (
+                    <ListItem css={paragraphStyle} key={index}>
+                      ・{language.name}
+                    </ListItem>
+                  );
+                })}
             </List>
             <h2 css={subTitleStyle}>コントリビュートの方法</h2>
             <p css={paragraphStyle}>{targetProject?.contribution}</p>

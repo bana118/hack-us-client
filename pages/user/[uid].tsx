@@ -3,17 +3,23 @@ import React from "react";
 import Layout from "../../components/Layout";
 import { MyHead } from "../../components/MyHead";
 import { UserContainer } from "../../components/UserContainer";
-import { GET_USER } from "../../interfaces/User";
-import { GetUserQuery, GetUserQueryVariables } from "../../types/graphql";
+import { GET_ME_AND_USER } from "../../interfaces/User";
+import {
+  GetMeAndUserQuery,
+  GetMeAndUserQueryVariables,
+} from "../../types/graphql";
 import { apolloClient } from "../../utils/apollo-client";
+import nookies from "nookies";
+import { uidKeyName } from "../../utils/cookie-key-names";
 
 type userPageProps = {
-  user?: GetUserQuery["user"];
+  me?: GetMeAndUserQuery["me"];
+  user?: GetMeAndUserQuery["user"];
   errors?: string;
 };
 
-const userPage = ({ user, errors }: userPageProps): JSX.Element => {
-  if (errors || !user) {
+const userPage = ({ me, user, errors }: userPageProps): JSX.Element => {
+  if (errors || !me || !user) {
     return (
       <Layout>
         <MyHead title="Error"></MyHead>
@@ -31,7 +37,7 @@ const userPage = ({ user, errors }: userPageProps): JSX.Element => {
       {user != null && (
         <Layout>
           <MyHead title={`${user.name}のプロフィール`} />
-          <UserContainer user={user} />
+          <UserContainer me={me} user={user} />
         </Layout>
       )}
     </React.Fragment>
@@ -42,16 +48,19 @@ export default userPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { uid } = context.query;
+  const cookies = nookies.get(context);
+  const myUid = cookies[uidKeyName];
   if (uid == null || Array.isArray(uid)) {
     return { props: { errors: "Invalid URL" } };
   } else {
     try {
       const { data } = await apolloClient.query<
-        GetUserQuery,
-        GetUserQueryVariables
+        GetMeAndUserQuery,
+        GetMeAndUserQueryVariables
       >({
-        query: GET_USER,
+        query: GET_ME_AND_USER,
         variables: {
+          myUid: myUid,
           uid: uid,
         },
         fetchPolicy: "no-cache",
@@ -59,6 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
       return {
         props: {
+          me: data.me,
           user: data.user,
         },
       };
