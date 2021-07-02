@@ -265,7 +265,41 @@ export const GET_PROJECT_AND_PARTICIPANT_AND_FAVORITE = gql`
 `;
 
 export const SEARCH_PROJECTS_FIRST = gql`
-  query SearchProjectsFirst(
+  query SearchProjectsFirst($query: String!, $first: Int!, $after: String) {
+    projects(query: $query, first: $first, after: $after) {
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        endCursor
+        startCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          description
+          startsAt
+          endsAt
+          languages {
+            name
+            color
+          }
+          recruitmentNumbers
+          toolLink
+          contribution
+          owner {
+            uid
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const SEARCH_PROJECTS_FIRST_WITH_FAVORITES = gql`
+  query SearchProjectsFirstWithFavorites(
     $uid: String!
     $query: String!
     $first: Int!
