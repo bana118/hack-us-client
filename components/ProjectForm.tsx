@@ -90,40 +90,38 @@ export const ProjectForm = ({
   project,
 }: ProjectFormProps): JSX.Element => {
   const defaultValues: InputsType = {
-    name: project !== undefined ? project.name : "",
-    description: project !== undefined ? project.description : "",
-    githubUrl: project !== undefined ? project.githubUrl : "",
-    startsAt:
-      project !== undefined ? project.startsAt.slice(0, 10) : defaultDate(),
-    endsAt: project !== undefined ? project.endsAt.slice(0, 10) : defaultDate(),
+    name: project != null ? project.name : "",
+    description: project != null ? project.description : "",
+    githubUrl: project != null ? project.githubUrl : "",
+    startsAt: project != null ? project.startsAt.slice(0, 10) : defaultDate(),
+    endsAt: project != null ? project.endsAt.slice(0, 10) : defaultDate(),
     language1:
-      project !== undefined && project?.languages.length >= 1
+      project?.languages != null && project?.languages.length >= 1
         ? JSON.stringify({
             name: project.languages[0]["name"],
             color: project.languages[0]["color"],
           })
         : "",
     language2:
-      project !== undefined && project?.languages.length >= 2
+      project?.languages != null && project.languages.length >= 2
         ? JSON.stringify({
             name: project.languages[1]["name"],
             color: project.languages[1]["color"],
           })
         : "",
     language3:
-      project !== undefined && project?.languages.length === 3
+      project?.languages != null && project.languages.length === 3
         ? JSON.stringify({
             name: project.languages[2]["name"],
             color: project.languages[2]["color"],
           })
         : "",
     recruitmentNumbers:
-      project?.recruitmentNumbers !== undefined &&
-      project?.recruitmentNumbers !== null
+      project?.recruitmentNumbers != null
         ? project.recruitmentNumbers.toString()
         : "1",
-    toolLink: project !== undefined ? project.toolLink : "",
-    contribution: project !== undefined ? project.contribution : "",
+    toolLink: project != null ? project.toolLink : "",
+    contribution: project != null ? project.contribution : "",
   };
 
   const {

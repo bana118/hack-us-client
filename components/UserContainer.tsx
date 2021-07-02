@@ -1,4 +1,4 @@
-import { Grid, Avatar, Link } from "@material-ui/core";
+import { Grid, Avatar, Link, Button } from "@material-ui/core";
 import { GetMeAndUserQuery } from "../types/graphql";
 import { ContributionPieChart } from "./ContributionPieChart";
 import Image from "next/image";
@@ -43,7 +43,11 @@ export const UserContainer = ({
       <Grid item>
         <p>自己紹介: {user.description}</p>
       </Grid>
-      <Grid item></Grid>
+      <Grid item>
+        <Button type="submit" variant="contained">
+          スカウトする！
+        </Button>
+      </Grid>
     </Grid>
   );
 };
